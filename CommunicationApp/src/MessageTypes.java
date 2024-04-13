@@ -1,13 +1,13 @@
 
 public enum MessageTypes {
-	Login,  
-	Logout, 
-	ChatMessage, // sending chat message
-	GetLogs, 	// IT user requesting user logs
-	UpdateUser, // IT user editing a user
-	CreateChat, // User creating a new chat-room
-	AddUsers,	// Adding a user to the chat
-	NotifyUser	// Send notification(new mssgs) to the recipient
+	LOGIN,
+	LOGOUT,
+	CHAT_MESSAGE, 		// sending chat message
+	GET_LOGS, 			// IT user requesting user logs
+	UPDATE_USER, 		// IT user editing a user
+	CREATE_CHAT, 		// User creating a new chat-room
+	ADD_USERS_TO_CHAT,	// Adding a user to the chat
+	NOTIFY_USER			// Send notification(new msgs) to the recipient
 }
 
 // public class LoginMessage implements serializable {
