@@ -6,8 +6,6 @@ public class User implements Serializable{
 	// attributes: status of user's status type? and the user's role
 	private UserStatus status;
 	
-	
-	
 	//getters
 	public String getID() {
 		return id;
