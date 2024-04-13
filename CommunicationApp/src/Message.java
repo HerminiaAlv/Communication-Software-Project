@@ -83,6 +83,13 @@ public class Message implements Serializable{
 		this.chatID = chatID;
 	}
 
+public void setUser(String user){
+		this.user = user;
+	}
+
+public void setUserStatus(UserStatus userStatus){
+  this.userStatus = userStatus;
+}
 	public void setUser(String user){
 		this.user = user;
 	}
