@@ -7,7 +7,8 @@ public enum MessageTypes {
 	UPDATE_USER, 		// IT user editing a user
 	CREATE_CHAT, 		// User creating a new chat-room
 	ADD_USERS_TO_CHAT,	// Adding a user to the chat
-	NOTIFY_USER			// Send notification(new msgs) to the recipient
+	NOTIFY_USER,		// Send notification(new msgs) to the recipient
+	UNDEFINED			// Default type
 }
 
 // public class LoginMessage implements serializable {
