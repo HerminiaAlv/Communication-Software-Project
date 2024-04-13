@@ -14,13 +14,12 @@ public class Message implements Serializable{
 	protected User user;
 	protected UserStatus userStatus;
 
-
-	
 	//constructor
 	public Message(String message) {
 		this.type = MessageTypes.UNDEFINED;
 		this.message = message;
 		this.status = MessageStatus.UNDEFINED;
+		this.date = new Date();
 	}
 	
 	//parametized constructor	
@@ -35,14 +34,6 @@ public class Message implements Serializable{
 	//getters
 	public String getMessage() {
 		return message;
-	}
-
-	public String getUser(){
-		return user;
-	}
-
-	public UserStatus getUserStatus(){
-		return userStatus;
 	}
 	
 	public String getSender() {
@@ -61,8 +52,19 @@ public class Message implements Serializable{
 		return id;
 	}
 
+	public User getUser(){
+		return user;
+	}
+
+	public UserStatus getUserStatus(){
+		return userStatus;
+	}
 	public Date getDate(){
 		return date;
+	}
+
+	private boolean isDelivered(){
+		return delivered;
 	}
 
 	//setters
@@ -77,87 +79,21 @@ public class Message implements Serializable{
 	public void setStatus(MessageStatus status) {
 		this.status = status;
 	}
-
-	public void setUser(String user){
-		
-	}
-
-	public void setUserStatus(UserStatus userStatus){
-
-	}
-
-	public MessageTypes getType() {
-		return type;
-	}
-
-	public void setType(MessageTypes type) {
-		this.type = type;
-	}
-
-	public void setChatID(String chatID) {
+	public void setChatID(){
 		this.chatID = chatID;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public boolean isDelivered() {
-		return delivered;
-	}
-
-	public void setDelivered(boolean delivered) {
-		this.delivered = delivered;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public void setUser(User user) {
+		this.user = user;	public void setUser(String user){
 		this.user = user;
 	}
 
-	public MessageTypes getType() {
-		return type;
+		this.userStatus = status;	public void setUserStatus(UserStatus userStatus){
+		this.userStatus = userStatus;
 	}
 
-	public void setType(MessageTypes type) {
-		this.type = type;
-	}
-
-	public void setChatID(String chatID) {
-		this.chatID = chatID;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public boolean isDelivered() {
-		return delivered;
-	}
-
-	public void setDelivered(boolean delivered) {
+	public void setDelivered(){
 		this.delivered = delivered;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	//other methods
-
 }
