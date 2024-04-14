@@ -5,7 +5,7 @@ public class Message implements Serializable{
 	protected MessageTypes type; 
 	private String message;
 	private String sender;
-	private String chatID; //what about multiple recipients?
+	private String chatID; //will handle multiple receivers, will contain chatroom ID
 	private MessageStatus status;
 	private String id;
 	private boolean delivered;
@@ -83,13 +83,13 @@ public class Message implements Serializable{
 		this.chatID = chatID;
 	}
 
-public void setUser(String user){
+	public void setUser(String user){
 		this.user = user;
 	}
 
-public void setUserStatus(UserStatus userStatus){
-  this.userStatus = userStatus;
-}
+	public void setUserStatus(UserStatus userStatus){
+  		this.userStatus = userStatus;
+	}
 	public void setUser(String user){
 		this.user = user;
 	}
