@@ -51,9 +51,7 @@ public class User implements Serializable{
 	public boolean isIT(){
 			return is_IT;
 	}
-
-	public 
-
+	
 	//setters
 	// username, status, firstname, lastname, isIT
 	public void setFirstName(String firstName){
@@ -73,7 +71,7 @@ public class User implements Serializable{
 	}
 	
 	//other methods
-	public boolean setIT(boolean is_IT){
+	public void setIT(boolean is_IT){
 		this.is_IT = is_IT;
 	}
 
