@@ -10,7 +10,11 @@ public class User implements Serializable{
 	private String username;
 	private boolean is_IT; 
 
-	//constructor
+	//constructors
+	public User() { // default constructor for testing purposes
+	
+	}
+	
 	public User(String id, String firstName, String lastName, 
 				String username, String password, boolean is_IT){
 					this.id = id;
