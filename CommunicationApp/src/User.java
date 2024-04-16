@@ -10,7 +10,11 @@ public class User implements Serializable{
 	private String username;
 	private boolean is_IT; 
 
-	//constructor
+	//constructors
+	public User() { // default constructor for testing purposes
+	
+	}
+	
 	public User(String id, String firstName, String lastName, 
 				String username, String password, boolean is_IT){
 					this.id = id;
@@ -51,9 +55,7 @@ public class User implements Serializable{
 	public boolean isIT(){
 			return is_IT;
 	}
-
-	public 
-
+	
 	//setters
 	// username, status, firstname, lastname, isIT
 	public void setFirstName(String firstName){
@@ -73,7 +75,7 @@ public class User implements Serializable{
 	}
 	
 	//other methods
-	public boolean setIT(boolean is_IT){
+	public void setIT(boolean is_IT){
 		this.is_IT = is_IT;
 	}
 

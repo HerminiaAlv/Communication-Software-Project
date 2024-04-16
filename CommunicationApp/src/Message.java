@@ -48,22 +48,22 @@ public class Message implements Serializable{
 		return chatID;
 	}
 	
-	public String getID(){
+	public String getID() {
 		return id;
 	}
 
-	public User getUser(){
+	public User getUser() {
 		return user;
 	}
 
-	public UserStatus getUserStatus(){
+	public UserStatus getUserStatus() {
 		return userStatus;
 	}
-	public Date getDate(){
+	public Date getDate() {
 		return date;
 	}
 
-	private boolean isDelivered(){
+	private boolean isDelivered() {
 		return delivered;
 	}
 
@@ -79,26 +79,18 @@ public class Message implements Serializable{
 	public void setStatus(MessageStatus status) {
 		this.status = status;
 	}
-	public void setChatID(){
+	public void setChatID(String chatID){
 		this.chatID = chatID;
-	}
-
-	public void setUser(String user){
-		this.user = user;
 	}
 
 	public void setUserStatus(UserStatus userStatus){
   		this.userStatus = userStatus;
 	}
-	public void setUser(String user){
+	public void setUser(User user){
 		this.user = user;
 	}
 
-	public void setUserStatus(UserStatus userStatus){
-		this.userStatus = userStatus;
-	}
-
-	public void setDelivered(){
+	public void setDelivered(boolean delivered){
 		this.delivered = delivered;
 	}
 
