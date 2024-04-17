@@ -1,4 +1,5 @@
+import java.io.Serializable;
 
-public class ChatRoom {
-
+public class ChatRoom implements Serializable {
+    
 }
