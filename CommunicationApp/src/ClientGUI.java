@@ -1,4 +1,6 @@
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -8,17 +10,22 @@ import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
 import java.util.Random;
 import javax.swing.SwingConstants;
 import java.awt.Component;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 
 public class ClientGUI extends JFrame{
@@ -43,16 +50,21 @@ public class ClientGUI extends JFrame{
 	public ClientGUI(Client client, User currentUser) {
         this.client = client;
         this.currentUser = currentUser;
-       // this.activeChat = null;
+        // this.activeChat = null;
 		
+        //start up 
+        setResizable(false); //disable maximize button
 		setTitle("Wow sick chat app");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, WIDTH, HEIGHT);
+		setBounds(400, 200, WIDTH, HEIGHT);
+		//setSize(720,480);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(21, 96, 130));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
+		//getContentPane().setBackground(new Color(21, 96, 130));
+		//contentPane.setOpaque(false);
+		
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(25, 15));
 		
@@ -63,6 +75,7 @@ public class ClientGUI extends JFrame{
 			
 			// inside westPanel
 			JPanel chatroomPanel = new JPanel();
+			
 			chatroomPanel.setBorder(new LineBorder(new Color(78, 167, 46), 1, true));
 			westPanel.add(chatroomPanel);
 			GridBagLayout gbl_chatroomPanel = new GridBagLayout();
@@ -73,15 +86,21 @@ public class ClientGUI extends JFrame{
 			chatroomPanel.setLayout(gbl_chatroomPanel);
 		
 				// inside chatroomPanel
-				JLabel lblNewLabel = new JLabel("Chat Rooms");
-				
-				// Label constraints
+				//JLabel lblNewLabel = new JLabel("Chat Rooms");
+			    //chatroomPanel.setBorder(new TitledBorder(new LineBorder(new Color(78,167,46)),"Chat Rooms "));
+			
+				TitledBorder roomBorder = BorderFactory.createTitledBorder(new TitledBorder(new LineBorder(new Color(78,167,46)),"Chat Rooms"));
+			    //roomBorder.set;
+				chatroomPanel.setBorder(roomBorder);
+			    //chatroomPanel.setBackground(Color.WHITE);
+			    //chatroomPanel.setOpaque(false);
+			    // Label constraints
 				GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 				gbc_lblNewLabel.fill = GridBagConstraints.BOTH;
 				gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
 				gbc_lblNewLabel.gridx = 0;
 				gbc_lblNewLabel.gridy = 0;
-				chatroomPanel.add(lblNewLabel, gbc_lblNewLabel);
+				//chatroomPanel.add(chatroomPanel, gbc_lblNewLabel);
 				
 				JList pinnedList = new JList<String>(pinned);
 				pinnedList.repaint();
@@ -90,9 +109,10 @@ public class ClientGUI extends JFrame{
 				// pinnedList constraints
 				GridBagConstraints gbc_list = new GridBagConstraints();
 				gbc_list.fill = GridBagConstraints.BOTH; // Changed to BOTH to allow vertical stretch
-				gbc_list.insets = new Insets(0, 0, 5, 0);
+				gbc_list.insets = new Insets(0, 0, 18, 0);
 				gbc_list.gridx = 0;
 				gbc_list.gridy = 1;
+				//gbc_list.
 				chatroomPanel.add(pinnedList, gbc_list);
 		
 				JScrollPane nonpinnedChatsScrollPane = new JScrollPane();
@@ -110,9 +130,10 @@ public class ClientGUI extends JFrame{
 			
 			// inside westPanel
 			JPanel mainButtonPanel = new JPanel();
-			mainButtonPanel.setBorder(new LineBorder(new Color(78, 167, 46), 1, true));
+			//mainButtonPanel.setBorder(new LineBorder(new Color(78, 167, 46), 1, true));
 			westPanel.add(mainButtonPanel);
 			mainButtonPanel.setLayout(new GridLayout(0, 1, 5, 15));
+			mainButtonPanel.setOpaque(false);
 			
 				// Main Action Buttons inside mainButton Panel
 				JButton createNewChatButton = new JButton("Create New Chat");
@@ -143,21 +164,35 @@ public class ClientGUI extends JFrame{
 		// View Logs panel
 		// Modify / Add user panel
 		JPanel centerPanel = new JPanel();
-		centerPanel.setBorder(new LineBorder(new Color(78, 167, 46), 1, true));
-		contentPane.add(centerPanel, BorderLayout.CENTER);
-		centerPanel.setLayout(new GridLayout(0, 1, 0, 0));
+		//centerPanel.setBorder(new EmptyBorder(0,0,1,1));
+		centerPanel.setOpaque(false);
+		//centerPanel.setBorder(new LineBorder(new Color(78, 167, 46), 1, true));
+		contentPane.add(centerPanel);
+		centerPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		
 		JLabel lblNewLabel_1 = new JLabel("All panels that go on the center panel go here and should fill up the whole panel. Remove all objects on centerPanel and place it... ");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		centerPanel.add(lblNewLabel_1);
+		//centerPanel.add(lblNewLabel_1);
 		
-		Component verticalStrut = Box.createVerticalStrut(40);
-		centerPanel.add(verticalStrut);
+		
+		Component verticalStrut = Box.createVerticalStrut(20);
+		//centerPanel.add(verticalStrut);
 		JTextArea lblQuoteLabel = new JTextArea(getRandomQuote());
+		
 		lblQuoteLabel.setBackground(new Color(240, 240, 240));
 		lblQuoteLabel.setWrapStyleWord(true);
 		lblQuoteLabel.setLineWrap(true);
-		centerPanel.add(lblQuoteLabel);
+		lblQuoteLabel.setSize(10,20); //didnt do anything
+		lblQuoteLabel.setAlignmentY(BOTTOM_ALIGNMENT);
+		
+		//Message Field
+		MessagePanel MessagePanel = new MessagePanel();
+		//MessagePanel.setLayout(new GridLayout(6,6,0,0));
+		//MessagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		centerPanel.add(MessagePanel,BorderLayout.CENTER);
+		
+		
+		//centerPanel.add(lblQuoteLabel);
 	}
 	// Private Testing variables
 	// private variables just for testing
