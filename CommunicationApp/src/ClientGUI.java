@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import java.awt.Color;
 import javax.swing.JButton;
@@ -125,6 +127,16 @@ public class ClientGUI extends JFrame{
 				gbc_nonpinnedChatsScrollPane.gridy = 2; // No gap in gridY, directly after pinnedList
 				chatroomPanel.add(nonpinnedChatsScrollPane, gbc_nonpinnedChatsScrollPane);
 				JList chatrooms = new JList<String>(chats);
+				chatrooms.addListSelectionListener(new ListSelectionListener() {
+					public void valueChanged(ListSelectionEvent e) {
+						if (!e.getValueIsAdjusting()){
+							ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+							//String selectedItem = (String) chatrooms.getSelectedValue();
+							
+							
+						}
+					}
+				});
 				chatrooms.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				nonpinnedChatsScrollPane.setViewportView(chatrooms);
 			
@@ -174,8 +186,7 @@ public class ClientGUI extends JFrame{
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		//centerPanel.add(lblNewLabel_1);
 		
-		
-		Component verticalStrut = Box.createVerticalStrut(20);
+		//Component verticalStrut = Box.createVerticalStrut(20);
 		//centerPanel.add(verticalStrut);
 		JTextArea lblQuoteLabel = new JTextArea(getRandomQuote());
 		

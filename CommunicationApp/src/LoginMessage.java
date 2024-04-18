@@ -14,6 +14,10 @@ public class LoginMessage {
     private String username;
     private boolean success;
 
+    private User currentUser; // Server passes a user over when login is successful
+    // private List<User> allUsers; // Server should pass a list or map of ALL users 
+    // a map of userIDs and names is probabably sufficient becauses we don't need all the data
+
     private MessageTypes type;
 
     public LoginMessage(String pass, String user, MessageTypes type){
@@ -34,6 +38,9 @@ public class LoginMessage {
     public MessageTypes getType(){
         return type;
     }
+    public User getUser() {
+        return currentUser;
+    }
 
     public boolean isSuccessful(){
         return success;
@@ -41,5 +48,9 @@ public class LoginMessage {
 
     public void setSuccess(boolean success){
         this.success = success;
+    }
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
     }
 }

@@ -15,6 +15,10 @@ import java.awt.ScrollPane;
 
 public class MessagePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private Client client;
+	private ChatRoom currentChat;
+	//private List<Messages> messages;
+
 	private JFormattedTextField textBox;
 	
 	public MessagePanel() {
@@ -50,6 +54,8 @@ public class MessagePanel extends JPanel {
 		sendBorder.add(btnNewButton);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Need to dispatch a new thread and run client.sendMessageToServer()
+				// 
 				int count = 0;
 				String empty = "";
 				if ((textBox.getText()).equals(empty)) {
@@ -83,36 +89,7 @@ public class MessagePanel extends JPanel {
 		textMessages.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		textMessages.setWrapStyleWord(true);
 		textMessages.setLineWrap(true);
-		textMessages.setText("[04.16.24@08:03] John: Hey guys, don't forget our meeting tomorrow!\r\n"
-			+ "[04.16.24@14:23] Mark: Hi John, what time is it again? \r\n"
-			+ "[04.16.24@15:26] John: Hi Mark! We start at 12:15 PST  \r\n"
-			+ "[04.16.24@16:01] Dave: Sounds good! Will be there on time!\r\n"
-			+ "[04.17.24@11:23] Dave: Testing the scroll pane if it works!\r\n\n"
-			+ "siUEMRyKrLS0EW8VnDTnqeeE6VVTP21U\r\n"
-			+ "zTQHw8Z3zSeMaWIekXLe08N629TEvVPl\r\n"
-			+ "no9G9WzlxtBGwpEimHBp9wJKmE3PxvAp\r\n"
-			+ "kroeGhWtF6FhmcX4Xt3AfUE9OBtB2bfd\r\n"
-			+ "2kdrtGZtD06QcpynusMd8VFt2IanF56F\r\n"
-			+ "Eoph9yu5JhCkX92siC4lC3y3160jTcx6\r\n"
-			+ "8pkxquTKbjhCdRlTn7KBkRMIrj1EfmsH\r\n"
-			+ "NQA9feNy4ChSCDXEmnRhojoUupBtEigy\r\n"
-			+ "VFySNs9kzHItDToukLCzEwYRYzfQXl0w\r\n"
-			+ "c7rdUIhK9X9h1hS9Pd58oo4PmkCBLP9A\r\n"
-			+ "mO33SW17sjnh9JEpb7Hm9kYoQPABPH9Q\r\n"
-			+ "gWaQWbRiPmAxKa6MkDNs8jX9khJOKOYb\r\n"
-			+ "AMM01xVXEGGlr7utKVVy75vHvnpAiDaB\r\n"
-			+ "ka16TTZED6Vz5USGNiBL7yFPHQ28N8nZ\r\n"
-			+ "cTZNLqW1coRU1dcJWEV9jGAqZynvPm55\r\n"
-			+ "xYAkE2XCo4U35cfVMx1W9pLi34LzWMV1\r\n"
-			+ "MqHbjnqKKWBEUSbAePLPU6aWV9iNBgxJ\r\n"
-			+ "OKpF5jjoz8Jmzfi368Hpdb8OwjxztZdq\r\n"
-			+ "pwr2rQZod8hPCernV5Vkm8Csmz3sY9nW\r\n"
-			+ "g0LrKiqfWindj8LPh86DPZOGghlsvbfe\r\n"
-			+ "BJUEtbi8tS8KO7234y7Jv9ocSgg5T9lO\r\n"
-			+ "if7AxzlsXrcpz6zcUzQvXWYE20Lz3tuJ\r\n"
-			+ "fIBezev4uWXdInZmsMNTu3YClWw7L1YW\r\n"
-			+ "x2X0t6F146zuiIUjatMgZdUsFGKstUsz\r\n"
-			+ "1PcAikSa0rK8FrNitdpFc1klH1lYiLAt");
+		textMessages.setText(testString);
 		
 		ScrollPane scrollPane = new ScrollPane();
 		scrollPane.setForeground(new Color(216, 191, 216));
@@ -161,4 +138,56 @@ public class MessagePanel extends JPanel {
 //		usersBorder.add(lblOnlineUsers, BorderLayout.CENTER);
 
 	}
+
+	/**
+	 * Initializes the message panel for a specific chat room.
+	 * 
+	 * @param chatroom The chat room to set up the message panel for.
+	 *                 This method will update the panel to display
+	 *                 messages, participants, and other relevant information
+	 *                 related to the provided chat room.
+	 */
+	public void setupChatroom(ChatRoom chatroom) {
+
+	}
+
+	// public void setCurrentChat(ChatRoom chatroom) {
+	// 	this.currentChat = chatroom;
+	// }
+
+	public ChatRoom getCurrentChat() {
+		return currentChat;
+	}
+
+	// extra private vars
+	private String testString = "[04.16.24@08:03] John: Hey guys, don't forget our meeting tomorrow!\r\n"
+	+ "[04.16.24@14:23] Mark: Hi John, what time is it again? \r\n"
+	+ "[04.16.24@15:26] John: Hi Mark! We start at 12:15 PST  \r\n"
+	+ "[04.16.24@16:01] Dave: Sounds good! Will be there on time!\r\n"
+	+ "[04.17.24@11:23] Dave: Testing the scroll pane if it works!\r\n\n"
+	+ "siUEMRyKrLS0EW8VnDTnqeeE6VVTP21U\r\n"
+	+ "zTQHw8Z3zSeMaWIekXLe08N629TEvVPl\r\n"
+	+ "no9G9WzlxtBGwpEimHBp9wJKmE3PxvAp\r\n"
+	+ "kroeGhWtF6FhmcX4Xt3AfUE9OBtB2bfd\r\n"
+	+ "2kdrtGZtD06QcpynusMd8VFt2IanF56F\r\n"
+	+ "Eoph9yu5JhCkX92siC4lC3y3160jTcx6\r\n"
+	+ "8pkxquTKbjhCdRlTn7KBkRMIrj1EfmsH\r\n"
+	+ "NQA9feNy4ChSCDXEmnRhojoUupBtEigy\r\n"
+	+ "VFySNs9kzHItDToukLCzEwYRYzfQXl0w\r\n"
+	+ "c7rdUIhK9X9h1hS9Pd58oo4PmkCBLP9A\r\n"
+	+ "mO33SW17sjnh9JEpb7Hm9kYoQPABPH9Q\r\n"
+	+ "gWaQWbRiPmAxKa6MkDNs8jX9khJOKOYb\r\n"
+	+ "AMM01xVXEGGlr7utKVVy75vHvnpAiDaB\r\n"
+	+ "ka16TTZED6Vz5USGNiBL7yFPHQ28N8nZ\r\n"
+	+ "cTZNLqW1coRU1dcJWEV9jGAqZynvPm55\r\n"
+	+ "xYAkE2XCo4U35cfVMx1W9pLi34LzWMV1\r\n"
+	+ "MqHbjnqKKWBEUSbAePLPU6aWV9iNBgxJ\r\n"
+	+ "OKpF5jjoz8Jmzfi368Hpdb8OwjxztZdq\r\n"
+	+ "pwr2rQZod8hPCernV5Vkm8Csmz3sY9nW\r\n"
+	+ "g0LrKiqfWindj8LPh86DPZOGghlsvbfe\r\n"
+	+ "BJUEtbi8tS8KO7234y7Jv9ocSgg5T9lO\r\n"
+	+ "if7AxzlsXrcpz6zcUzQvXWYE20Lz3tuJ\r\n"
+	+ "fIBezev4uWXdInZmsMNTu3YClWw7L1YW\r\n"
+	+ "x2X0t6F146zuiIUjatMgZdUsFGKstUsz\r\n"
+	+ "1PcAikSa0rK8FrNitdpFc1klH1lYiLAt";
 }

@@ -1,12 +1,15 @@
 import java.io.Serializable;
+import java.util.List;
 
 public class User implements Serializable{
 	private String id;
 	private String firstName;
 	private String lastName;
-	private String password;
+	private String password; // do we need this?
 	// attributes: status of user's status type? and the user's role
-	private UserStatus status; // default offlien status
+	private List<ChatRoom> chats;
+
+	private UserStatus status; // default offline status
 	private String username;
 	private boolean is_IT; 
 
@@ -16,7 +19,7 @@ public class User implements Serializable{
 	}
 	
 	public User(String id, String firstName, String lastName, 
-				String username, String password, boolean is_IT){
+				String username, String password, boolean is_IT, List<ChatRoom> chats){
 					this.id = id;
 					this.firstName = firstName;
 					this.lastName = lastName;
@@ -24,6 +27,7 @@ public class User implements Serializable{
 					this.password = password;
 					this.status = UserStatus.Offline; 
 					this.is_IT = is_IT;
+					this.chats = chats;
 				}
 
 	
@@ -55,6 +59,10 @@ public class User implements Serializable{
 	public boolean isIT(){
 			return is_IT;
 	}
+
+	public List<Chatroom> getChats() {
+		return chats;
+	}
 	
 	//setters
 	// username, status, firstname, lastname, isIT
@@ -81,6 +89,13 @@ public class User implements Serializable{
 
 	public boolean isOnline(){
 		return status == UserStatus.Online;
+	}
+
+	public boolean addChat(ChatRoom chatToAdd) {
+		// if (!chats.contains(chatToAdd.getChatID())) // Chat doesn't exist in User's list of chats
+		// add it and return true 
+		// else 
+		return false;
 	}
 
 	// addToChat, update user, addPinned
