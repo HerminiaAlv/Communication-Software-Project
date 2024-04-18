@@ -18,6 +18,7 @@ public class MessagePanel extends JPanel {
 	private Client client;
 	private ChatRoom currentChat;
 	//private List<Messages> messages;
+
 	private JFormattedTextField textBox;
 	
 	public MessagePanel() {

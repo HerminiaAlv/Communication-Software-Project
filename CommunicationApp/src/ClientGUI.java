@@ -186,7 +186,6 @@ public class ClientGUI extends JFrame{
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		//centerPanel.add(lblNewLabel_1);
 		
-		
 		//Component verticalStrut = Box.createVerticalStrut(20);
 		//centerPanel.add(verticalStrut);
 		JTextArea lblQuoteLabel = new JTextArea(getRandomQuote());
