@@ -60,7 +60,7 @@ public class User implements Serializable{
 			return is_IT;
 	}
 
-	public List<Chatroom> getChats() {
+	public List<ChatRoom> getChats() {
 		return chats;
 	}
 	
