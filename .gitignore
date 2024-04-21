@@ -66,3 +66,25 @@ CommunicationApp/src/Message.class
 CommunicationApp/src/MessageStatus.class
 CommunicationApp/src/MessageTypes.class
 CommunicationApp/src/ServerMessage.class
+scripts/CommunicationApp/copy/ChatLogs.java
+scripts/CommunicationApp/copy/ChatRoom.java
+scripts/CommunicationApp/copy/Client.java
+scripts/CommunicationApp/copy/ClientGUI.java
+scripts/CommunicationApp/copy/ClientHandler.java
+scripts/CommunicationApp/copy/CredentialsEditPanel.java
+scripts/CommunicationApp/copy/LoginMessage.java
+scripts/CommunicationApp/copy/LoginUI.java
+scripts/CommunicationApp/copy/LogoutMessage.java
+scripts/CommunicationApp/copy/Message.java
+scripts/CommunicationApp/copy/MessagePanel.java
+scripts/CommunicationApp/copy/MessageStatus.java
+scripts/CommunicationApp/copy/MessageTypes.java
+scripts/CommunicationApp/copy/Server.java
+scripts/CommunicationApp/copy/ServerMessage.java
+scripts/CommunicationApp/copy/User.java
+scripts/CommunicationApp/copy/UserPanel.java
+scripts/CommunicationApp/copy/UserStatus.java
+scripts/CommunicationApp/copy/viewLogChatPanel.java
+bin/scripts/copy_ext_to_path.sh
+bin/scripts/New Text Document.txt
+scripts/copy_ext_to_path.sh
