@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -52,7 +51,7 @@ public class Client {
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
 
-            //Spawn our listener thread that will wait for incoming responses from the server
+            // Spawn our listener thread that will wait for incoming responses from the server
             new Thread(() -> listenForMessages()).start();
 
             // Start Login UI
@@ -67,14 +66,15 @@ public class Client {
             
             // After Successful login 
             System.out.println("CONNECTED");
-            // New thread on Event dispatch thread
+            
+            // New thread on EDT
             invokeMainGUI();
             
             while (loggedIn) {
                 // wait for logout
             }
 
-            //socket.close();
+            socket.close();
         } catch (Exception e) {
             e.toString();
             e.printStackTrace();
@@ -97,7 +97,7 @@ public class Client {
                         new Thread(() -> handleLoginMessage((LoginMessage) m)).start(); // Cast to Login Message
                         break;
                     case LOGOUT:
-                        // LOGOUT()
+                        new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
                         break;
                     case CHAT_MESSAGE:
                         break;
@@ -147,6 +147,11 @@ public class Client {
         }
     }
 
+    public void handleLogoutMessage(LogoutMessage msg) {
+        // Successful logout received from the server
+        // Close and clean up the client
+        // Maybe send them back to login?
+    }
 
     // Message Sending Methods -------------------
 
@@ -162,6 +167,7 @@ public class Client {
         
         try {
             output.writeObject(toServer);
+            output.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
