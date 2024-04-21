@@ -1,59 +1,247 @@
-package Hello;
-
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class Client {
+    // CHANGE THESE BASED ON WHO IS RUNNING THE SERVER
+    private String HOSTIP = "localhost"; //hostname/IP to connect to
+    private int PORT = 1234; // Port number to connect to on hostname
+
+    private ObjectOutputStream output;
+	private ObjectInputStream input;
+    private Socket socket;  // flag to determine if login has been authenticated
+
+    // LoginGUI attributes
+    private LoginUI loginGUI;
+
+    // MainGUI attributes
+    private User currentUser;
+    private ClientGUI mainGUI;
+    private Map<String, String> userlist; // Username, Display name?
+    private boolean loggedIn;    // flag to show user has successfully logged in
+
     public static void main(String[] args) {
+        Client client = new Client();
+        client.start();
+    }
+    public void start() {
         try {
-            Scanner scanner = new Scanner(System.in);
+            socket = new Socket(HOSTIP, PORT);
 
-            System.out.print("Enter username: ");
-            String username = scanner.nextLine();
+            if (!socket.isConnected()) {
+                // Error on Connection
+                // Display error Message
+                //JOptionPane errorPane = new JOptionPane();
+                JOptionPane.showMessageDialog(null, 
+                "Server connection issue. Check IP.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+                // Close Program
+                System.exit(0);
+            }
+            
+            output = new ObjectOutputStream(socket.getOutputStream());
+            input = new ObjectInputStream(socket.getInputStream());
 
-            System.out.print("Enter password (any string): ");
-            String password = scanner.nextLine();
+            // Spawn our listener thread that will wait for incoming responses from the server
+            new Thread(() -> listenForMessages()).start();
 
-            Credentials credentials = new Credentials(username, password);
+            // Start Login UI
+            loggedIn = false; //
+            invokeLoginUI();
 
-            Socket socket = new Socket("localhost", 12345);
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            out.writeObject(credentials);
-            out.flush();  // Flush the output stream
-
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            String loginStatus = (String) in.readObject();
-
-            if ("SUCCESS".equals(loginStatus)) {
-                System.out.println("Login successful!");
-
-                String fullName = (String) in.readObject();
-                System.out.println(fullName);
-
-                while (true) {
-                    System.out.print("Enter recipient name: ");
-                    String recipient = scanner.nextLine();
-
-                    System.out.print("Enter message: ");
-                    String content = scanner.nextLine();
-
-                    Message message = new Message(username, recipient, content);
-                    out.writeObject(message);
-                    out.flush();  // Flush the output stream
-
-                    if ("exit".equalsIgnoreCase(content)) {
-                        break;
-                    }
-                }
-            } else {
-                System.out.println("Login failed. Invalid username or password.");
+            while(!loggedIn) { // Wait until we get a valid login
+                // waiting for login message to return
+                Thread.sleep(1000);
+                System.out.println("waiting to be verified");
+            }
+            
+            // After Successful login 
+            System.out.println("CONNECTED");
+            
+            // New thread on EDT
+            invokeMainGUI();
+            
+            while (loggedIn) {
+                // wait for logout
             }
 
             socket.close();
         } catch (Exception e) {
+            e.toString();
             e.printStackTrace();
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public void listenForMessages() {
+        while (true){
+        try {
+            // Accept a Message
+            List<ServerMessage> fromServer = (List<ServerMessage>) input.readObject();
+            for (ServerMessage m : fromServer) { // Route each message that came in from the server
+                // Once you know what type of message, cast it to that Message
+                MessageTypes type = m.getType();
+                
+                // Identify what to do with the message and spawn thread to handle
+                switch (type) {
+                    case LOGIN:
+                        new Thread(() -> handleLoginMessage((LoginMessage) m)).start(); // Cast to Login Message
+                        break;
+                    case LOGOUT:
+                        new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
+                        break;
+                    case CHAT_MESSAGE:
+                        break;
+                    case GET_LOGS:
+                        break;
+                    case UPDATE_USER:
+                        break;
+                    case CREATE_CHAT:
+                        break;
+                    case ADD_USERS_TO_CHAT:
+                        break;
+                    case NOTIFY_USER:
+                        break;
+                    case PIN_CHAT:
+                        // save this for later if we have time
+                        break;
+                    default:
+                        System.out.println("Reached an undefined state");
+                }
+            }
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        }
+    }
+    // Message Handling Methods -----------------------
+
+    public void handleLoginMessage(LoginMessage msg) {
+        // The user has sent a request for login
+        // we need to know if it was successful
+        loggedIn = false;
+
+        if (msg.isSuccessful() && socket.isConnected()){
+           // init client attributes given by server in the message
+           loggedIn = true; // set loggedIn flag - breaks loop and initializes main client 
+           currentUser = msg.getUser();
+           //userlist = msg.getUserlist(); // A list of all users in the system
+           // This should be a Map<String, String> username, displayName
+           
+           // Dispose of the LoginGUI because we're authenticated now
+            killLoginGUI();
+        } else { /*  Stay in login loop */
+            loginGUI.updateWaitingStatus(loggedIn);
+        }
+    }
+
+    public void handleLogoutMessage(LogoutMessage msg) {
+        // Successful logout received from the server
+        // Close and clean up the client
+        // Maybe send them back to login?
+    }
+
+    // Message Sending Methods -------------------
+
+    // Anytime you need to send a method to the server
+    // call this method and pass in anytype of MessageTypes message
+    // see LoginUI's login() method for an example. 
+    public void sendMessageToServer(ServerMessage m) {
+        // Testing without authentication
+        // testLoginFromUI(m);
+
+        List<ServerMessage> toServer = new ArrayList<>();
+        toServer.add(m);
+        
+        try {
+            output.writeObject(toServer);
+            output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Pretty sure that's all we need to do
+    }
+
+    // Other Methods
+    private Client getThisClient() {
+        return this;
+    }
+
+    private void killLoginGUI() {
+        EventQueue.invokeLater(new Runnable() { 
+			public void run() {
+				try {
+					loginGUI.setVisible(false); // turn off login gui?
+                    loginGUI = null;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		    });
+    }
+
+    private void invokeLoginUI() {
+        EventQueue.invokeLater(new Runnable() { 
+            public void run() {
+                try {
+                    loginGUI = new LoginUI(getThisClient());
+                    loginGUI.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            });
+    }
+
+    private void invokeMainGUI() {
+        EventQueue.invokeLater(new Runnable() { 
+			public void run() {
+				try {
+					mainGUI = new ClientGUI(getThisClient(), currentUser);
+					mainGUI.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		    });
+    }
+
+    // Testing Methods
+    private void testLoginFromUI(ServerMessage m){
+                //test waiting
+                LoginMessage msg = (LoginMessage) m;
+                // try {
+                //     System.out.println("User: " + msg.getUsername()
+                //     + "\nPassword: " + msg.getPassword()
+                //     + "\nType: " + msg.getType()
+                //     + "\nStatus: " + msg.getStatus());
+                //     Thread.sleep(5000);
+                //     loginGUI.updateWaitingStatus(loggedIn);
+                // } catch (Exception e) {
+                //     e.printStackTrace();
+                // }
+        
+                // test successful
+                loginGUI.updateWaitingStatus(true);
+                loggedIn = true; // 
+                currentUser = msg.getUser();
+        
+                // A list of all users in the system
+                // This should be a Map<String, String> username, displayName
+                //userlist = msg.getUserlist();
+                 killLoginGUI();
+    } 
 }
