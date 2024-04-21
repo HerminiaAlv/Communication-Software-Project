@@ -1,7 +1,6 @@
-import java.io.Serializable;
 import java.util.*;
 
-public class Message implements Serializable{
+public class Message extends ServerMessage{
 	protected MessageTypes type; 
 	private String message;
 	private String sender;

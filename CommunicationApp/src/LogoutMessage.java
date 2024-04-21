@@ -11,7 +11,7 @@
 
 // I don't think there's any other data we need to send
 
-public class LogoutMessage {
+public class LogoutMessage extends ServerMessage {
     private MessageTypes type;
     private MessageStatus status;
 
