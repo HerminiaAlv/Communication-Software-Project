@@ -66,7 +66,7 @@ public class Client {
             
             // After Successful login 
             System.out.println("CONNECTED");
-            
+
             // New thread on EDT
             invokeMainGUI();
             
@@ -161,7 +161,12 @@ public class Client {
     public void sendMessageToServer(ServerMessage m) {
         // Testing without authentication
         // testLoginFromUI(m);
-
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         List<ServerMessage> toServer = new ArrayList<>();
         toServer.add(m);
         

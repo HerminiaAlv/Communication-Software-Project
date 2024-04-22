@@ -266,5 +266,7 @@ public class ClientGUI extends JFrame{
         int index = random.nextInt(wittyQuotesWithPhilosophers.length);
         return wittyQuotesWithPhilosophers[index];
     }
+
+	
     
 }
