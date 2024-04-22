@@ -148,7 +148,7 @@ public class MessagePanel extends JPanel {
 	 *                 related to the provided chat room.
 	 */
 	public void setupChatroom(ChatRoom chatroom) {
-
+		
 	}
 
 	// public void setCurrentChat(ChatRoom chatroom) {
