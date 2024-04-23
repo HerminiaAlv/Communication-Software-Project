@@ -1,3 +1,5 @@
+
+import java.awt.EventQueue;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -6,181 +8,175 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Client {
-    // CHANGE THESE BASED ON WHO IS RUNNING THE SERVER
-    private String HOSTIP = "localhost"; //hostname/IP to connect to
-    private int PORT = 1234; // Port number to connect to on hostname
+    private String HOSTIP = "localhost"; // hostName/IP to connection
+    private int PORT = 12345; // Port number to connect to on hostName
 
     private ObjectOutputStream output;
-	private ObjectInputStream input;
+    private ObjectInputStream input;
     private Socket socket;  // flag to determine if login has been authenticated
 
     // LoginGUI attributes
     private LoginUI loginGUI;
-
+   
     // MainGUI attributes
     private User currentUser;
     private ClientGUI mainGUI;
     private Map<String, String> userlist; // Username, Display name?
-    private boolean loggedIn;    // flag to show user has successfully logged in
+    private boolean loggedIn;
 
+    
+    
     public static void main(String[] args) {
         Client client = new Client();
         client.start();
     }
+
+    
+    
     public void start() {
         try {
             socket = new Socket(HOSTIP, PORT);
 
             if (!socket.isConnected()) {
-                // Error on Connection
-                // Display error Message
-                //JOptionPane errorPane = new JOptionPane();
-                JOptionPane.showMessageDialog(null, 
-                "Server connection issue. Check IP.",
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-                // Close Program
+                JOptionPane.showMessageDialog(null, "Server connection issue. Check IP.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
-            
+
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
 
-            // Spawn our listener thread that will wait for incoming responses from the server
+            
+         // Spawn our listener thread that will wait for incoming responses from the server
             new Thread(() -> listenForMessages()).start();
 
             // Start Login UI
-            loggedIn = false; //
+            loggedIn = false;
             invokeLoginUI();
 
-            while(!loggedIn) { // Wait until we get a valid login
-                // waiting for login message to return
+            while (!loggedIn) { // wait until we get a valid login
+            	// waiting for login message to return
                 Thread.sleep(1000);
                 System.out.println("waiting to be verified");
             }
-            
-            // After Successful login 
-            System.out.println("CONNECTED");
 
+            // after successful login
+            System.out.println("CONNECTED");
+            
             // New thread on EDT
             invokeMainGUI();
-            
+
             while (loggedIn) {
-                // wait for logout
+            	// wait for logout
             }
 
             socket.close();
         } catch (Exception e) {
-            e.toString();
             e.printStackTrace();
         }
     }
 
     @SuppressWarnings("unchecked")
     public void listenForMessages() {
-        while (true){
-        try {
-            // Accept a Message
-            List<ServerMessage> fromServer = (List<ServerMessage>) input.readObject();
-            for (ServerMessage m : fromServer) { // Route each message that came in from the server
-                // Once you know what type of message, cast it to that Message
-                MessageTypes type = m.getType();
-                
-                // Identify what to do with the message and spawn thread to handle
-                switch (type) {
-                    case LOGIN:
-                        new Thread(() -> handleLoginMessage((LoginMessage) m)).start(); // Cast to Login Message
-                        break;
-                    case LOGOUT:
-                        new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
-                        break;
-                    case CHAT_MESSAGE:
-                        break;
-                    case GET_LOGS:
-                        break;
-                    case UPDATE_USER:
-                        break;
-                    case CREATE_CHAT:
-                        break;
-                    case ADD_USERS_TO_CHAT:
-                        break;
-                    case NOTIFY_USER:
-                        break;
-                    case PIN_CHAT:
-                        // save this for later if we have time
-                        break;
-                    default:
-                        System.out.println("Reached an undefined state");
+        while (true) {
+            try {
+            	// Accept a Message
+                List<ServerMessage> fromServer = (List<ServerMessage>) input.readObject();
+                for (ServerMessage m : fromServer) { // Route each message that came in from the server
+                    
+                	switch (m.getType()) {
+                        case LOGIN:
+                            new Thread(() -> handleLoginMessage((LoginMessage) m)).start();// Cast to Login Message
+                            break;
+                        case LOGOUT:
+                           // new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
+                            break;
+                        case CHAT_MESSAGE:
+                            break;
+                        case GET_LOGS:
+                            break;
+                        case UPDATE_USER:
+                            break;
+                        case CREATE_CHAT:
+                            break;
+                        case ADD_USERS_TO_CHAT:
+                            break;
+                        case NOTIFY_USER:
+                            break;
+                        case PIN_CHAT:
+                            // save this for later if we have time
+                            break; 
+                        default:
+                            System.out.println("Reached an undefined state");
+                    }
                 }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         }
     }
-    // Message Handling Methods -----------------------
+
+ // Message Handling Methods ----------------------------------------------
 
     public void handleLoginMessage(LoginMessage msg) {
-        // The user has sent a request for login
+    	// The user has sent a request for login
         // we need to know if it was successful
-        loggedIn = false;
+        loggedIn = msg.isSuccessful() && socket.isConnected();
 
-        if (msg.isSuccessful() && socket.isConnected()){
-           // init client attributes given by server in the message
-           loggedIn = true; // set loggedIn flag - breaks loop and initializes main client 
-           currentUser = msg.getUser();
-           //userlist = msg.getUserlist(); // A list of all users in the system
-           // This should be a Map<String, String> username, displayName
-           
-           // Dispose of the LoginGUI because we're authenticated now
+        if (loggedIn) {
+            currentUser = msg.getUser();
+            
+            // userlist = msg.getUserlist(); // A list of all users in the system
+            // This should be a Map<String, String> username, displayName
+            
+            
+         // Dispose of the LoginGUI because we're authenticated now
             killLoginGUI();
-        } else { /*  Stay in login loop */
+        } else {  /*  Stay in login loop */
             loginGUI.updateWaitingStatus(loggedIn);
         }
-    }
-
-    public void handleLogoutMessage(LogoutMessage msg) {
-        // Successful logout received from the server
-        // Close and clean up the client
-        // Maybe send them back to login?
-    }
-
-    // Message Sending Methods -------------------
-
-    // Anytime you need to send a method to the server
-    // call this method and pass in anytype of MessageTypes message
-    // see LoginUI's login() method for an example. 
-    public void sendMessageToServer(ServerMessage m) {
-        // Testing without authentication
-        // testLoginFromUI(m);
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        List<ServerMessage> toServer = new ArrayList<>();
-        toServer.add(m);
         
+        
+    }
+    
+    
+
+    public void sendMessageToServer(ServerMessage m) {
+       // try {
+        //    Thread.sleep(5000);
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //}
+
         try {
+        	List<ServerMessage> toServer = new ArrayList<>();
+        	toServer.add(m);
+        	
             output.writeObject(toServer);
             output.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Pretty sure that's all we need to do
     }
 
-    // Other Methods
+    
+    public void handleLogoutMessage(LogoutMessage msg) {
+        // Successful logout received from the server
+        // Close and clean up the client
+        // Maybe send them back to login?
+    }
+    
+    
+    
+    // Other Methods ****************************************************************
+   
+   
+ // Other Methods
     private Client getThisClient() {
         return this;
     }
@@ -223,8 +219,37 @@ public class Client {
 			}
 		    });
     }
+    
+    
+    
+    
+   
+/*
+    private Client getThisClient() {
+        return this;
+    }
+    
 
-    // Testing Methods
+    private void killLoginGUI() {
+        loginGUI.setVisible(false);
+        loginGUI = null;
+    }
+
+    private void invokeLoginUI() {
+        loginGUI = new LoginUI(this);
+        loginGUI.setVisible(true);
+    }
+
+    private void invokeMainGUI() {
+        mainGUI = new ClientGUI(this, currentUser);
+        mainGUI.setVisible(true);
+    }
+    
+    
+    
+    */
+    
+ // Testing Methods
     private void testLoginFromUI(ServerMessage m){
                 //test waiting
                 LoginMessage msg = (LoginMessage) m;
@@ -249,4 +274,8 @@ public class Client {
                 //userlist = msg.getUserlist();
                  killLoginGUI();
     } 
+    
+    
+    
+    
 }
