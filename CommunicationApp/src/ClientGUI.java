@@ -9,6 +9,12 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.ScrollPane;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -25,16 +31,23 @@ import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
 import java.util.Random;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import java.awt.Component;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 
 public class ClientGUI extends JFrame{
+	private ObjectOutputStream out;
+    private ObjectInputStream in;
+	private JTextArea textMessages;
+	
 	enum ITButtonAction {
 		VIEW_LOGS,
 		ADD_MODIFY_USERS
 	};
+	//private void createGUI(){
     private Client client; // to access methods from the client
 	private static final long serialVersionUID = 1L; // from JFrame
 	private JPanel contentPane; // Where all componets attach to
@@ -42,7 +55,7 @@ public class ClientGUI extends JFrame{
     // [0] - VIEW_LOGS
 	// [1] - ADD_MODIFY_USERS
     private User currentUser;
-    //private ChatRoom activeChat; // The chat that is currently being viewed
+    private ChatRoom activeChat; // The chat that is currently being viewed
 
     private int HEIGHT = 480;
     private int WIDTH = 720;
@@ -198,13 +211,57 @@ public class ClientGUI extends JFrame{
 		
 		//Message Field
 		MessagePanel MessagePanel = new MessagePanel();
+		textMessages = new JTextArea();
+		textMessages.setEditable(false);
+		//textMessagesBorder.add(textMessages);
+		//textMessages.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		textMessages.setWrapStyleWord(true);
+		textMessages.setLineWrap(true);
+		//textMessages.setText(testString);
+		
+		ScrollPane scrollPane = new ScrollPane();
+		scrollPane.setForeground(new Color(216, 191, 216));
+		//scrollPane.setFont(new Font("Dubai Medium", Font.PLAIN, 5));
+		scrollPane.setBackground(new Color(245, 245, 245));
+		scrollPane.setBounds(3, 32, 422, 350);
+		//textMessagesBorder.add(scrollPane, BorderLayout.NORTH);
+		scrollPane.add(textMessages);
+		MessagePanel.add(textMessages);
 		//MessagePanel.setLayout(new GridLayout(6,6,0,0));
 		//MessagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-		centerPanel.add(MessagePanel,BorderLayout.CENTER);
-		
-		
-		//centerPanel.add(lblQuoteLabel);
+		centerPanel.add(MessagePanel,BorderLayout.CENTER);	
+
+		setupConnection();
 	}
+	private void setupConnection() {
+		try {
+			Socket socket = new Socket("localhost", 8000);
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
+			new Thread(new IncomingReader()).start(); 
+	
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	private class IncomingReader implements Runnable {
+        public void run() {
+            Message mssgs;
+            try {
+                while ((mssgs = (Message) in.readObject()) != null) {
+                    String text = mssgs.getMessage();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            textMessages.append(text + "\n");
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 	// Private Testing variables
 	// private variables just for testing
 	private String[] chats =  { "Chat Room 1",
@@ -260,13 +317,14 @@ public class ClientGUI extends JFrame{
 			}
 		});
 	}
+
+	public ClientGUI() {
+
+	}
 	
     public static String getRandomQuote() {
         Random random = new Random();
         int index = random.nextInt(wittyQuotesWithPhilosophers.length);
         return wittyQuotesWithPhilosophers[index];
     }
-
-	
-    
 }
