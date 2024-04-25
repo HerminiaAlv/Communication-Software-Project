@@ -4,12 +4,13 @@ import java.io.Serializable;
 public class ServerMessage implements Serializable{
     private MessageTypes type; // type of message
     private MessageStatus status;
+    private String message;
 
-    // public ServerMessage(MessageTypes type, MessageStatus status) {
-    //     this.type = type;
-    //     this.status = status;
-    // }
-
+/*     public ServerMessage() {
+        type = MessageTypes.UNDEFINED;
+        status = MessageStatus.UNDEFINED;
+    } */
+    
     public void setType(MessageTypes type) {
         this.type = type;
     }
@@ -18,11 +19,19 @@ public class ServerMessage implements Serializable{
         this.status = status;
     }
 
+    public void setMessage(String message) { 
+        this.message = message;
+    }
+
     public MessageTypes getType() {
         return type;
     }
 
     public MessageStatus getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

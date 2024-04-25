@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +44,17 @@ public class Server {
         }
     }
 
+    // chat messages?
     public synchronized void broadcastMessage(ServerMessage message) {
+
         for (ObjectOutputStream out : clients.values()) {
-            try {
-                out.writeObject(message);
-                out.flush();
+            try  {
+                List<ServerMessage> messages = new ArrayList();
+                messages.add(message);
+                out.writeObject(messages);
+                System.out.println("broadcasted message to client.");
             } catch (IOException e) {
+                System.out.println("Error broadcasting message to client: " + e.getMessage());
                 e.printStackTrace();
             }
         }

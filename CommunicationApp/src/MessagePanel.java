@@ -28,7 +28,7 @@ public class MessagePanel extends JPanel {
 	private MessageListener listener;
 	
 	public interface MessageListener {
-		void onSendMessage(String message);
+		void onSendMessage(String message) throws IOException;
 	}
 	
 	public void setListener (MessageListener listener) {
@@ -90,11 +90,17 @@ public class MessagePanel extends JPanel {
 		btnNewButton.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 12));
 		sendBorder.add(btnNewButton);
 		btnNewButton.addActionListener(new ActionListener() {
-            @Override
+			@Override
             public void actionPerformed(ActionEvent e) {
+				System.out.println("Send Button Pressed");
 				if (listener != null) {
-					listener.onSendMessage(textBox.getText());
-					textMessages.setText("");
+					try {
+						listener.onSendMessage(textBox.getText());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					textBox.setText("");
 					textBox.requestFocus();
 				}
             }

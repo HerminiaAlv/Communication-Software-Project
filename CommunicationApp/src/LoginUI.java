@@ -3,6 +3,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import java.awt.event.*;
+import java.io.IOException;
 
 public class LoginUI extends JFrame {
 	private JTextField usernameBox;
@@ -87,7 +88,9 @@ public class LoginUI extends JFrame {
 		LoginMessage request = new LoginMessage(password, username);
 
 		// pass to a new thread
-		new Thread(()->client.sendMessageToServer(request)).start();
+		new Thread(()->{
+			client.sendMessageToServer(request);
+		}).start();
 
 		// This UI is now in a waiting state 
 		

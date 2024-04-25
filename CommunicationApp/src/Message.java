@@ -14,9 +14,9 @@ public class Message extends ServerMessage{
 	protected UserStatus userStatus;
 
 	//constructor
-	public Message(String message) {
+	public Message(MessageTypes type, MessageStatus status, String Message) {
 		this.type = MessageTypes.UNDEFINED;
-		this.message = message;
+		//this.message = message;
 		this.status = MessageStatus.UNDEFINED;
 		this.date = new Date();
 	}
@@ -28,9 +28,8 @@ public class Message extends ServerMessage{
 		this.chatID = recipient;
 		this.status = status;
 	}
-	
-	
-	//getters
+
+    //getters
 	public String getMessage() {
 		return message;
 	}

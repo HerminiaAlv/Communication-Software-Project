@@ -28,7 +28,7 @@ public class User implements Serializable{
 					this.status = UserStatus.Offline; 
 					this.is_IT = is_IT;
 					this.chats = chats;
-				}
+	}
 
 	
 	//getters

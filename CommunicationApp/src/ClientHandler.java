@@ -20,6 +20,7 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
+            
             outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             inputStream = new ObjectInputStream(clientSocket.getInputStream());
 
@@ -45,11 +46,22 @@ public class ClientHandler implements Runnable {
 
         switch (type) {
             case LOGIN:
+                System.out.println("Login message received: " + message.getMessage());
                 handleLoginMessage((LoginMessage) message);
                 break;
+            case CHAT_MESSAGE:
+            if (message instanceof ChatMessage) {
+                ChatMessage chatMessage = (ChatMessage) message;
+                System.out.println("Chat message received from user " + chatMessage.getSenderID() + ": " + chatMessage.getMessage());
+                server.broadcastMessage(chatMessage);
+            } else {
+                System.out.println("Message is not a ChatMessage instance.");
+            }
+            break;
             default:
                 System.out.println("Unhandled message type: " + message.getType());
         }
+        
     }
 
 
@@ -66,10 +78,18 @@ public class ClientHandler implements Runnable {
     	if (msg.getStatus() == MessageStatus.PENDING) {
     		msg.setStatus(MessageStatus.SUCCESS);
     		msg.setSuccess(true);
+            server.addClient(msg.getUsername(), outputStream);
     	}
 
         // Send the response back to the client
         sendMessageToClient(msg);
+    }
+
+    // For chat messages
+    public void handleChatMessage(ChatMessage chatMessage) {
+
+        // Send the message to all clients
+        server.broadcastMessage((ServerMessage) chatMessage);
     }
 
     private void sendMessageToClient(ServerMessage message) {

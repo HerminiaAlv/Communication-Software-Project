@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class Client {
     private String HOSTIP = "localhost"; // hostName/IP to connection
@@ -27,19 +28,16 @@ public class Client {
     private Map<String, String> userlist; // Username, Display name?
     private boolean loggedIn;
 
-    
-    
+    //Message
+    private MessagePanel mssgPanel;
     public static void main(String[] args) {
         Client client = new Client();
         client.start();
     }
 
-    
-    
     public void start() {
         try {
             socket = new Socket(HOSTIP, PORT);
-
             if (!socket.isConnected()) {
                 JOptionPane.showMessageDialog(null, "Server connection issue. Check IP.", "Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -48,12 +46,10 @@ public class Client {
 
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
-
-            
-         // Spawn our listener thread that will wait for incoming responses from the server
+           // new Thread(new IncomingReader()).start();
+            //Thread chatMessageListenerThread = new Thread(new IncomingReader());
+            //chatMessageListenerThread.start();
             new Thread(() -> listenForMessages()).start();
-
-            // Start Login UI
             loggedIn = false;
             invokeLoginUI();
 
@@ -62,17 +58,13 @@ public class Client {
                 Thread.sleep(1000);
                 System.out.println("waiting to be verified");
             }
-
-            // after successful login
             System.out.println("CONNECTED");
-            
-            // New thread on EDT
             invokeMainGUI();
-
+            //new Thread(() -> listenForMessages()).start();
             while (loggedIn) {
             	// wait for logout
             }
-
+            
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,15 +78,20 @@ public class Client {
             	// Accept a Message
                 List<ServerMessage> fromServer = (List<ServerMessage>) input.readObject();
                 for (ServerMessage m : fromServer) { // Route each message that came in from the server
-                    
+                    //debugging
+                    System.out.println("Debug: Message received from server: " + m);
                 	switch (m.getType()) {
                         case LOGIN:
+                            System.out.println("Debug: LoginMessage received: " + m);
                             new Thread(() -> handleLoginMessage((LoginMessage) m)).start();// Cast to Login Message
                             break;
+
                         case LOGOUT:
                            // new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
                             break;
                         case CHAT_MESSAGE:
+                            System.out.println("Debug: CHAT_MESSAGE received: " + m);
+                            handleChatMessage((ChatMessage) m);
                             break;
                         case GET_LOGS:
                             break;
@@ -122,7 +119,6 @@ public class Client {
     }
 
  // Message Handling Methods ----------------------------------------------
-
     public void handleLoginMessage(LoginMessage msg) {
     	// The user has sent a request for login
         // we need to know if it was successful
@@ -130,30 +126,16 @@ public class Client {
 
         if (loggedIn) {
             currentUser = msg.getUser();
-            
-            // userlist = msg.getUserlist(); // A list of all users in the system
-            // This should be a Map<String, String> username, displayName
-            
-            
-         // Dispose of the LoginGUI because we're authenticated now
             killLoginGUI();
         } else {  /*  Stay in login loop */
             loginGUI.updateWaitingStatus(loggedIn);
-        }
-        
-        
+        }            
     }
     
-    
 
-    public void sendMessageToServer(ServerMessage m) {
-       // try {
-        //    Thread.sleep(5000);
-        //} catch (InterruptedException e) {
-        //    e.printStackTrace();
-        //}
-
+    public void sendMessageToServer(ServerMessage m) { //This method works, it does recognize LoginMessage but nto ChatMessage
         try {
+            System.out.println("Message Type to send: " + m.getType());
         	List<ServerMessage> toServer = new ArrayList<>();
         	toServer.add(m);
         	
@@ -164,19 +146,20 @@ public class Client {
         }
     }
 
-    
     public void handleLogoutMessage(LogoutMessage msg) {
-        // Successful logout received from the server
-        // Close and clean up the client
-        // Maybe send them back to login?
+
+    }
+
+    public void handleChatMessage(ChatMessage chatMessage) {
+        // Log the received chat message for debugging
+        System.out.println("Chat message received" + chatMessage.getMessage());
+        // Broadcast the message to other clients (excluding the sender)
+        SwingUtilities.invokeLater(() -> {
+                mainGUI.updateMessagePanel(chatMessage.getMessage());
+        });
     }
     
-    
-    
     // Other Methods ****************************************************************
-   
-   
- // Other Methods
     private Client getThisClient() {
         return this;
     }
@@ -219,63 +202,60 @@ public class Client {
 			}
 		    });
     }
-    
-    
-    
-    
-   
-/*
-    private Client getThisClient() {
-        return this;
-    }
-    
+    // listen for incoming mssgs
+/*     public void setupConnection() {
+		try {
+			socket = new Socket(HOSTIP, PORT);
+			output = new ObjectOutputStream(socket.getOutputStream());
+			input = new ObjectInputStream(socket.getInputStream());
+			new Thread(new IncomingReader()).start(); 
+	
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	} */
+/*     private void startListening() {
+        new Thread(new IncomingReader()).start();
+    } */
 
-    private void killLoginGUI() {
-        loginGUI.setVisible(false);
-        loginGUI = null;
+    private class IncomingReader implements Runnable {
+        public void run() {
+            try {
+                while (true) {
+                    Object obj = input.readObject();
+                    if (obj instanceof List<?>) { // Assuming messages are sent as a List
+                        List<?> messages = (List<?>) obj;
+                        for (Object messageObj : messages) {
+                            if (messageObj instanceof ChatMessage) {
+                                ChatMessage message = (ChatMessage) messageObj;
+                                System.out.println("Chat message received: " + message.getMessage());
+                                SwingUtilities.invokeLater(() -> {
+                                    mainGUI.updateMessagePanel(message.getMessage());
+                                });
+                            }
+                            // Handle other types of messages
+                            else if (messageObj instanceof LoginMessage) {
+                                // Process login message
+                            }
+                        }
+                    }
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("Failed to read from server: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
-
-    private void invokeLoginUI() {
-        loginGUI = new LoginUI(this);
-        loginGUI.setVisible(true);
-    }
-
-    private void invokeMainGUI() {
-        mainGUI = new ClientGUI(this, currentUser);
-        mainGUI.setVisible(true);
-    }
     
-    
-    
-    */
-    
- // Testing Methods
+    // Testing Methods
     private void testLoginFromUI(ServerMessage m){
                 //test waiting
                 LoginMessage msg = (LoginMessage) m;
-                // try {
-                //     System.out.println("User: " + msg.getUsername()
-                //     + "\nPassword: " + msg.getPassword()
-                //     + "\nType: " + msg.getType()
-                //     + "\nStatus: " + msg.getStatus());
-                //     Thread.sleep(5000);
-                //     loginGUI.updateWaitingStatus(loggedIn);
-                // } catch (Exception e) {
-                //     e.printStackTrace();
-                // }
-        
                 // test successful
                 loginGUI.updateWaitingStatus(true);
                 loggedIn = true; // 
                 currentUser = msg.getUser();
-        
-                // A list of all users in the system
-                // This should be a Map<String, String> username, displayName
-                //userlist = msg.getUserlist();
+
                  killLoginGUI();
     } 
-    
-    
-    
-    
 }
