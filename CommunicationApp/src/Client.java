@@ -98,6 +98,7 @@ public class Client {
                         case UPDATE_USER:
                             break;
                         case CREATE_CHAT:
+                        	// new Thread(()->handleCreateChatMessage((CreateChatMessage) m)).start();
                             break;
                         case ADD_USERS_TO_CHAT:
                             break;
@@ -159,6 +160,12 @@ public class Client {
                 mainGUI.updateMessagePanel(chatMessage.getMessage()); //This should update the GUi message panel 
                 System.out.println("updateMessagePanel in Client");
             }});
+    }
+    
+    public void handleCreateChatMessage(CreateChatMessage createChatMessage) {
+    	System.out.println("Chatroom info received: " + createChatMessage.getParticipantIds() + " " 
+    												  + createChatMessage.getChatName());
+    	// wip
     }
     
     // Other Methods ****************************************************************

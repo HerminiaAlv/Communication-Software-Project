@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
@@ -53,6 +54,8 @@ public class ClientGUI extends JFrame{
 	private JButton[] ITButtons; // size [2]
 		// [0] - VIEW_LOGS
 		// [1] - ADD_MODIFY_USERS
+	
+	
     private User currentUser;
     private ChatRoom activeChat; // The chat that is currently being viewed
     private int HEIGHT = 480;
@@ -60,6 +63,7 @@ public class ClientGUI extends JFrame{
     //private static int notificationCounter; // This might change 
 
 	private MessagePanel mssgPanel;
+	private CreateNewChatPanel createNewChatPanel;
 
 	// Building the main elements of the GUI - these will always be visible
 	public ClientGUI(Client client, User currentUser) {
@@ -148,10 +152,7 @@ public class ClientGUI extends JFrame{
 		mainButtonPanel.setLayout(new GridLayout(0, 1, 5, 15));
 		mainButtonPanel.setOpaque(false);
 			
-		// Main Action Buttons inside mainButton Panel
-		JButton createNewChatButton = new JButton("Create New Chat");
-		mainButtonPanel.add(createNewChatButton);
-				
+		
 		// These are IT buttons
 		ITButtons = new JButton[2];
 		JButton viewLogsButton = new JButton("View Logs");
@@ -190,6 +191,18 @@ public class ClientGUI extends JFrame{
 				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
+		});
+		
+		// Main Action Buttons inside mainButton Panel
+		JButton createNewChatButton = new JButton("Create New Chat");
+		mainButtonPanel.add(createNewChatButton);
+
+		createNewChatButton.addActionListener(new ActionListener() {	// 4/26 JSN: working on bringing this panel forward to be visible
+			public void actionPerformed(ActionEvent e) {
+				createNewChatPanel = new CreateNewChatPanel(currentUser);
+				centerPanel.add(createNewChatPanel,BorderLayout.CENTER);
+				JOptionPane.showMessageDialog(createNewChatButton, "Debug");
+			}																
 		});
 		centerPanel.add(mssgPanel,BorderLayout.CENTER);	
 	}
