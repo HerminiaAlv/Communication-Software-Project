@@ -90,8 +90,8 @@ public class Client {
                            // new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
                             break;
                         case CHAT_MESSAGE:
-                            System.out.println("Debug: CHAT_MESSAGE received: " + m);
-                            handleChatMessage((ChatMessage) m);
+                            System.out.println("Debug: CHAT_MESSAGE received: " + m.getMessage());
+                            new Thread(()->handleChatMessage((ChatMessage) m)).start();
                             break;
                         case GET_LOGS:
                             break;
@@ -218,7 +218,7 @@ public class Client {
         new Thread(new IncomingReader()).start();
     } */
 
-    private class IncomingReader implements Runnable {
+/*     private class IncomingReader implements Runnable {
         public void run() {
             try {
                 while (true) {
@@ -245,7 +245,7 @@ public class Client {
                 e.printStackTrace();
             }
         }
-    }
+    } */
     
     // Testing Methods
     private void testLoginFromUI(ServerMessage m){
