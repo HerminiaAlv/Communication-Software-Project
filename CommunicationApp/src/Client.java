@@ -1,9 +1,9 @@
-
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +98,7 @@ public class Client {
                         case UPDATE_USER:
                             break;
                         case CREATE_CHAT:
+                        	// new Thread(()->handleCreateChatMessage((CreateChatMessage) m)).start();
                             break;
                         case ADD_USERS_TO_CHAT:
                             break;
@@ -156,9 +157,17 @@ public class Client {
         // Broadcast the message to other clients (excluding the sender)
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                mainGUI.updateMessagePanel(chatMessage.getMessage()); //This should update the GUi message panel 
+                chatMessage.setTimestamp(LocalDateTime.now());
+                //chatMessage.setSender(currentUser);
+                mainGUI.updateMessagePanel(chatMessage.toString()); //This should update the GUi message panel 
                 System.out.println("updateMessagePanel in Client");
             }});
+    }
+    
+    public void handleCreateChatMessage(CreateChatMessage createChatMessage) {
+    	System.out.println("Chatroom info received: " + createChatMessage.getParticipantIds() + " " 
+    												  + createChatMessage.getChatName());
+    	// wip
     }
     
     // Other Methods ****************************************************************
@@ -205,7 +214,7 @@ public class Client {
 		    });
     }
     
-    // Testing Methods
+    // Testing Methodsss
     private void testLoginFromUI(ServerMessage m){
                 //test waiting
                 LoginMessage msg = (LoginMessage) m;
