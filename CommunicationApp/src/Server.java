@@ -49,10 +49,10 @@ public class Server {
 
         for (ObjectOutputStream out : clients.values()) {
             try  {
-                List<ServerMessage> messages = new ArrayList();
+                List<ServerMessage> messages = new ArrayList<>(); 
                 messages.add(message);
                 out.writeObject(messages);
-                System.out.println("broadcasted message to client.");
+                System.out.println("broadcasted message to client.") ;
             } catch (IOException e) {
                 System.out.println("Error broadcasting message to client: " + e.getMessage());
                 e.printStackTrace();

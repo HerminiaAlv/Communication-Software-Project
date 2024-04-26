@@ -90,14 +90,15 @@ public class Client {
                            // new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
                             break;
                         case CHAT_MESSAGE:
-                            System.out.println("Debug: CHAT_MESSAGE received: " + m);
-                            handleChatMessage((ChatMessage) m);
+                            new Thread(()->handleChatMessage((ChatMessage) m)).start();
+                            System.out.println("Debug: CHAT_MESSAGE received: " + m.getMessage());
                             break;
                         case GET_LOGS:
                             break;
                         case UPDATE_USER:
                             break;
                         case CREATE_CHAT:
+                        	// new Thread(()->handleCreateChatMessage((CreateChatMessage) m)).start();
                             break;
                         case ADD_USERS_TO_CHAT:
                             break;
@@ -152,11 +153,19 @@ public class Client {
 
     public void handleChatMessage(ChatMessage chatMessage) {
         // Log the received chat message for debugging
-        System.out.println("Chat message received" + chatMessage.getMessage());
+        System.out.println("Chat message received: " + chatMessage.getMessage());
         // Broadcast the message to other clients (excluding the sender)
-        SwingUtilities.invokeLater(() -> {
-                mainGUI.updateMessagePanel(chatMessage.getMessage());
-        });
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                mainGUI.updateMessagePanel(chatMessage.getMessage()); //This should update the GUi message panel 
+                System.out.println("updateMessagePanel in Client");
+            }});
+    }
+    
+    public void handleCreateChatMessage(CreateChatMessage createChatMessage) {
+    	System.out.println("Chatroom info received: " + createChatMessage.getParticipantIds() + " " 
+    												  + createChatMessage.getChatName());
+    	// wip
     }
     
     // Other Methods ****************************************************************
@@ -201,50 +210,6 @@ public class Client {
 				}
 			}
 		    });
-    }
-    // listen for incoming mssgs
-/*     public void setupConnection() {
-		try {
-			socket = new Socket(HOSTIP, PORT);
-			output = new ObjectOutputStream(socket.getOutputStream());
-			input = new ObjectInputStream(socket.getInputStream());
-			new Thread(new IncomingReader()).start(); 
-	
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	} */
-/*     private void startListening() {
-        new Thread(new IncomingReader()).start();
-    } */
-
-    private class IncomingReader implements Runnable {
-        public void run() {
-            try {
-                while (true) {
-                    Object obj = input.readObject();
-                    if (obj instanceof List<?>) { // Assuming messages are sent as a List
-                        List<?> messages = (List<?>) obj;
-                        for (Object messageObj : messages) {
-                            if (messageObj instanceof ChatMessage) {
-                                ChatMessage message = (ChatMessage) messageObj;
-                                System.out.println("Chat message received: " + message.getMessage());
-                                SwingUtilities.invokeLater(() -> {
-                                    mainGUI.updateMessagePanel(message.getMessage());
-                                });
-                            }
-                            // Handle other types of messages
-                            else if (messageObj instanceof LoginMessage) {
-                                // Process login message
-                            }
-                        }
-                    }
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Failed to read from server: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
     }
     
     // Testing Methods

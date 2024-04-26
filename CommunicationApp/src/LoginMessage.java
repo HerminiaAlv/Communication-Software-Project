@@ -10,7 +10,6 @@
 // The server can create a separate message to send this data
 // or we can add all of that data to this class
 
-
 public class LoginMessage extends ServerMessage{
     private String password;
     private String username;
