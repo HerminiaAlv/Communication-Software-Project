@@ -52,7 +52,7 @@ public class ClientHandler implements Runnable {
             case CHAT_MESSAGE:
             if (message instanceof ChatMessage) {
                 ChatMessage chatMessage = (ChatMessage) message;
-                System.out.println("Chat message received from user " + chatMessage.getSenderID() + ": " + chatMessage.getMessage());
+                System.out.println("Chat message received " + chatMessage.getMessage());
                 server.broadcastMessage(chatMessage);
             } else {
                 System.out.println("Message is not a ChatMessage instance.");
@@ -90,6 +90,7 @@ public class ClientHandler implements Runnable {
 
         // Send the message to all clients
         server.broadcastMessage((ServerMessage) chatMessage);
+        sendMessageToClient(chatMessage);
     }
 
     private void sendMessageToClient(ServerMessage message) {
