@@ -27,7 +27,7 @@ import java.awt.ScrollPane;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
+//import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
