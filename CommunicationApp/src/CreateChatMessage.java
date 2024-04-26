@@ -5,7 +5,8 @@ public class CreateChatMessage extends ServerMessage {
     private String chatName; 
 
     public CreateChatMessage(List<String> participantIds, String chatName) {
-        super(MessageTypes.CREATE_CHAT, null);
+       this.setType(MessageTypes.CREATE_CHAT);
+       this.setStatus(MessageStatus.PENDING);
         this.participantIds = participantIds;
         this.chatName = chatName;
     }

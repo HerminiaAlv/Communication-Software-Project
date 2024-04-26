@@ -5,10 +5,10 @@ public class LogMessage extends ServerMessage {
 
     // Constructor for log message
     public LogMessage(String userId, String requestDetails) {
-        super(MessageTypes.GET_LOGS, null);   // idk what status would be
+        this.setType(MessageTypes.GET_LOGS);
+        this.setStatus(MessageStatus.PENDING);
         this.userId = userId;
         this.requestDetails = requestDetails;
-        this.status = MessageStatus.PENDING; // Default to pending when created
     }
 
     // Getter and setter for the status of the log request
