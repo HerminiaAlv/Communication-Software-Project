@@ -1,4 +1,6 @@
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import java.awt.Color;
 import javax.swing.SwingConstants;
 import java.awt.Font;
@@ -77,17 +79,24 @@ public class MessagePanel extends JPanel {
 		textMessagesBorder.setLayout(new BorderLayout(0, 0));
 		
 		textMessages = new JTextArea();
+		String test = "Testing textMessage";
 		textMessages.setEditable(false);
-		textMessagesBorder.add(textMessages);
+		textMessages.append(test);
+		//textMessagesBorder.add(textMessages);
 		textMessages.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		textMessages.setWrapStyleWord(true);
 		textMessages.setLineWrap(true);
-		//textMessages.setText(testString);
+
+		JScrollPane scrollPane = new JScrollPane(textMessages);
+		scrollPane.setForeground(new Color(216, 191, 216));
+		scrollPane.setFont(new Font("Dubai Medium", Font.PLAIN, 5));
+		scrollPane.setBackground(new Color(245, 245, 245));
+		//scrollPane.setBounds(3, 32, 422, 350);
+		textMessagesBorder.add(scrollPane, BorderLayout.CENTER);
+		//scrollPane.add(textMessages);
+		//add(scrollPane);
 
 		JButton btnNewButton = new JButton("SEND");
-		btnNewButton.setToolTipText("Hit button to send message...");
-		btnNewButton.setHorizontalAlignment(SwingConstants.LEFT);
-		btnNewButton.setFont(new Font("MS Reference Sans Serif", Font.BOLD, 12));
 		sendBorder.add(btnNewButton);
 		btnNewButton.addActionListener(new ActionListener() {
 			@Override
@@ -96,6 +105,7 @@ public class MessagePanel extends JPanel {
 				if (listener != null) {
 					try {
 						listener.onSendMessage(textBox.getText());
+						System.out.println("Listener inside send button" + textBox.getText());
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -106,15 +116,6 @@ public class MessagePanel extends JPanel {
             }
 		});
 		
-		ScrollPane scrollPane = new ScrollPane();
-		scrollPane.setForeground(new Color(216, 191, 216));
-		scrollPane.setFont(new Font("Dubai Medium", Font.PLAIN, 5));
-		scrollPane.setBackground(new Color(245, 245, 245));
-		scrollPane.setBounds(3, 32, 422, 350);
-		textMessagesBorder.add(scrollPane, BorderLayout.NORTH);
-		scrollPane.add(textMessages);
-		add(scrollPane);
-
 		// Panel for participants
 		JPanel participantsBorder = new JPanel();
 		participantsBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));

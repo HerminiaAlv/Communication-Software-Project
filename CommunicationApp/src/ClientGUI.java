@@ -57,7 +57,7 @@ public class ClientGUI extends JFrame{
     private ChatRoom activeChat; // The chat that is currently being viewed
     private int HEIGHT = 480;
     private int WIDTH = 720;
-    private static int notificationCounter; // This might change 
+    //private static int notificationCounter; // This might change 
 
 	private MessagePanel mssgPanel;
 
@@ -186,9 +186,8 @@ public class ClientGUI extends JFrame{
 		mssgPanel.setListener(new MessagePanel.MessageListener() {
 			@Override
 			public void onSendMessage (String mssg) {
-				ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE, senderID, timestamp);
+				ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE);
 				client.sendMessageToServer(chatMessage);
-		
 				System.out.println("Debug: onSendMessage");
 			}
 		});
@@ -196,7 +195,11 @@ public class ClientGUI extends JFrame{
 	}
 
     public void updateMessagePanel(String message) {
-        SwingUtilities.invokeLater(() -> mssgPanel.getTextMessages().append(message + "\n"));
+        SwingUtilities.invokeLater( new Runnable() {
+			public void run() {
+				mssgPanel.getTextMessages().append(message + "\n");
+			}
+		}); 
 	}
 
 
