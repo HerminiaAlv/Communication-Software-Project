@@ -186,9 +186,6 @@ public class ClientGUI extends JFrame{
 		mssgPanel.setListener(new MessagePanel.MessageListener() {
 			@Override
 			public void onSendMessage (String mssg) {
-				long timestamp = System.currentTimeMillis(); // get the current time
-				String senderID = "yourSenderID"; // replace with actual sender ID
-		
 				ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE, senderID, timestamp);
 				client.sendMessageToServer(chatMessage);
 		
