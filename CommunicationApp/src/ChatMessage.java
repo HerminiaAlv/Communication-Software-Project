@@ -1,7 +1,5 @@
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.Formatter;
 
 public class ChatMessage extends ServerMessage {
     private String message;
