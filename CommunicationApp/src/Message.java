@@ -22,11 +22,11 @@ public class Message extends ServerMessage{
 	}
 	
 	//parametized constructor	
-	public Message(String message, String sender, String recipient, MessageStatus status) {
+	public Message(String message, String sender, String chatid, Date date) {
 		this.message = message;
 		this.sender = sender;
-		this.chatID = recipient;
-		this.status = status;
+		this.chatID = chatid;
+		this.date = date;
 	}
 
     //getters
