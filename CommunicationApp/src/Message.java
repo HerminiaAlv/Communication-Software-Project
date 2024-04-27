@@ -1,32 +1,29 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.io.Serializable;
 import java.util.*;
 
-public class Message extends ServerMessage{
-	protected MessageTypes type; 
+// This is the Message that is contained within ChatRoom Class
+public class Message implements Serializable{
 	private String message;
 	private String sender;
 	private String chatID; //will handle multiple receivers, will contain chatroom ID
-	private MessageStatus status;
+	private LocalDateTime timestamp;
+	private String formattedTimestamp;
 	private String id;
-	private boolean delivered;
-	private Date date;
-	
-	protected User user;
-	protected UserStatus userStatus;
 
 	//constructor
-	public Message(MessageTypes type, MessageStatus status, String Message) {
-		this.type = MessageTypes.UNDEFINED;
+	public Message(String Message, String sender, String chatID) {
 		//this.message = message;
-		this.status = MessageStatus.UNDEFINED;
-		this.date = new Date();
+		date = LocalDateTime.now();
 	}
 	
-	//parametized constructor	
-	public Message(String message, String sender, String chatid, Date date) {
+	//Load From File constructor	
+	public Message(String message, String sender, String chatid, LocalDateTime timestamp) {
 		this.message = message;
 		this.sender = sender;
 		this.chatID = chatid;
-		this.date = date;
+		this.timestamp = timestamp;
 	}
 
     //getters
@@ -38,10 +35,6 @@ public class Message extends ServerMessage{
 		return sender;
 	}
 	
-	public MessageStatus getStatus() {
-		return status;
-	}
-	
 	public String getChatID() {
 		return chatID;
 	}
@@ -50,20 +43,9 @@ public class Message extends ServerMessage{
 		return id;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public UserStatus getUserStatus() {
-		return userStatus;
-	}
-	public Date getDate() {
-		return date;
-	}
-
-	private boolean isDelivered() {
-		return delivered;
-	}
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 
 	//setters
 	public void setMessage(String message) {
@@ -74,23 +56,22 @@ public class Message extends ServerMessage{
 		this.sender = sender;
 	}
 	
-	public void setStatus(MessageStatus status) {
-		this.status = status;
-	}
 	public void setChatID(String chatID){
 		this.chatID = chatID;
 	}
 
-	public void setUserStatus(UserStatus userStatus){
-  		this.userStatus = userStatus;
-	}
-	public void setUser(User user){
-		this.user = user;
-	}
-
-	public void setDelivered(boolean delivered){
-		this.delivered = delivered;
-	}
+	public void setTimestamp(LocalDateTime timestamp) {
+        this.formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
+    } 
 
 	//other methods
+	public String toStringForFile() {
+		return message + "," + sender + "," + chatID + "," + timestamp;
+	}
+
+	public String toString() {
+        User sender = new User();
+        sender.setUserName("Dummy Sender");
+        return "[" + formattedTimestamp + "] " + sender.getUsername() + ": " + message;
+    }
 }

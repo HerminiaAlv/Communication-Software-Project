@@ -1,65 +1,24 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+// This is the Message you send to the server when then user hits send on their client
+// It contains a single Message
+// It's status is automatically set to PENDING
+// It's type is automatically set to CHAT_MESSAGE
 public class ChatMessage extends ServerMessage {
-    private String message;
-    private MessageStatus status;
-    private MessageTypes type;
-    private LocalDateTime timestamp;
-    private String formattedTimestamp;
-    private User sender;
+    private Message message;
 
-    public ChatMessage(String message, MessageStatus status, MessageTypes type) {
+    public ChatMessage(Message message) {
         this.message = message;
-        this.status = status;
-        setType(MessageTypes.CHAT_MESSAGE);
+        this.setType(MessageTypes.CHAT_MESSAGE);
+        this.setStatus(MessageStatus.PENDING);
     }
 
     // Getters and setters 
 
-    public String getMessage() {
+    public Message getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(Message message) {
         this.message = message;
     }
 
-    public MessageStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(MessageStatus status) {
-        this.status = status;
-    }
-
-    public MessageTypes getType() {
-        return type;
-    }
-
-    public void setType(MessageTypes type) {
-        this.type = type;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
-    } 
-
-    public User getSender() {
-        return sender;
-    }
-
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
-
-    public String toString() {
-        User sender = new User();
-        sender.setUserName("Dummy Sender");
-        return "[" + formattedTimestamp + "] " + sender.getUsername() + ": " + message;
-    }
 }
