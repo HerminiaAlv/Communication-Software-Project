@@ -150,23 +150,23 @@ public class Client {
     }
 
     public void handleLogoutMessage(LogoutMessage msg) {
-        // @TODO implement this  
+        // TODO implement this  
     }
 
     public void handleUpdateUser(UpdateUserMessage msg) {
-        // @TODO implement this
+        // TODO implement this
     }
 
     public void handleGetLogsMessage(LogMessage msg) {
-        // @TODO implement this  
+        // TODO implement this  
     }
 
     public void handleAddUsersToChat(AddUsersToChatMessage msg) {
-        // @TODO implement this  
+        // TODO implement this  
     }
 
     public void handleGetLogs(LogMessage msg) {
-        // @TODO implement this  
+        // TODO implement this  
     }
 
     public void handleChatMessage(ChatMessage chatMessage) {
@@ -223,7 +223,14 @@ public class Client {
         EventQueue.invokeLater(new Runnable() { 
 			public void run() {
 				try {
-					mainGUI = new ClientGUI(getThisClient(), currentUser);
+                    // TODO remove the test user when we get the server to pass a user on login 
+                    // test purposes start
+                    User testUser = new User();
+                    testUser.setIT(true);
+                    mainGUI = new ClientGUI(getThisClient(), testUser);
+                    // end test 
+
+					//mainGUI = new ClientGUI(getThisClient(), currentUser);
 					mainGUI.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
