@@ -12,10 +12,14 @@ public class Message implements Serializable{
 	private String formattedTimestamp;
 	private String id;
 
-	//constructor
-	public Message(String Message, String sender, String chatID) {
-		//this.message = message;
-		date = LocalDateTime.now();
+	// Constructor for a brand new Message
+	public Message(String message, String sender, String chatID) {
+		this.message = message;
+		this.sender = sender;
+		this.chatID = chatID;
+		timestamp = LocalDateTime.now();
+		// this format is:
+		// 2024-04-27T16:41:49.080818
 	}
 	
 	//Load From File constructor	
