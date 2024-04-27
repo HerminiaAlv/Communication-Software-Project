@@ -152,24 +152,39 @@ public class ClientGUI extends JFrame{
 		westPanel.add(mainButtonPanel);
 		mainButtonPanel.setLayout(new GridLayout(0, 1, 5, 15));
 		mainButtonPanel.setOpaque(false);
-			
+		
+		// Main Action Buttons inside mainButton Panel
+		JButton createNewChatButton = new JButton("Create New Chat");
+		mainButtonPanel.add(createNewChatButton);
+		JButton logoutButton = new JButton("Logout");
 		
 		// These are IT buttons
 		ITButtons = new JButton[2];
 		JButton viewLogsButton = new JButton("View Logs");
-		//mainButtonPanel.add(viewLogsButton);
 		JButton modifyUsersButtons = new JButton("Modify/Add Users");
-		//mainButtonPanel.add(modifyUsersButtons);
 		ITButtons[ITButtonAction.VIEW_LOGS.ordinal()] = viewLogsButton;
 		ITButtons[ITButtonAction.ADD_MODIFY_USERS.ordinal()] = modifyUsersButtons;
-				
-		// if current user is IT
-		// for (JButtons b : ITButtons)
-		//		mainButtonPanel.add(b);
-		// else 
-		// 		only display add users
-		for (JButton b : ITButtons)
-			mainButtonPanel.add(b);			
+		
+		// Button Display Logic 
+		if (!currentUser.isIT()) { // Standard user
+			// place logout right after create new chat
+			mainButtonPanel.add(logoutButton);
+			for (JButton b : ITButtons) {
+				mainButtonPanel.add(b);	
+				if (!currentUser.isIT())
+					b.setVisible(false);
+			}
+		}
+		else { // IT User
+			// it buttons first then logout
+			for (JButton b : ITButtons) 
+				mainButtonPanel.add(b);
+			mainButtonPanel.add(logoutButton);
+		}
+		
+
+		
+		
 			
 		// centerPanel is where all main panels will go
 		// The following panels will go here:
@@ -193,10 +208,6 @@ public class ClientGUI extends JFrame{
 				System.out.println("Debug: onSendMessage");
 			}
 		});
-		
-		// Main Action Buttons inside mainButton Panel
-		JButton createNewChatButton = new JButton("Create New Chat");
-		mainButtonPanel.add(createNewChatButton);
 
 		createNewChatButton.addActionListener(new ActionListener() {	// 4/26 JSN: working on bringing this panel forward to be visible
 			public void actionPerformed(ActionEvent e) {
@@ -239,7 +250,10 @@ public class ClientGUI extends JFrame{
 			public void run() {
 				try {
 					Client client = new Client();
-					ClientGUI frame = new ClientGUI(new Client(), new User());
+					User testUser = new User();
+					testUser.setIT(true); // It User GUI
+					//testUser.setIT(false); // Stanard user GUI
+					ClientGUI frame = new ClientGUI(new Client(), testUser);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
