@@ -62,6 +62,13 @@ public class ClientGUI extends JFrame{
     private int WIDTH = 720;
     //private static int notificationCounter; // This might change 
 
+	private JPanel centerPanel;
+	private JPanel westPanel;
+	private JPanel currentCenterPanel; // This is the panel that is currently visible on the center panel
+
+	// Possible Center Panels
+	private viewLogChatPanel logViewPanel;
+	//private ModifyUserPanel modifyUserPanel;
 	private MessagePanel mssgPanel;
 	private UserPanel userPanel;
 	private CreateNewChatPanel createNewChatPanel;
@@ -85,7 +92,7 @@ public class ClientGUI extends JFrame{
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(25, 15));
 		
-		JPanel westPanel = new JPanel();
+		westPanel = new JPanel();
 		westPanel.setBackground(new Color(21, 96, 130));
 		contentPane.add(westPanel, BorderLayout.WEST);
 		westPanel.setLayout(new GridLayout(0, 1, 10, 20));
@@ -138,8 +145,13 @@ public class ClientGUI extends JFrame{
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()){
-					ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
-						//String selectedItem = (String) chatrooms.getSelectedValue();	
+					//ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+					// Need to mssgpanel.setupChatroom(selectedItem)
+					// then invoke new panel
+
+					// TODO Go back and test this when we are actually initializing chatroom objects
+					// need to test the case where mssgPanel is already currentCenterPanel.
+					invokeNewPanel(mssgPanel);
 					}
 				}
 			});
@@ -152,35 +164,44 @@ public class ClientGUI extends JFrame{
 		westPanel.add(mainButtonPanel);
 		mainButtonPanel.setLayout(new GridLayout(0, 1, 5, 15));
 		mainButtonPanel.setOpaque(false);
-			
+		
+		// Main Action Buttons inside mainButton Panel
+		JButton createNewChatButton = new JButton("Create New Chat");
+		mainButtonPanel.add(createNewChatButton);
+		JButton logoutButton = new JButton("Logout");
 		
 		// These are IT buttons
 		ITButtons = new JButton[2];
 		JButton viewLogsButton = new JButton("View Logs");
-		//mainButtonPanel.add(viewLogsButton);
 		JButton modifyUsersButtons = new JButton("Modify/Add Users");
-		//mainButtonPanel.add(modifyUsersButtons);
 		ITButtons[ITButtonAction.VIEW_LOGS.ordinal()] = viewLogsButton;
 		ITButtons[ITButtonAction.ADD_MODIFY_USERS.ordinal()] = modifyUsersButtons;
-				
-		// if current user is IT
-		// for (JButtons b : ITButtons)
-		//		mainButtonPanel.add(b);
-		// else 
-		// 		only display add users
-		for (JButton b : ITButtons)
-			mainButtonPanel.add(b);			
-			
+		
+		// Button Display Logic 
+		if (!currentUser.isIT()) { // Standard user
+			// place logout right after create new chat
+			mainButtonPanel.add(logoutButton);
+			for (JButton b : ITButtons) {
+				mainButtonPanel.add(b);	
+				if (!currentUser.isIT())
+					b.setVisible(false);
+			}
+		}
+		else { // IT User
+			// it buttons first then logout
+			for (JButton b : ITButtons) 
+				mainButtonPanel.add(b);
+			mainButtonPanel.add(logoutButton);
+		}
+
 		// centerPanel is where all main panels will go
 		// The following panels will go here:
 		// Inside of a chatroom panel
 		// New chat panel
 		// View Logs panel
 		// Modify / Add user panel
-		JPanel centerPanel = new JPanel();
-		//centerPanel.setBorder(new EmptyBorder(0,0,1,1));
+		centerPanel = new JPanel();
 		centerPanel.setOpaque(false);
-		//centerPanel.setBorder(new LineBorder(new Color(78, 167, 46), 1, true));
 		contentPane.add(centerPanel);
 		centerPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		//Message Field
@@ -193,23 +214,31 @@ public class ClientGUI extends JFrame{
 				System.out.println("Debug: onSendMessage");
 			}
 		});
-		
-		// Main Action Buttons inside mainButton Panel
-		JButton createNewChatButton = new JButton("Create New Chat");
-		mainButtonPanel.add(createNewChatButton);
 
-		createNewChatButton.addActionListener(new ActionListener() {	// 4/26 JSN: working on bringing this panel forward to be visible
+		// Create New Chat Initialization
+		createNewChatPanel = new CreateNewChatPanel(currentUser);
+		//userPanel = new UserPanel();
+
+		// Log Viewing Panel Initialization
+		logViewPanel = new viewLogChatPanel();
+
+		// Placing objects on the center panel
+		//centerPanel.add(mssgPanel,BorderLayout.CENTER);
+		invokeNewPanel(mssgPanel);
+		
+		// Button Listeners Here
+		createNewChatButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				createNewChatPanel = new CreateNewChatPanel(currentUser);
-				centerPanel.add(createNewChatPanel,BorderLayout.CENTER);
-				JOptionPane.showMessageDialog(createNewChatButton, "Debug");
+				invokeNewPanel(createNewChatPanel);
 			}																
 		});
-		createNewChatPanel = new CreateNewChatPanel(currentUser);
-		userPanel = new UserPanel();
-		//centerPanel.add(mssgPanel,BorderLayout.CENTER);
-		centerPanel.add(userPanel, BorderLayout.CENTER);	
-	}
+		viewLogsButton.addActionListener(new ActionListener() {	
+			public void actionPerformed(ActionEvent e) {
+				invokeNewPanel(logViewPanel);
+			}																
+		});
+		
+	} // End Constructor 
 
     public void updateMessagePanel(String message) {
         SwingUtilities.invokeLater( new Runnable() {
@@ -217,6 +246,42 @@ public class ClientGUI extends JFrame{
 				mssgPanel.getTextMessages().append(message + "\n");
 			}
 		}); 
+	}
+
+	public void invokeNewPanel(JPanel panel) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					placePanelOnCenter(panel);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Removes the currentCenterPanel and places a new one.
+	 * 
+	 * @param toPlace	This is the panel you want to put on the centerPanel.
+	 *               	When you press a button to get a new view call this method
+	 *                  with the associated panel.
+	 */
+	private void placePanelOnCenter(JPanel toPlace) {
+		// Check if the panel toPlace is the same panel
+		if (toPlace == currentCenterPanel)
+			return; // do nothing
+
+		if (currentCenterPanel == null)
+			currentCenterPanel = toPlace;
+		else {
+			centerPanel.remove(currentCenterPanel);
+			currentCenterPanel = toPlace;
+		}
+		// place the new one
+		centerPanel.add(currentCenterPanel);
+		centerPanel.revalidate();  
+		centerPanel.repaint();     
 	}
 
 
@@ -239,7 +304,10 @@ public class ClientGUI extends JFrame{
 			public void run() {
 				try {
 					Client client = new Client();
-					ClientGUI frame = new ClientGUI(new Client(), new User());
+					User testUser = new User();
+					testUser.setIT(true); // It User GUI
+					//testUser.setIT(false); // Stanard user GUI
+					ClientGUI frame = new ClientGUI(new Client(), testUser);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
