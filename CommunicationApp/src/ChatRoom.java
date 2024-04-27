@@ -13,7 +13,7 @@ public class ChatRoom implements Serializable {
     public ChatRoom(List<User> participants) {
         this.participants = participants;
         this.messages = new ArrayList<>();
-        this.filename = "";
+        //this.filename = "";
         this.chatID = UUID.randomUUID().toString();
     }
 

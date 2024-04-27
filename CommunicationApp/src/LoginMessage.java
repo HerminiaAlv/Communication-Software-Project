@@ -10,13 +10,16 @@
 // The server can create a separate message to send this data
 // or we can add all of that data to this class
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginMessage extends ServerMessage{
     private String password;
     private String username;
     private boolean success;
 
     private User currentUser; // Server passes a user over when login is successful
-    // private List<User> allUsers; // Server should pass a list or map of ALL users 
+    private Map<String, String> allUsers; // Server should pass a list or map of ALL users 
     // a map of userIDs and names is probabably sufficient becauses we don't need all the data
 
     //private MessageTypes type;
@@ -36,12 +39,12 @@ public class LoginMessage extends ServerMessage{
         return username;
     }
 
-//    public MessageTypes getType(){
-//        return type;
-//    }
-
     public User getUser() {
         return currentUser;
+    }
+
+    public Map<String, String> getAllUsers() {
+        return allUsers;
     }
 
     public boolean isSuccessful(){
@@ -56,6 +59,9 @@ public class LoginMessage extends ServerMessage{
         this.currentUser = user;
     }
     
+    public void setAllUsers(Map<String, String> allUsers){
+        this.allUsers = allUsers; 
+    }
     
 
 }

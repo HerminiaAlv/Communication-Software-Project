@@ -96,6 +96,11 @@ public class User implements Serializable{
 		// if (!chats.contains(chatToAdd.getChatID())) // Chat doesn't exist in User's list of chats
 		// add it and return true 
 		// else 
+		if(!chats.contains(chatToAdd.getChatID())) {
+			chats.add(chatToAdd);
+			return true;
+		}
+		
 		return false;
 	}
 

@@ -27,16 +27,21 @@ import java.awt.ScrollPane;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
+//import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.AbstractListModel;
 
-public class UserPanel extends JPanel {
+public class CreateNewChatPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	private ChatRoom chatroom;
 	
-	public UserPanel() {
+	// passing User 
+	
+	
+	public CreateNewChatPanel(User user) {
 		setForeground(new Color(135, 206, 250));
 		setBackground(new Color(21, 96, 130));
 		setLayout(null);
@@ -59,19 +64,7 @@ public class UserPanel extends JPanel {
 		add(confirmBorder);
 		confirmBorder.setLayout(new BorderLayout(0, 0));
 		
-		JButton btnConfirm = new JButton("OK");
-		confirmBorder.add(btnConfirm, BorderLayout.CENTER);
-		btnConfirm.setToolTipText("Press OK to confirm selection");
-		btnConfirm.setFont(new Font("Dialog", Font.BOLD, 12));
-		btnConfirm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				
-				
-				
-			}
-		});
+		
 		
 		// Panel for text messages box
 		JPanel userListBorder = new JPanel();
@@ -81,6 +74,7 @@ public class UserPanel extends JPanel {
 		userListBorder.setLayout(new BorderLayout(0, 0));
 		
 		JList list = new JList();
+		list.setValueIsAdjusting(true);
 		list.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		list.setModel(new AbstractListModel() {
 			String[] values = new String[] {"User 1", "User 2", "User 3"};
@@ -91,7 +85,6 @@ public class UserPanel extends JPanel {
 				return values[index];
 			}
 		});
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		userListBorder.add(list, BorderLayout.CENTER);
 		//add(scrollPane);
 		// Panel for participants
@@ -108,6 +101,25 @@ public class UserPanel extends JPanel {
 		promptText.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		
 		promptBorder.add(promptText, BorderLayout.CENTER);
+		
+		JButton btnConfirm = new JButton("OK");
+		confirmBorder.add(btnConfirm, BorderLayout.CENTER);
+		btnConfirm.setToolTipText("Press OK to confirm selection");
+		btnConfirm.setFont(new Font("Dialog", Font.BOLD, 12));
+		btnConfirm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// selected users into a List<User>
+				// chatroom = new ChatRoom(List<User>)
+				
+				// for ( user : List<User>)
+				// 		user.addChat(chatroom);
+						
+				
+				
+				
+				
+			}
+		});
 		
 		// Panel for Online users... Uses JLabel + JList (Might change) 
 //		JList list = new JList();

@@ -14,7 +14,6 @@ import javax.swing.SwingUtilities;
 public class Client {
     private String HOSTIP = "localhost"; // hostName/IP to connection
     private int PORT = 12345; // Port number to connect to on hostName
-
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Socket socket;  // flag to determine if login has been authenticated
@@ -60,7 +59,6 @@ public class Client {
             }
             System.out.println("CONNECTED");
             invokeMainGUI();
-            //new Thread(() -> listenForMessages()).start();
             while (loggedIn) {
             	// wait for logout
             }
@@ -87,22 +85,27 @@ public class Client {
                             break;
 
                         case LOGOUT:
-                           // new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
+                            new Thread(() -> handleLogoutMessage((LogoutMessage) m)).start();
                             break;
                         case CHAT_MESSAGE:
                             new Thread(()->handleChatMessage((ChatMessage) m)).start();
                             System.out.println("Debug: CHAT_MESSAGE received: " + m.getMessage());
                             break;
                         case GET_LOGS:
+                            new Thread(() -> handleGetLogs((LogMessage) m)).start();
                             break;
                         case UPDATE_USER:
+                            // i don't think we need to do anything here
+                            new Thread(() -> handleUpdateUser((UpdateUserMessage) m)).start();
                             break;
                         case CREATE_CHAT:
-                        	// new Thread(()->handleCreateChatMessage((CreateChatMessage) m)).start();
+                        	new Thread(()->handleCreateChatMessage((CreateChatMessage) m)).start();
                             break;
                         case ADD_USERS_TO_CHAT:
+                            new Thread(() -> handleAddUsersToChat((AddUsersToChatMessage) m)).start();
                             break;
                         case NOTIFY_USER:
+                            // low priority
                             break;
                         case PIN_CHAT:
                             // save this for later if we have time
@@ -119,21 +122,6 @@ public class Client {
         }
     }
 
- // Message Handling Methods ----------------------------------------------
-    public void handleLoginMessage(LoginMessage msg) {
-    	// The user has sent a request for login
-        // we need to know if it was successful
-        loggedIn = msg.isSuccessful() && socket.isConnected();
-
-        if (loggedIn) {
-            currentUser = msg.getUser();
-            killLoginGUI();
-        } else {  /*  Stay in login loop */
-            loginGUI.updateWaitingStatus(loggedIn);
-        }            
-    }
-    
-
     public void sendMessageToServer(ServerMessage m) { //This method works, it does recognize LoginMessage but nto ChatMessage
         try {
             System.out.println("Message Type to send: " + m.getType());
@@ -147,8 +135,38 @@ public class Client {
         }
     }
 
-    public void handleLogoutMessage(LogoutMessage msg) {
+    // Message Handling Methods ----------------------------------------------
+    public void handleLoginMessage(LoginMessage msg) {
+    	// The user has sent a request for login
+        // we need to know if it was successful
+        loggedIn = msg.isSuccessful() && socket.isConnected();
 
+        if (loggedIn) {
+            currentUser = msg.getUser();
+            killLoginGUI();
+        } else {  /*  Stay in login loop */
+            loginGUI.updateWaitingStatus(loggedIn);
+        }            
+    }
+
+    public void handleLogoutMessage(LogoutMessage msg) {
+        // @TODO implement this  
+    }
+
+    public void handleUpdateUser(UpdateUserMessage msg) {
+        // @TODO implement this
+    }
+
+    public void handleGetLogsMessage(LogMessage msg) {
+        // @TODO implement this  
+    }
+
+    public void handleAddUsersToChat(AddUsersToChatMessage msg) {
+        // @TODO implement this  
+    }
+
+    public void handleGetLogs(LogMessage msg) {
+        // @TODO implement this  
     }
 
     public void handleChatMessage(ChatMessage chatMessage) {
