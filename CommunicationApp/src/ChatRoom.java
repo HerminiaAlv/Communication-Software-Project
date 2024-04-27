@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class ChatRoom implements Serializable {
     private String chatID; // what is this going to be?
-    // private String filename; // filename on server - this is the chatID
+    private String filename; // filename on server
     private List<User> participants;
     private List<Message> messages;
 
@@ -19,7 +19,7 @@ public class ChatRoom implements Serializable {
     // Constructor for a complete object - loading from server
     public ChatRoom(List<User> participants, List<Message> messages, String chatID, String filename) {
         this.chatID = chatID;
-        //this.filename = filename;
+        this.filename = filename;
         this.participants = participants;
         this.messages = messages;
     }
@@ -28,6 +28,10 @@ public class ChatRoom implements Serializable {
     // Getters
     public String getChatID() {
         return chatID;
+    }
+
+    public String getFilename() {
+        return filename;
     }
 
     public List<User> getParticipants() {
