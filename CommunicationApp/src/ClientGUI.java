@@ -63,6 +63,7 @@ public class ClientGUI extends JFrame{
     //private static int notificationCounter; // This might change 
 
 	private MessagePanel mssgPanel;
+	private UserPanel userPanel;
 	private CreateNewChatPanel createNewChatPanel;
 
 	// Building the main elements of the GUI - these will always be visible
@@ -204,7 +205,10 @@ public class ClientGUI extends JFrame{
 				JOptionPane.showMessageDialog(createNewChatButton, "Debug");
 			}																
 		});
-		centerPanel.add(mssgPanel,BorderLayout.CENTER);	
+		createNewChatPanel = new CreateNewChatPanel(currentUser);
+		userPanel = new UserPanel();
+		//centerPanel.add(mssgPanel,BorderLayout.CENTER);
+		centerPanel.add(userPanel, BorderLayout.CENTER);	
 	}
 
     public void updateMessagePanel(String message) {
