@@ -2,7 +2,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class User implements Serializable{
-	private String id;
+	private static int count = 0;
+	private int id;
 	private String firstName;
 	private String lastName;
 	private String password; // do we need this?
@@ -20,7 +21,7 @@ public class User implements Serializable{
 	
 	public User(String id, String firstName, String lastName, 
 				String username, String password, boolean is_IT, List<ChatRoom> chats){
-					this.id = id;
+					this.id = ++count;
 					this.firstName = firstName;
 					this.lastName = lastName;
 					this.username = username;
@@ -32,7 +33,7 @@ public class User implements Serializable{
 
 	
 	//getters
-	public String getID() {
+	public int getID() {
 		return id;
 	}
 
@@ -103,6 +104,12 @@ public class User implements Serializable{
 		return false;
 	}
 
+    public String getActiveChat() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getActiveChat'");
+    }
+
+	
 	// addToChat, update user, addPinned
 
 	
