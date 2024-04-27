@@ -230,7 +230,8 @@ public class Client {
                     mainGUI = new ClientGUI(getThisClient(), testUser);
                     // end test 
 
-					//mainGUI = new ClientGUI(getThisClient(), currentUser);
+                    // uncomment this when server passes a user
+					//mainGUI = new ClientGUI(getThisClient(), currentUser); 
 					mainGUI.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
