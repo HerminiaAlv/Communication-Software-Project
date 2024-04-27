@@ -4,7 +4,7 @@ import java.io.Serializable;
 public class ServerMessage implements Serializable{
     private MessageTypes type; // type of message
     private MessageStatus status;
-    private String message;
+    //private String message;
 
 /*     public ServerMessage() {
         type = MessageTypes.UNDEFINED;
@@ -19,9 +19,9 @@ public class ServerMessage implements Serializable{
         this.status = status;
     }
 
-    public void setMessage(String message) { 
-        this.message = message;
-    }
+    // public void setMessage(String message) { 
+    //     this.message = message;
+    // }
 
     public MessageTypes getType() {
         return type;
@@ -31,7 +31,7 @@ public class ServerMessage implements Serializable{
         return status;
     }
 
-    public String getMessage() {
-        return message;
-    }
+    // public String getMessage() {
+    //     return message;
+    // }
 }
