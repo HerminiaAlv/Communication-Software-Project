@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ChatRoom implements Serializable {
     private String chatID; // what is this going to be?
@@ -12,8 +13,7 @@ public class ChatRoom implements Serializable {
     public ChatRoom(List<User> participants) {
         this.participants = participants;
         this.messages = new ArrayList<>();
-        //this.filename = "";
-        this.chatID = createChatID();
+        this.chatID = UUID.randomUUID().toString();
     }
 
     // Constructor for a complete object - loading from server
@@ -66,21 +66,12 @@ public class ChatRoom implements Serializable {
 
     public boolean isParticipant(String userID) {
         for (User user : participants) {
-            if (userID == user.getID())
+            if (userID == user.getUsername())
                 return true;
         }
         // not found
         return false;
     }
-
-    // TODO finish this method once we know the naming convention for the server files
-    public String createChatID() {
-        String id = "";
-        for (User user : participants) {
-            // what naming convention are we using?
-        }
-        return id;
-    } 
 
     // private methods
 }
