@@ -6,22 +6,32 @@ import java.util.UUID;
 public class ChatRoom implements Serializable {
     private String chatID; // what is this going to be?
     private String filename; // filename on server
-    private List<User> participants;
+    private List<String> participants;
     private List<Message> messages;
 
+    public ChatRoom() {
+        this.messages = new ArrayList<>();
+        this.participants = new ArrayList<>();
+    }
+
     // Constructor for a new chatroom from a user
-    public ChatRoom(List<User> participants) {
+    public ChatRoom(List<String> participants) {
         this.participants = participants;
         this.messages = new ArrayList<>();
         this.chatID = UUID.randomUUID().toString();
     }
 
     // Constructor for a complete object - loading from server
-    public ChatRoom(List<User> participants, List<Message> messages, String chatID, String filename) {
+    public ChatRoom(List<String> participants, List<Message> messages, String chatID, String filename) {
         this.chatID = chatID;
         this.filename = filename;
         this.participants = participants;
         this.messages = messages;
+    }
+
+    // Setters
+    public void setChatID(String chatID) {
+        this.chatID = chatID;
     }
 
     // Public Methods
@@ -34,7 +44,7 @@ public class ChatRoom implements Serializable {
         return filename;
     }
 
-    public List<User> getParticipants() {
+    public List<String> getParticipants() {
         return participants;
     }
 
@@ -43,17 +53,20 @@ public class ChatRoom implements Serializable {
     }
 
     // Other public methods
-    public boolean addMessage(Message msg) {
-        if (!messageExists(msg.getID())) { 
-            messages.add(msg);
-            return true;
-        }
-        return false; // not added
+    // public boolean addMessage(Message msg) {
+    //     if (!messageExists(msg.getID())) { 
+    //         messages.add(msg);
+    //         return true;
+    //     }
+    //     return false; // not added
+    // }
+    public void addMessage(Message msg) {
+        messages.add(msg);
     }
 
     public boolean addMember(User user) {
         if (!isParticipant(user.getUsername())){
-            participants.add(user);
+            participants.add(user.getUsername());
             return true;
         }
         return false;
@@ -69,8 +82,8 @@ public class ChatRoom implements Serializable {
     }
 
     public boolean isParticipant(String userID) {
-        for (User user : participants) {
-            if (userID == user.getUsername())
+        for (String user : participants) {
+            if (userID == user)
                 return true;
         }
         // not found
