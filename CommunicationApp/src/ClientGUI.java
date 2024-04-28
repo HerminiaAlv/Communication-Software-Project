@@ -57,6 +57,7 @@ public class ClientGUI extends JFrame{
 	private JPanel centerPanel;
 	private JPanel westPanel;
 	private JPanel currentCenterPanel; // This is the panel that is currently visible on the center panel
+
 	// Possible Center Panels
 	private viewLogChatPanel logViewPanel;
 	private modifyUserPanel modifyUserPanel;
@@ -69,9 +70,7 @@ public class ClientGUI extends JFrame{
 	public ClientGUI(Client client, User currentUser) {
         this.client = client;
         this.currentUser = currentUser;
-		//client.setupConnection();
-        // this.activeChat = null;
-		
+	
         //start up 
         setResizable(false); //disable maximize button
 		setTitle("Employee Message App");
@@ -99,7 +98,6 @@ public class ClientGUI extends JFrame{
 		gbl_chatroomPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_chatroomPanel.rowWeights = new double[]{0.0, 0.0, 1.0};
 		chatroomPanel.setLayout(gbl_chatroomPanel);
-		//chatroomPanel.setFont(new Font("Monospaced", Font.PLAIN, 8));
 
 		 
 		// inside chatroomPanel
@@ -144,13 +142,14 @@ public class ClientGUI extends JFrame{
 		for (ChatRoom room : currentUser.getChats())
 			chatList.addElement(room);
 		JList<ChatRoom> chatrooms = new JList(chatList);
+		chatrooms.setFont(new Font("Aptos", Font.BOLD, 11));
 
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()){
 					// This is where we will display the chatroom messages
 					// Goal: When a chatroom is selected, display the chatroom logged messages (Assume that correct logged messaging will be implemented)
-					   //ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+					// ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
 					   //mssgPanel.setupChatroom(selectedItem);
 					   invokeNewPanel(mssgPanel);
 					// Need to mssgpanel.setupChatroom(selectedItem)
@@ -262,7 +261,16 @@ public class ClientGUI extends JFrame{
 				invokeNewPanel(modifyUserPanel);
 			}																
 		});
-	
+		// Logout Button Listener
+		logoutButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Clock Out", JOptionPane.YES_NO_OPTION);
+				if (confirm  == JOptionPane.YES_OPTION){
+					System.exit(0);
+				}
+			}
+		});
+		
 	} 
 	// End Constructor 
     public void updateMessagePanel(String message) {
