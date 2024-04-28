@@ -13,6 +13,13 @@ public class ChatMessage extends ServerMessage {
 
     // Getters and setters 
 
+/*     public ChatMessage(String mssg, MessageStatus sent, MessageTypes chatMessage) {
+        //TODO Auto-generated constructor stub
+        this.message = new Message;
+        this.setType(MessageTypes.CHAT_MESSAGE);
+        this.setStatus(MessageStatus.PENDING);
+    } */
+
     public Message getMessage() {
         return message;
     }
