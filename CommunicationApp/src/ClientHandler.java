@@ -46,7 +46,7 @@ public class ClientHandler implements Runnable {
 
         switch (type) {
             case LOGIN:
-                System.out.println("Login message received: " + message.getMessage());
+                //System.out.println("Login message received: " + message.getMessage());
                 handleLoginMessage((LoginMessage) message);
                 break;
             case CHAT_MESSAGE:
