@@ -32,7 +32,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 
-public class CredentialsEditPanel extends JPanel {
+public class modifyUserPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField txtFirstName;
@@ -40,7 +40,7 @@ public class CredentialsEditPanel extends JPanel {
 	private JTextField txtUserName;
 	private JTextField txtPassword;
 	
-	public CredentialsEditPanel() {
+	public modifyUserPanel() {
 		setForeground(new Color(135, 206, 250));
 		setBackground(new Color(21, 96, 130));
 		setLayout(null);

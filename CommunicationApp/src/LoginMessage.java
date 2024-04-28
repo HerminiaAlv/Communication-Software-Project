@@ -61,7 +61,5 @@ public class LoginMessage extends ServerMessage{
     
     public void setAllUsers(Map<String, String> allUsers){
         this.allUsers = allUsers; 
-    }
-    
-
+    }  
 }
