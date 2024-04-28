@@ -4,6 +4,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Server {
@@ -22,8 +23,11 @@ public class Server {
                 new Thread(new ClientHandler(clientSocket, this)).start();
             }
         }
+        catch (IOException e) { 
+            e.printStackTrace();
+        }
     }
-  
+
     public synchronized void addClient(String username, ObjectOutputStream out) {
         clients.put(username, out);
     }
@@ -58,6 +62,46 @@ public class Server {
             }
         }
     }
+    public void handleLogin(LoginMessage msg, ObjectOutputStream outputStream) {	
+    	if (msg.getStatus() == MessageStatus.PENDING) {
+    		msg.setStatus(MessageStatus.SUCCESS);
+    		msg.setSuccess(true);
+            addClient(msg.getUsername(), outputStream);
+    	}//
+
+        // Send the response back to the client
+        // sendMessageToClient(msg);
+    }
+
+    public void handleLogout(LogoutMessage message) {
+        
+    }
+
+    public void handleChatMessage(ChatMessage message) {
+        broadcastMessage(message);
+    }
+
+    public void handleUpdateUser(UpdateUserMessage message) {
+        
+    }
+
+    public void handleCreateChat(CreateChatMessage message) {
+        
+    }
+    
+    public void handlePinChat(PinChatMessage message) {
+
+    }
+
+    public void handleNotifyUser(NotifyMessage message) {
+        
+    }
+    
+    public void handleAddUsersToChat(AddUsersToChatMessage message) {
+    
+    }
+    
+        
 
     public static void main(String[] args) {
         Server server = new Server();
