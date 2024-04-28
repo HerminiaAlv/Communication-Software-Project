@@ -77,10 +77,6 @@ public class ClientGUI extends JFrame{
 	public ClientGUI(Client client, User currentUser) {
         this.client = client;
         this.currentUser = currentUser;
-		
-		//activeChat = currentUser.getChats().get(0); // Active
-
-
 		//client.setupConnection();
         // this.activeChat = null;
 		
@@ -209,12 +205,12 @@ public class ClientGUI extends JFrame{
 		contentPane.add(centerPanel);
 		centerPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		//Message Field
-		mssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); // initialize the currentChat of message panel with users first chat. Might change
+		mssgPanel = new MessagePanel();
 		mssgPanel.setListener(new MessagePanel.MessageListener() {
 			@Override
-			public void onSendMessage (Message mssg) {
-				ChatMessage chatMessage = new ChatMessage(mssg);
-				new Thread(()->{client.sendMessageToServer(chatMessage);}).start();
+			public void onSendMessage (String mssg) {
+				ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE);
+				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
 		});
