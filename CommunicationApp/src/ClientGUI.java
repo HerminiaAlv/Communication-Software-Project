@@ -151,9 +151,9 @@ public class ClientGUI extends JFrame{
 				if (!e.getValueIsAdjusting()){
 					// This is where we will display the chatroom messages
 					// Goal: When a chatroom is selected, display the chatroom logged messages (Assume that correct logged messaging will be implemented)
-					// ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+					   //ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
 					   //mssgPanel.setupChatroom(selectedItem);
-					   //invokeNewPanel(mssgPanel);
+					   invokeNewPanel(mssgPanel);
 					// Need to mssgpanel.setupChatroom(selectedItem)
 					// then invoke new panel
 
@@ -272,11 +272,6 @@ public class ClientGUI extends JFrame{
 			}
 			//displayLoggedMessages(activeChat);
 		});
-<<<<<<< HEAD
-	
-=======
-		
->>>>>>> df2ce35 (Added logout confirmation dialog)
 	} 
 	// End Constructor 
     public void updateMessagePanel(String message) {
