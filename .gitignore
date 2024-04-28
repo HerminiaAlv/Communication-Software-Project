@@ -130,3 +130,5 @@ bin/modifyUserPanel.class
 bin/modifyUserPanel$1.class
 bin/viewLogChatPanel$3.class
 bin/viewLogChatPanel$4.class
+bin/ClientGUI$9.class
+bin/tests/AllTests.class
