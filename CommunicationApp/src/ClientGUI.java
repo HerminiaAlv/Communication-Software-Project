@@ -68,7 +68,7 @@ public class ClientGUI extends JFrame{
 
 	// Possible Center Panels
 	private viewLogChatPanel logViewPanel;
-	//private ModifyUserPanel modifyUserPanel;
+	private modifyUserPanel modifyUserPanel;
 	private MessagePanel mssgPanel;
 	private UserPanel userPanel;
 	private CreateNewChatPanel createNewChatPanel;
@@ -78,7 +78,7 @@ public class ClientGUI extends JFrame{
         this.client = client;
         this.currentUser = currentUser;
 		//client.setupConnection();
-        //activeChat = currentUser.getChats().get(0); // Active
+        // this.activeChat = null;
 		
         //start up 
         setResizable(false); //disable maximize button
@@ -173,9 +173,9 @@ public class ClientGUI extends JFrame{
 		// These are IT buttons
 		ITButtons = new JButton[2];
 		JButton viewLogsButton = new JButton("View Logs");
-		JButton modifyUsersButtons = new JButton("Modify/Add Users");
+		JButton modifyUsersButton = new JButton("Modify/Add Users");
 		ITButtons[ITButtonAction.VIEW_LOGS.ordinal()] = viewLogsButton;
-		ITButtons[ITButtonAction.ADD_MODIFY_USERS.ordinal()] = modifyUsersButtons;
+		ITButtons[ITButtonAction.ADD_MODIFY_USERS.ordinal()] = modifyUsersButton;
 		
 		// Button Display Logic 
 		if (!currentUser.isIT()) { // Standard user
@@ -205,12 +205,12 @@ public class ClientGUI extends JFrame{
 		contentPane.add(centerPanel);
 		centerPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		//Message Field
-		mssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); // initialize the currentChat of message panel with users first chat. Might change
+		mssgPanel = new MessagePanel();
 		mssgPanel.setListener(new MessagePanel.MessageListener() {
 			@Override
-			public void onSendMessage (Message mssg) {
-				ChatMessage chatMessage = new ChatMessage(mssg);
-				new Thread(()->{client.sendMessageToServer(chatMessage);}).start();
+			public void onSendMessage (String mssg) {
+				ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE);
+				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
 		});
@@ -221,6 +221,9 @@ public class ClientGUI extends JFrame{
 
 		// Log Viewing Panel Initialization
 		logViewPanel = new viewLogChatPanel();
+		
+		// Modify User Panel Initialization
+		modifyUserPanel = new modifyUserPanel();
 
 		// Placing objects on the center panel
 		//centerPanel.add(mssgPanel,BorderLayout.CENTER);
@@ -237,6 +240,12 @@ public class ClientGUI extends JFrame{
 				invokeNewPanel(logViewPanel);
 			}																
 		});
+		modifyUsersButton.addActionListener(new ActionListener() {	
+			public void actionPerformed(ActionEvent e) {
+				invokeNewPanel(modifyUserPanel);
+			}																
+		});
+		
 		
 	} // End Constructor 
 

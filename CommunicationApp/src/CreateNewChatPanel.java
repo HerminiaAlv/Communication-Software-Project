@@ -75,7 +75,6 @@ public class CreateNewChatPanel extends JPanel {
 		
 		JList list = new JList();
 		list.setValueIsAdjusting(true);
-		list.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		list.setModel(new AbstractListModel() {
 			String[] values = new String[] {"User 1", "User 2", "User 3"};
 			public int getSize() {
