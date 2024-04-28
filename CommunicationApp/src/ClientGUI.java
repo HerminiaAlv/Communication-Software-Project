@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
@@ -125,7 +126,7 @@ public class ClientGUI extends JFrame{
 		//gbc_list.
 		chatroomPanel.add(pinnedList, gbc_list);
 		
-		JScrollPane nonpinnedChatsScrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane nonpinnedChatsScrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		nonpinnedChatsScrollPane.setViewportBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		nonpinnedChatsScrollPane.setPreferredSize(new Dimension(80, 80));
 
@@ -151,7 +152,7 @@ public class ClientGUI extends JFrame{
 					// Goal: When a chatroom is selected, display the chatroom logged messages (Assume that correct logged messaging will be implemented)
 					// ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
 					   //mssgPanel.setupChatroom(selectedItem);
-					   invokeNewPanel(mssgPanel);
+					   //invokeNewPanel(mssgPanel);
 					// Need to mssgpanel.setupChatroom(selectedItem)
 					// then invoke new panel
 
@@ -164,6 +165,7 @@ public class ClientGUI extends JFrame{
 					
 					//JOptionPane that will show the chatroom selected's messages (logged messages);
 					//JOptionPane.showMessageDialog(null, "Chatroom selected: " + chatrooms.getSelectedValue());
+					displayLoggedMessages(chatrooms.getSelectedValue());
 					}
 				}
 			});
@@ -269,6 +271,7 @@ public class ClientGUI extends JFrame{
 					System.exit(0);
 				}
 			}
+			//displayLoggedMessages(activeChat);
 		});
 		
 	} 
@@ -292,6 +295,26 @@ public class ClientGUI extends JFrame{
 			}
 		});
 	}
+
+
+	// Display the logged messages of a chatroom
+	// ** Need to call this inside a listener for a chatroom selection **
+	public void displayLoggedMessages (ChatRoom room) {
+		JFrame chatRoomFrame = new JFrame(room.getChatID());
+		chatRoomFrame.setSize(400,200);
+
+		JTextArea chatLog = new JTextArea();
+		chatLog.setEditable(false); //disable editing
+		chatLog.setLineWrap(true); //enable line wrapping
+		
+		for (Message m : room.getMessages()) {
+			chatLog.append(m.toString() + "\n");
+		}
+
+		JScrollPane chatLogScrollPane = new JScrollPane(chatLog);
+		chatRoomFrame.add(chatLogScrollPane);
+		chatRoomFrame.setVisible(true);
+	}	
 
 	/**
 	 * Removes the currentCenterPanel and places a new one.
