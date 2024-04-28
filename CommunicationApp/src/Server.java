@@ -1,123 +1,128 @@
-
-package Hello;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Server {
-    private Map<String, ClientHandler> clientHandlers = new HashMap<>();
-    private List<User> users = new ArrayList<>();
+    private static final int PORT = 12345;
+    private static Map<String, ObjectOutputStream> clients = new HashMap<>();
 
-    public Server() {
-        // Read usernames from credentialsData.txt
-        try (BufferedReader reader = new BufferedReader(new FileReader("credentialsData.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(", ");
-                if (parts.length >= 4) {
-                    String lastName = parts[0].trim();
-                    String name = parts[1].trim();
-                    String username = parts[2].trim();
-                    String userType = parts[3].trim();
-                    users.add(new User(lastName, name, username, userType));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean isValidCredentials(Credentials credentials) {
-        for (User user : users) {
-            if (user.getUsername().equals(credentials.getUsername())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public User getUserInfo(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    public void start(int port) {
-        try {
-            ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("Server started on port " + port);
+    public void start() {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server started on port " + PORT);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New client connected");
 
-                ClientHandler clientHandler = new ClientHandler(clientSocket, this);
-                clientHandlers.put(clientHandler.getUsername(), clientHandler);
-
-                Thread clientThread = new Thread(clientHandler);
-                clientThread.start();
+                new Thread(new ClientHandler(clientSocket, this)).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    
-    
-    
-    
-    public void sendMessage(Message message) {
-        String recipientUsername = message.getRecipient();
-        ClientHandler clientHandler = null;
+    public synchronized static void addClient(String username, ObjectOutputStream out) {
+        clients.put(username, out);
+    }
 
-        // Find the User using the username
-        User recipientUser = null;
-        for (User user : users) {
-            if (user.getUsername().equalsIgnoreCase(recipientUsername)) {
-                recipientUser = user;
-                break;
+    public synchronized static void removeClient(String username) {
+        clients.remove(username);
+    }
+
+    public synchronized static void sendMessageToClient(String username, ServerMessage message) {
+    	ObjectOutputStream out = clients.get(username);
+        if (out != null) {
+            try {
+                out.writeObject(message);
+                out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+    }
 
-        if (recipientUser != null) {
-            clientHandler = clientHandlers.get(recipientUser.getUsername());
+    public synchronized static void broadcastMessage(ServerMessage message) {
+        for (ObjectOutputStream out : clients.values()) {
+            try {
+                out.writeObject(message);
+                out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
 
-        if (clientHandler != null) {
-            clientHandler.sendMessage(message);
-            System.out.println("Recipient found: " + recipientUser.getName() + " " + recipientUser.getLastName());
+    public static void handleLogin(LoginMessage message) {
+        if (validateCredentials(message.getUsername(), message.getPassword())) {
+            message.setSuccess(true);
+            message.setCurrentUser(new User()); 
+            addClient(message.getUsername(), clients.get(message.getUsername()));
         } else {
-            System.out.println("Recipient not found: " + recipientUsername);
+            message.setSuccess(false);
         }
+        sendMessageToClient(message.getUsername(), message);
+    }
 
-        String chatRoomId = generateChatRoomId(message.getSender(), message.getRecipient());
-        FileManager.writeMessageToFile(chatRoomId, message);
+    public static void handleLogout(LogoutMessage message) {
+        if (message.getStatus() == MessageStatus.PENDING) {
+            removeClient(message.getUsername());
+            message.setStatus(MessageStatus.SUCCESS);
+            sendMessageToClient(message.getUsername(), message);
+            System.out.println("User logged out and connection closed: " + message.getUsername());
+        }
     }
 
 
+    public static void handleChatMessage(ChatMessage message) {
+        broadcastMessage(message);  
+    }
 
-    
+    public static void handleUpdateUser(UpdateUserMessage message) {
+        message.setStatus(MessageStatus.SUCCESS);
+        sendMessageToClient(message.getUserId(), message);
+    }
 
+    public static void handleCreateChat(CreateChatMessage message) {
+        // Get participant IDs from the message
+        List<String> participantIds = message.getParticipantIds();
+        
+        // Validate participant list
+        if (participantIds == null || participantIds.isEmpty()) {
+            message.setStatus(MessageStatus.FAILED);
+//            sendMessageToClient(message); 		// need to fix sendMessageToClient
+            return;
+        }
 
+        ChatRoom newChat = new ChatRoom(participantIds);
+        
+        message.setCreatedChat(newChat);
+        message.setStatus(MessageStatus.SUCCESS);
 
-    public String generateChatRoomId(String user1, String user2) {
-        return user1.compareTo(user2) < 0 ? user1 + "_" + user2 : user2 + "_" + user1;
+    }
+
+    public static void handleAddUsersToChat(AddUsersToChatMessage message) {
+        message.setStatus(MessageStatus.SUCCESS);
+        sendMessageToClient(message.getUsername(), message);
+    }
+
+    public static void handleNotifyUser(NotifyMessage message) {
+        sendMessageToClient(message.getUsername(), message);
+    }
+
+    public static void handlePinChat(PinChatMessage message) {
+        message.setStatus(MessageStatus.SUCCESS);
+        sendMessageToClient(message.getUsername(), message);
+    }
+
+    private static boolean validateCredentials(String username, String password) {
+        return "expectedUsername".equals(username) && "expectedPassword".equals(password);
     }
 
     public static void main(String[] args) {
-        Server server = new Server();
-        server.start(12345);
+        new Server().start();
     }
-    
 }
