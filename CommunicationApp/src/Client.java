@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.time.LocalDateTime;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -230,20 +232,22 @@ public class Client {
 				try {
                     // TODO remove the test user when we get the server to pass a user on login 
                     // test purposes start
-                    Message msg1 = new Message("M_1", "User_2", "1");
-                    Message msg2 = new Message("M_2", "User_2", "1");
-                    ChatRoom chat = new ChatRoom();
-                    chat.addMessage(msg2);
-                    chat.addMessage(msg1);
-                    chat.setChatID("Chat_1");
-                    User testUser = new User();
-                    testUser.addChat(chat);
-                    testUser.setIT(true);
-                    testUser.setUserName("User 1");
-                    mainGUI = new ClientGUI(getThisClient(), testUser);
-                    currentUser = testUser;
+                    // Message msg1 = new Message("M_1", "User_2", "1", LocalDateTime.now());
+                    // Message msg2 = new Message("M_2", "User_2", "1", LocalDateTime.now());
+                    // ChatRoom chat = new ChatRoom();
+                    // chat.addMessage(msg2);
+                    // chat.addMessage(msg1);
+                    // chat.setChatID("Chat_1");
+                    // User testUser = new User();
+                    // testUser.addChat(chat);
+                    // testUser.setIT(true);
+                    // testUser.setUserName("User 1");
+                    // mainGUI = new ClientGUI(getThisClient(), testUser);
+                    // currentUser = testUser;
                     // end test 
-
+                    List<User> users = generateUsers(7, 10);
+                    mainGUI = new ClientGUI(getThisClient(), users.get(0));
+                    currentUser =  users.get(0);
                     // uncomment this when server passes a user
 					//mainGUI = new ClientGUI(getThisClient(), currentUser); 
 					mainGUI.setVisible(true);
@@ -265,4 +269,78 @@ public class Client {
 
                  killLoginGUI();
     } 
+
+    // Method to generate users
+    public static List<User> generateUsers(int numUsers, int numChatRooms) {
+        List<User> users = new ArrayList<>();
+        List<ChatRoom> allMessages = populateChatRooms(numUsers, numChatRooms); // Generate messages for all chat rooms
+        
+        for (int i = 1; i <= numUsers; i++) {
+            // Generate user with a unique username
+            User user = new User("User" + i, "FirstName" + i, "LastName" + i, "User" + i, "password" + i, false, new ArrayList<>());
+            for (ChatRoom room : allMessages) {
+                if (room.isParticipant(user.getUsername())) {
+                    user.addChat(room);
+                }
+            }
+            users.add(user); // Add user to the list
+        }
+        
+        return users;
+    }
+
+    public static List<ChatRoom> populateChatRooms(int numUsers, int numberOfChatRooms) {
+    List<ChatRoom> allMessages = new ArrayList<>();
+
+    // Generate dummy messages for each chat room
+    for (int i = 0; i < numberOfChatRooms; i++) {
+        // Create a new chat room
+        ChatRoom chatRoom = new ChatRoom();
+        
+        // Randomly select participants for this chat room
+        List<String> participants = new ArrayList<>();
+        Random random = new Random();
+        int numParticipants = 0;
+        for (int j = 1; j < numUsers; j++) {
+            if (j == 1 || (numParticipants < 2 && random.nextBoolean())) {
+                 participants.add("User" + j);
+                 numParticipants++;
+            }
+        }
+        chatRoom.setParticipants(participants);
+
+        // Generate random number of messages for each chat room (between 5 and 20)
+        int numberOfMessages = new Random().nextInt(16) + 5;
+        for (int k = 0; k < numberOfMessages; k++) {
+            String sender = participants.get(new Random().nextInt(participants.size()));
+            String messageContent = generateRandomMessage();
+            Message message = new Message(messageContent, sender, chatRoom.getChatID(), LocalDateTime.now());
+            chatRoom.addMessage(message);
+            
+        }
+        allMessages.add(chatRoom);
+    }
+    return allMessages;
+}
+
+    // Method to generate random message content
+    private static String generateRandomMessage() {
+        String[] messages = {
+            "Hello!",
+            "Hello, my name is BiG BOi!",
+            "How are you?",
+            "What's up?",
+            "I'm good, thanks!",
+            "This is a random message.",
+            "Let's meet tomorrow.",
+            "Did you watch the game last night?",
+            "I'm feeling hungry.",
+            "Can you send me the report?",
+            "I'll be late today.",
+            "AHHHHHHHHHHHHHHHHH im gonna kms",
+            "lol Just kidding this is sosososoosososososos much fun :^)",
+            "This is another random Message"
+        };
+        return messages[new Random().nextInt(messages.length)];
+    }
 }
