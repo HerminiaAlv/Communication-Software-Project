@@ -12,12 +12,15 @@ import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 
 import java.awt.GridBagLayout;
@@ -40,12 +43,19 @@ public class viewLogChatPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private Client client;
+//	private Map<String,String> users;		// Username, display name
+	private List<User> users;
+	private User currentUser;
+	
+	// Access all keys to the map and fill list with the values
 	
 	public viewLogChatPanel() {
 		setForeground(new Color(135, 206, 250));
 		setBackground(new Color(21, 96, 130));
 		setLayout(null);
 		
+		users = client.generateUsers(5, 10);
+		currentUser = users.get(0);
 		
 		// Panel for text messages box
 //		JPanel chatListBorder = new JPanel();
@@ -59,62 +69,81 @@ public class viewLogChatPanel extends JPanel {
 		splitPane.setBounds(3, 31, 431, 359);
 		
 		
-		List<String> userData = new ArrayList<>();
-        userData.add("User 1");
-        userData.add("User 2");
-        userData.add("User 3");
-        userData.add("User 4");
-        userData.add("User 5");
-		
-		AbstractListModel<String> userListModel = new AbstractListModel<String>() {
-            @Override
-            public int getSize() {
-                return userData.size();
-            }
-
-            @Override
-            public String getElementAt(int index) {
-                return userData.get(index);
-            }
-        };
+		DefaultListModel userData = new DefaultListModel();
+        for (User user : users) {
+        	userData.addElement(user.getUsername());
+        }
        
-		JList userList = new JList<String>(userListModel);
+		
+//		AbstractListModel<String> userListModel = new AbstractListModel<String>() {
+//            @Override
+//            public int getSize() {
+//                return userData.size();
+//            }
+//
+//            @Override
+//            public String getElementAt(int index) {
+//                return userData.get(index);
+//            }
+//        };
+       
+		JList userList = new JList<String>(userData);
 		
 		userList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()){
+				if (!e.getValueIsAdjusting()) {
+					DefaultListModel chatData = new DefaultListModel();
+					for (ChatRoom room : currentUser.getChats())
+						chatData.addElement(room);
 					
-					}
+					JList<ChatRoom>  chatrooms = new JList(chatData);
+//					AbstractListModel<String> chatListModel = new AbstractListModel<String>() {
+//			            @Override
+//			            public int getSize() {
+//			                return chatData.size();
+//			            }
+//
+//			            @Override
+//			            public String getElementAt(int index) {
+//			                return (String) chatData.get(index);
+//			            }
+//			        };
+			       
+//					JList chatList = new JList<ChatRoom>(chatrooms);
+					
+					
+					splitPane.setRightComponent(chatrooms);
 				}
-			});
+			}
+		});
 
 		
 		
 		splitPane.setLeftComponent(userList);
 		
-		List<String> chatData = new ArrayList<>();
-        chatData.add("Chat 1");
-        chatData.add("Chat 2");
-        chatData.add("Chat 3");
-        chatData.add("Chat 4");
-        chatData.add("Chat 5");
-		
-		AbstractListModel<String> chatListModel = new AbstractListModel<String>() {
-            @Override
-            public int getSize() {
-                return chatData.size();
-            }
-
-            @Override
-            public String getElementAt(int index) {
-                return chatData.get(index);
-            }
-        };
-       
-		JList chatList = new JList<String>(chatListModel);
-		
-		
-		splitPane.setRightComponent(chatList);
+//		List<String> chatData = new ArrayList<>();
+//        chatData.add("Chat 1");
+//        chatData.add("Chat 2");
+//        chatData.add("Chat 3");
+//        chatData.add("Chat 4");
+//        chatData.add("Chat 5");
+//		
+//		AbstractListModel<String> chatListModel = new AbstractListModel<String>() {
+//            @Override
+//            public int getSize() {
+//                return chatData.size();
+//            }
+//
+//            @Override
+//            public String getElementAt(int index) {
+//                return chatData.get(index);
+//            }
+//        };
+//       
+//		JList chatList = new JList<String>(chatListModel);
+//		
+//		
+//		splitPane.setRightComponent(chatList);
 		add(splitPane);
 		
 		//add(scrollPane);
