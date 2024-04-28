@@ -122,3 +122,6 @@ CommunicationApp/src/UpdateUserMessage.class
 bin/ClientGUI$6.class
 bin/ClientGUI$7.class
 CommunicationApp/src/ClientGUI$3$1.class
+CommunicationApp/src/ClientHandler.class
+CommunicationApp/src/ClientHandler$1.class
+CommunicationApp/src/Server.class
