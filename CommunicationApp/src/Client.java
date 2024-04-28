@@ -89,7 +89,7 @@ public class Client {
                             break;
                         case CHAT_MESSAGE:
                             new Thread(()->handleChatMessage((ChatMessage) m)).start();
-                            System.out.println("Debug: CHAT_MESSAGE received: " + m.getMessage());
+                            System.out.println("Debug: CHAT_MESSAGE received: " + ((ChatMessage) m).getMessage());
                             break;
                         case GET_LOGS:
                             new Thread(() -> handleGetLogs((LogMessage) m)).start();
@@ -120,6 +120,10 @@ public class Client {
                 e.printStackTrace();
             }
         }
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 
     public void sendMessageToServer(ServerMessage m) { //This method works, it does recognize LoginMessage but nto ChatMessage
@@ -175,16 +179,17 @@ public class Client {
         // Broadcast the message to other clients (excluding the sender)
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chatMessage.setTimestamp(LocalDateTime.now());
+                //chatMessage.setTimestamp(LocalDateTime.now());
                 //chatMessage.setSender(currentUser);
-                mainGUI.updateMessagePanel(chatMessage.toString()); //This should update the GUi message panel 
+                Message fromServer = chatMessage.getMessage();
+                mainGUI.updateMessagePanel(fromServer.toString()); //This should update the GUi message panel 
                 System.out.println("updateMessagePanel in Client");
             }});
     }
     
     public void handleCreateChatMessage(CreateChatMessage createChatMessage) {
-    	System.out.println("Chatroom info received: " + createChatMessage.getParticipantIds() + " " 
-    												  + createChatMessage.getChatName());
+    	// System.out.println("Chatroom info received: " + createChatMessage.getParticipantIds() + " " 
+    	// 											  + createChatMessage.getChatName());
     	// wip
     }
     
@@ -225,9 +230,17 @@ public class Client {
 				try {
                     // TODO remove the test user when we get the server to pass a user on login 
                     // test purposes start
+                    Message msg1 = new Message("M_1", "User_2", "1");
+                    Message msg2 = new Message("M_2", "User_2", "1");
+                    ChatRoom chat = new ChatRoom();
+                    chat.addMessage(msg2);
+                    chat.addMessage(msg1);
                     User testUser = new User();
+                    testUser.addChat(chat);
                     testUser.setIT(true);
+                    testUser.setUserName("User 1");
                     mainGUI = new ClientGUI(getThisClient(), testUser);
+                    currentUser = testUser;
                     // end test 
 
                     // uncomment this when server passes a user
