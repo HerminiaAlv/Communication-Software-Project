@@ -15,9 +15,9 @@ public class CreateChatMessage extends ServerMessage {
         return participantIds;
     }
 
-    public String getChatName() {
-        return chatName;
-    }
+    // public String getChatName() {
+    //     return chatName;
+    // }
 
     // If a successful creation on the server then place chat here
     public void setCreatedChat(ChatRoom createdChat) {
