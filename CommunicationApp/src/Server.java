@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class Server {
     private static final int PORT = 12345;
+
     private  Map<String, ObjectOutputStream> clients = new HashMap<>();
     private  Map<String, String> credentials = new HashMap<>();
 
@@ -130,6 +131,12 @@ public class Server {
             sendMessageToClient(message.getUsername(), message);
             System.out.println("User logged out and connection closed: " + message.getUsername());
         }
+    	if (message.getStatus() == MessageStatus.PENDING) {
+            removeClient(message.getUsername());
+            message.setStatus(MessageStatus.SUCCESS);
+            sendMessageToClient(message.getUsername(), message);
+            System.out.println("User logged out and connection closed: " + message.getUsername());
+        }
         
         
     }
@@ -139,6 +146,12 @@ public class Server {
     }
     
     public void handleUpdateUser(UpdateUserMessage message) {
+    	if (message.getStatus() == MessageStatus.PENDING) {
+            removeClient(message.getUserId());
+            message.setStatus(MessageStatus.SUCCESS);
+            sendMessageToClient(message.getUserId(), message);
+            System.out.println("User logged out and connection closed: " + message.getUserId());
+        }
     	if (message.getStatus() == MessageStatus.PENDING) {
             removeClient(message.getUserId());
             message.setStatus(MessageStatus.SUCCESS);
@@ -155,6 +168,20 @@ public class Server {
         if (participantIds == null || participantIds.isEmpty()) {
             message.setStatus(MessageStatus.FAILED);
             //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
+            //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
+            return;
+        }
+
+        ChatRoom newChat = new ChatRoom(participantIds);
+        
+        message.setCreatedChat(newChat);
+        message.setStatus(MessageStatus.SUCCESS);
+    	// Get participant IDs from the message
+        List<String> participantIds = message.getParticipantIds();
+        
+        // Validate participant list
+        if (participantIds == null || participantIds.isEmpty()) {
+            message.setStatus(MessageStatus.FAILED);
             //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
             return;
         }
