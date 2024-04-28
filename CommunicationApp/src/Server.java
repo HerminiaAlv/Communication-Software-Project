@@ -1,16 +1,14 @@
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Server {
     private static final int PORT = 12345;
-    private Map<String, ObjectOutputStream> clients = new HashMap<>();
+    private  Map<String, ObjectOutputStream> clients = new HashMap<>();
 
     public void start() {
         try {
@@ -23,15 +21,16 @@ public class Server {
 
                 new Thread(new ClientHandler(clientSocket, this)).start();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-
+  
     public synchronized void addClient(String username, ObjectOutputStream out) {
         clients.put(username, out);
     }
-
+    
+    public synchronized void removeClient(String username) {
+        clients.remove(username);
+    }
     public synchronized void sendMessageToClient(String username, ServerMessage message) {
         ObjectOutputStream out = clients.get(username);
         if (out != null) {
