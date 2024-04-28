@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.awt.Font;
 
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -21,6 +22,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -30,11 +33,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+
 import java.util.Random;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 
 enum ITButtonAction {
 	VIEW_LOGS,
@@ -74,6 +80,7 @@ public class ClientGUI extends JFrame{
 	private CreateNewChatPanel createNewChatPanel;
 
 	// Building the main elements of the GUI - these will always be visible
+	@SuppressWarnings("unchecked")
 	public ClientGUI(Client client, User currentUser) {
         this.client = client;
         this.currentUser = currentUser;
@@ -111,7 +118,8 @@ public class ClientGUI extends JFrame{
 		gbl_chatroomPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_chatroomPanel.rowWeights = new double[]{0.0, 0.0, 1.0};
 		chatroomPanel.setLayout(gbl_chatroomPanel);
-		
+		chatroomPanel.setFont(new Font("Monospaced", Font.PLAIN, 8));
+		 
 		// inside chatroomPanel
 		TitledBorder roomBorder = BorderFactory.createTitledBorder(new TitledBorder(new LineBorder(new Color(78,167,46)),"Chat Rooms"));
 		chatroomPanel.setBorder(roomBorder);
@@ -136,31 +144,43 @@ public class ClientGUI extends JFrame{
 		//gbc_list.
 		chatroomPanel.add(pinnedList, gbc_list);
 		
-		JScrollPane nonpinnedChatsScrollPane = new JScrollPane();
+		JScrollPane nonpinnedChatsScrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		nonpinnedChatsScrollPane.setViewportBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		
+		nonpinnedChatsScrollPane.setPreferredSize(new Dimension(80, 80));
+
 		// JScrollPane constraints
 		GridBagConstraints gbc_nonpinnedChatsScrollPane = new GridBagConstraints();
 		gbc_nonpinnedChatsScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_nonpinnedChatsScrollPane.gridx = 0;
 		gbc_nonpinnedChatsScrollPane.gridy = 2; // No gap in gridY, directly after pinnedList
 		chatroomPanel.add(nonpinnedChatsScrollPane, gbc_nonpinnedChatsScrollPane);
-		JList chatrooms = new JList<String>(chats);
+
+		// CHAT LIST DISPLAY
+		@SuppressWarnings("rawtypes")
+		DefaultListModel chatList = new DefaultListModel();
+		for (ChatRoom room : currentUser.getChats())
+			chatList.addElement(room);
+		JList<ChatRoom> chatrooms = new JList(chatList);
+		
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()){
-					//ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+					ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
 					// Need to mssgpanel.setupChatroom(selectedItem)
 					// then invoke new panel
 
 					// TODO Go back and test this when we are actually initializing chatroom objects
 					// need to test the case where mssgPanel is already currentCenterPanel.
+
+					mssgPanel.setupChatroom(selectedItem);
 					invokeNewPanel(mssgPanel);
 					}
 				}
 			});
 		chatrooms.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		chatrooms.createToolTip();
 		nonpinnedChatsScrollPane.setViewportView(chatrooms);
+		
 			
 		// inside westPanel
 		JPanel mainButtonPanel = new JPanel();
