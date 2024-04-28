@@ -7,14 +7,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -22,16 +16,10 @@ import javax.swing.event.ListSelectionListener;
 
 import java.awt.Color;
 import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
-import java.util.Random;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import javax.swing.BorderFactory;
@@ -42,11 +30,6 @@ enum ITButtonAction {
 };
 
 public class ClientGUI extends JFrame{
-/* 	private ObjectOutputStream out;
-    private ObjectInputStream in;
-	private JTextArea textMessages;
-	private JFormattedTextField textBox; */
-
 	//private void createGUI(){
     private Client client; // to access methods from the client
 	private static final long serialVersionUID = 1L; // from JFrame
@@ -55,17 +38,14 @@ public class ClientGUI extends JFrame{
 		// [0] - VIEW_LOGS
 		// [1] - ADD_MODIFY_USERS
 	
-	
     private User currentUser;
     private ChatRoom activeChat; // The chat that is currently being viewed
     private int HEIGHT = 480;
     private int WIDTH = 720;
     //private static int notificationCounter; // This might change 
-
 	private JPanel centerPanel;
 	private JPanel westPanel;
 	private JPanel currentCenterPanel; // This is the panel that is currently visible on the center panel
-
 	// Possible Center Panels
 	private viewLogChatPanel logViewPanel;
 	private modifyUserPanel modifyUserPanel;
@@ -141,6 +121,9 @@ public class ClientGUI extends JFrame{
 		gbc_nonpinnedChatsScrollPane.gridx = 0;
 		gbc_nonpinnedChatsScrollPane.gridy = 2; // No gap in gridY, directly after pinnedList
 		chatroomPanel.add(nonpinnedChatsScrollPane, gbc_nonpinnedChatsScrollPane);
+
+		// How about a new pane like you said, and format it to look like ours its easy copy pasting then do JOptionPane? -- 
+		
 		JList chatrooms = new JList<String>(chats);
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -204,23 +187,19 @@ public class ClientGUI extends JFrame{
 		centerPanel.setOpaque(false);
 		contentPane.add(centerPanel);
 		centerPanel.setLayout(new GridLayout(1, 0, 0, 0));
+
 		//Message Field
-		//mssgPanel = new MessagePanel(); //Error here
+		//mssgPanel = new MessagePanel();
 		mssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); 
 		mssgPanel.setListener(new MessagePanel.MessageListener() {
 			@Override
 			public void onSendMessage (Message message) {
-				//ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE);  //error also here
+				//ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE); 
 				ChatMessage chatMessage = new ChatMessage(message);
 				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
 		});
-		// I mean I checked messagePanel and its set there.. The message,senderID and such such 
-		// So with those changes no error. BUT it also doest work
-		//java.lang.NullPointerException: Cannot invoke "ChatRoom.getMesssages()" because "this.currentChat" is null
-		// Just ClientGUI rn 
-
 		// Create New Chat Initialization
 		createNewChatPanel = new CreateNewChatPanel(currentUser);
 		//userPanel = new UserPanel();
@@ -251,10 +230,9 @@ public class ClientGUI extends JFrame{
 				invokeNewPanel(modifyUserPanel);
 			}																
 		});
-		
-		
-	} // End Constructor 
-
+	
+	} 
+	// End Constructor 
     public void updateMessagePanel(String message) {
         SwingUtilities.invokeLater( new Runnable() {
 			public void run() {
