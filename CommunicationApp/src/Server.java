@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class Server {
     private static final int PORT = 12345;
-    private static Map<String, ObjectOutputStream> clients = new HashMap<>();
+    private  Map<String, ObjectOutputStream> clients = new HashMap<>();
     private  Map<String, String> credentials = new HashMap<>();
 
     public void start() {
