@@ -12,8 +12,7 @@ import java.util.Map;
 
 public class Server {
     private static final int PORT = 12345;
-
-    private  Map<String, ObjectOutputStream> clients = new HashMap<>();
+    private static Map<String, ObjectOutputStream> clients = new HashMap<>();
     private  Map<String, String> credentials = new HashMap<>();
 
     public void start() {
@@ -132,12 +131,13 @@ public class Server {
             System.out.println("User logged out and connection closed: " + message.getUsername());
         }
         
+        
     }
 
     public void handleChatMessage(ChatMessage message) {
         broadcastMessage(message);
     }
-
+    
     public void handleUpdateUser(UpdateUserMessage message) {
     	if (message.getStatus() == MessageStatus.PENDING) {
             removeClient(message.getUserId());
@@ -154,6 +154,7 @@ public class Server {
         // Validate participant list
         if (participantIds == null || participantIds.isEmpty()) {
             message.setStatus(MessageStatus.FAILED);
+            //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
             //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
             return;
         }
@@ -202,4 +203,3 @@ public class Server {
         server.start();
     }
 }
-//test
