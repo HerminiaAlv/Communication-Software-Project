@@ -1,9 +1,10 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class User implements Serializable{
 	private static int count = 0;
-	private int id;
+	// private int id; // username is the ID
 	private String firstName;
 	private String lastName;
 	private String password; // do we need this?
@@ -16,12 +17,16 @@ public class User implements Serializable{
 
 	//constructors
 	public User() { // default constructor for testing purposes
-	
+		this.chats = new ArrayList<>();
+		this.firstName = "Firstname";
+		this.lastName = "Lastname";
+		this.password = "Password";
+		this.username = "Username";
 	}
 	
 	public User(String id, String firstName, String lastName, 
 				String username, String password, boolean is_IT, List<ChatRoom> chats){
-					this.id = ++count;
+					//this.id = ++count;
 					this.firstName = firstName;
 					this.lastName = lastName;
 					this.username = username;
@@ -33,9 +38,9 @@ public class User implements Serializable{
 
 	
 	//getters
-	public int getID() {
-		return id;
-	}
+	// public int getID() {
+	// 	return id;
+	// }
 
 	public String getFirstName(){
 		return firstName;
