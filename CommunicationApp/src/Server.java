@@ -5,10 +5,12 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+
 import java.util.Map;
 
 public class Server {
     private static final int PORT = 12345;
+
     private  Map<String, ObjectOutputStream> clients = new HashMap<>();
 
     public void start() {
@@ -28,11 +30,12 @@ public class Server {
         }
     }
 
+
     public synchronized void addClient(String username, ObjectOutputStream out) {
         clients.put(username, out);
     }
     
-    public synchronized void removeClient(String username) {
+     public synchronized void removeClient(String username) {
         clients.remove(username);
     }
     public synchronized void sendMessageToClient(String username, ServerMessage message) {
@@ -71,9 +74,24 @@ public class Server {
 
         // Send the response back to the client
         // sendMessageToClient(msg);
+    	
+//    	  if (validateCredentials(message.getUsername(), message.getPassword())) {
+//              message.setSuccess(true);
+//              message.setCurrentUser(new User()); 
+//              addClient(message.getUsername(), clients.get(message.getUsername()));
+//          } else {
+//              message.setSuccess(false);
+//          }
+//          sendMessageToClient(message.getUsername(), message);
     }
 
     public void handleLogout(LogoutMessage message) {
+    	if (message.getStatus() == MessageStatus.PENDING) {
+            removeClient(message.getUsername());
+            message.setStatus(MessageStatus.SUCCESS);
+            sendMessageToClient(message.getUsername(), message);
+            System.out.println("User logged out and connection closed: " + message.getUsername());
+        }
         
     }
 
@@ -82,10 +100,29 @@ public class Server {
     }
 
     public void handleUpdateUser(UpdateUserMessage message) {
-        
+    	if (message.getStatus() == MessageStatus.PENDING) {
+            removeClient(message.getUserId());
+            message.setStatus(MessageStatus.SUCCESS);
+            sendMessageToClient(message.getUserId(), message);
+            System.out.println("User logged out and connection closed: " + message.getUserId());
+        }
     }
 
     public void handleCreateChat(CreateChatMessage message) {
+    	// Get participant IDs from the message
+        List<String> participantIds = message.getParticipantIds();
+        
+        // Validate participant list
+        if (participantIds == null || participantIds.isEmpty()) {
+            message.setStatus(MessageStatus.FAILED);
+            //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
+            return;
+        }
+
+        ChatRoom newChat = new ChatRoom(participantIds);
+        
+        message.setCreatedChat(newChat);
+        message.setStatus(MessageStatus.SUCCESS);
         
     }
     
@@ -108,4 +145,3 @@ public class Server {
         server.start();
     }
 }
-//test
