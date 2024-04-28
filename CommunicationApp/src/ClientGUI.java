@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -156,9 +158,6 @@ public class ClientGUI extends JFrame{
 
 					// TODO Go back and test this when we are actually initializing chatroom objects
 					// need to test the case where mssgPanel is already currentCenterPanel.
-
-					mssgPanel.setupChatroom(selectedItem);
-					invokeNewPanel(mssgPanel);
 					//invokeNewPanel(mssgPanel); this links to the chat messages area
 					// MessagePanel newMssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); // what does this do?
 					
