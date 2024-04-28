@@ -74,8 +74,10 @@ public class Message implements Serializable{
 	}
 
 	public String toString() {
-        User sender = new User();
-        sender.setUserName("Dummy Sender");
-        return "[" + formattedTimestamp + "] " + sender.getUsername() + ": " + message;
+        //User sender = new User();
+        //sender.setUserName("Dummy Sender");
+		setTimestamp(timestamp);
+        //return "[" + formattedTimestamp + "] " + sender.getUsername() + ": " + message;
+		return "[" + formattedTimestamp + "] " + sender + ":\n " + message;
     }
 }

@@ -12,6 +12,7 @@ public class ChatRoom implements Serializable {
     public ChatRoom() {
         this.messages = new ArrayList<>();
         this.participants = new ArrayList<>();
+        this.chatID = UUID.randomUUID().toString();
     }
 
     // Constructor for a new chatroom from a user
@@ -32,6 +33,10 @@ public class ChatRoom implements Serializable {
     // Setters
     public void setChatID(String chatID) {
         this.chatID = chatID;
+    }
+
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
     }
 
     // Public Methods
@@ -83,11 +88,23 @@ public class ChatRoom implements Serializable {
 
     public boolean isParticipant(String userID) {
         for (String user : participants) {
-            if (userID == user)
+            if (user.compareTo(userID) == 0)
                 return true;
         }
         // not found
         return false;
+    }
+
+    public String toString() {
+        String s = "";
+        for (String user : participants) {
+            s = s + user + ", ";
+        }
+        // bleh this is bad
+        // if (s.length() > 18){
+        //     s = s.substring(0, 17) + "...";
+        // }
+        return s;
     }
 
     // private methods
