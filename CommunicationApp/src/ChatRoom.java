@@ -53,7 +53,7 @@ public class ChatRoom implements Serializable {
         return participants;
     }
 
-    public List<Message> getMesssages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
