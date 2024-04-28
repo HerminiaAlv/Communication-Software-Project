@@ -30,14 +30,16 @@ public class MessagePanel extends JPanel {
 	private MessageListener listener;
 	
 	public interface MessageListener {
-		void onSendMessage(String message) throws IOException;
+		void onSendMessage(Message message) throws IOException;
 	}
 	
 	public void setListener (MessageListener listener) {
 		this.listener = listener;
 	}
 
-	public MessagePanel() {
+	public MessagePanel(Client client, ChatRoom currentChat) {
+		this.currentChat = currentChat;
+		this.client = client;
 		initUI();
 	}
 
@@ -79,7 +81,12 @@ public class MessagePanel extends JPanel {
 		textMessagesBorder.setLayout(new BorderLayout(0, 0));
 		
 		textMessages = new JTextArea();
-		String test = "Testing textMessage";
+		//String test = "Testing textMessage";
+		String test = "";
+		// Populate text area
+		for (Message m : currentChat.getMesssages())
+			test = test + m.getMessage() + "\n";
+		
 		textMessages.setEditable(false);
 		textMessages.append(test);
 		//textMessagesBorder.add(textMessages);
@@ -101,18 +108,7 @@ public class MessagePanel extends JPanel {
 		btnNewButton.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
-				System.out.println("Send Button Pressed");
-				if (listener != null) {
-					try {
-						listener.onSendMessage(textBox.getText());
-						System.out.println("Listener inside send button" + textBox.getText());
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					textBox.setText("");
-					textBox.requestFocus();
-				}
+				sendButtonClicked();
             }
 		});
 		
@@ -136,6 +132,22 @@ public class MessagePanel extends JPanel {
 		roomMembers.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		
 		participantsBorder.add(roomMembers, BorderLayout.CENTER);
+	}
+
+	public void sendButtonClicked() {
+		System.out.println("Send Button Pressed");
+		if (listener != null) {
+			try {
+				//listener.onSendMessage(textBox.getText());
+				Message newMessage = new Message(textBox.getText(), client.getCurrentUser().getUsername(), currentChat.getChatID());
+				listener.onSendMessage(newMessage);
+				System.out.println("Listener inside send button" + textBox.getText());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			textBox.setText("");
+			textBox.requestFocus();
+		}
 	}
 
 	/**
