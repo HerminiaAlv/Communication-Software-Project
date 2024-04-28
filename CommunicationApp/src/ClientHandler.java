@@ -8,8 +8,8 @@ import java.util.List;
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
     private final Server server;
-    private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
+    private ObjectInputStream inputStream;
 
     public ClientHandler(Socket clientSocket, Server server) {
         this.clientSocket = clientSocket;
@@ -26,34 +26,37 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
+
             while (true) {
-                Object messageObj = inputStream.readObject();
-                if (messageObj instanceof ServerMessage) {
-                    ServerMessage message = (ServerMessage) messageObj;
+                List<ServerMessage> messages = (List<ServerMessage>) inputStream.readObject();
+                for (ServerMessage message : messages) {
+                     
                     switch (message.getType()) {
                         case LOGIN:
-                            Server.handleLogin((LoginMessage) message);
-                            break;
+                            server.handleLogin((LoginMessage) message, outputStream);
+                            sendMessageToClient(message);
+                            break; 
                         case LOGOUT:
-                        	Server.handleLogout((LogoutMessage) message);
+                        	server.handleLogout((LogoutMessage) message);
                             break;
                         case CHAT_MESSAGE:
-                        	Server.handleChatMessage((ChatMessage) message);
+                        	server.handleChatMessage((ChatMessage) message);
+                            //sendMessageToClient(message);
                             break;
                         case UPDATE_USER:
-                        	Server.handleUpdateUser((UpdateUserMessage) message);
+                        	server.handleUpdateUser((UpdateUserMessage) message);
                             break;
                         case CREATE_CHAT:
-                        	Server.handleCreateChat((CreateChatMessage) message);
+                        	server.handleCreateChat((CreateChatMessage) message);
                             break;
                         case ADD_USERS_TO_CHAT:
-                        	Server.handleAddUsersToChat((AddUsersToChatMessage) message);
+                        	server.handleAddUsersToChat((AddUsersToChatMessage) message);
                             break;
                         case NOTIFY_USER:
-                        	Server.handleNotifyUser((NotifyMessage) message);
+                        	server.handleNotifyUser((NotifyMessage) message);
                             break;
                         case PIN_CHAT:
-                        	Server.handlePinChat((PinChatMessage) message);
+                        	server.handlePinChat((PinChatMessage) message);
                             break;
                         default:
                             System.out.println("Received undefined message type.");
@@ -63,11 +66,82 @@ public class ClientHandler implements Runnable {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error reading from client: " + e.getMessage());
-        } finally {
+        } 
+        finally {
             closeConnection();
-        }
+           }
+        //     outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+        //     inputStream = new ObjectInputStream(clientSocket.getInputStream());
+
+        //     while (true) {
+
+        //     }
+        // } catch (IOException | ClassNotFoundException ex) {
+        //     ex.printStackTrace();
+        // }
+
+        
     }
 
+    private void handleServerMessage(ServerMessage message) {
+//        if (message.getType() == null) {
+//            System.out.println("Received message with null type: " + message);
+//            return;
+//        }
+
+        System.out.println("Received message type: " + message.getType());
+        MessageTypes type = message.getType();
+
+        switch (type) {
+            case LOGIN:
+                //System.out.println("Login message received: " + message.getMessage());
+                //handleLoginMessage((LoginMessage) message);
+                break;
+            case CHAT_MESSAGE:
+            if (message instanceof ChatMessage) {
+                ChatMessage chatMessage = (ChatMessage) message;
+                System.out.println("Chat message received " + chatMessage.getMessage());
+                server.broadcastMessage(chatMessage);
+            } else {
+                System.out.println("Message is not a ChatMessage instance.");
+            }
+            break;
+            default:
+                System.out.println("Unhandled message type: " + message.getType());
+        }
+        
+    }
+
+    private void closeConnection() {
+    	try {
+    		if (inputStream != null) inputStream.close();
+    		if (outputStream != null) outputStream.close();
+    		if (clientSocket != null) clientSocket.close();
+    	} catch (IOException e) {
+    		System.out.println("Error closing connection: " + e.getMessage());
+            }
+            
+    	}
+
+//     private void handleLoginMessage(LoginMessage msg) {
+//         // Verify the username and password
+// //        if ("amiller2".equals(msg.getUsername()) && "test".equals(msg.getPassword())) {
+// //            msg.setSuccess(true);
+// //            System.out.println("Login successful for: " + msg.getUsername());
+// //        } else {
+// //            msg.setSuccess(false);
+// //            System.out.println("Login failed for: " + msg.getUsername());
+// //        }
+
+//     }
+
+    // For chat messages
+    public void handleChatMessage(ChatMessage chatMessage) {
+
+        // Send the message to all clients
+        server.broadcastMessage((ServerMessage) chatMessage);
+        sendMessageToClient(chatMessage);
+    }
 
     private void sendMessageToClient(ServerMessage message) {
         try {
@@ -78,15 +152,5 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void closeConnection() {
-    	try {
-    		if (inputStream != null) inputStream.close();
-    		if (outputStream != null) outputStream.close();
-    		if (clientSocket != null) clientSocket.close();
-    	} catch (IOException e) {
-    		System.out.println("Error closing connection: " + e.getMessage());
-    	}
     }
 }
