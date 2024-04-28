@@ -6,8 +6,7 @@ public class PinChatMessage extends ServerMessage {
     	this.username = username;
         this.setType(MessageTypes.PIN_CHAT);
         this.setStatus(MessageStatus.PENDING);
-        this.chatId = chatId;
-       
+        this.chatId = chatId;       
     }
 
     public String getChatId() {

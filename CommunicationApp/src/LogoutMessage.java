@@ -18,6 +18,7 @@ public class LogoutMessage extends ServerMessage {
     public LogoutMessage(String username){
     	this.type = MessageTypes.LOGOUT;
     	this.setUsername(username);
+    	
     }
 
 
