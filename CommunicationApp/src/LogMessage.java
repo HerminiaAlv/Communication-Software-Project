@@ -1,24 +1,20 @@
+import java.util.List;
+
 public class LogMessage extends ServerMessage {
     private String userId; 			
-    private MessageStatus status; 	
     private String requestDetails; 	
+    private List<ChatRoom> userChats;
 
     // Constructor for log message
-    public LogMessage(String userId, String requestDetails) {
+    public LogMessage(String userId) {
         this.setType(MessageTypes.GET_LOGS);
         this.setStatus(MessageStatus.PENDING);
         this.userId = userId;
-        this.requestDetails = requestDetails;
+        //this.requestDetails = requestDetails;
     }
 
     // Getter and setter for the status of the log request
-    public MessageStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(MessageStatus status) {
-        this.status = status;
-    }
+    // get and set handled by the super class
 
     // Getter for the user ID
     public String getUserId() {
@@ -28,5 +24,13 @@ public class LogMessage extends ServerMessage {
     // Getter for the request details
     public String getRequestDetails() {
         return requestDetails;
+    }
+
+    public void setUserChats(List<ChatRoom> userChats) {
+        this.userChats = userChats;
+    }
+
+    public List<ChatRoom> getUserChats() {
+        return userChats;
     }
 }
