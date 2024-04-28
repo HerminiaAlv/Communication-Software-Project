@@ -26,9 +26,12 @@ public class MessagePanel extends JPanel {
 	private ObjectOutputStream out;
     private ObjectInputStream in;
 	private JFormattedTextField textBox;
-	private JTextArea textMessages;
-	private MessageListener listener;
 	
+	private MessageListener listener;
+
+	// Edittable
+	JTextArea roomMembers;
+	private JTextArea textMessages;
 	public interface MessageListener {
 		void onSendMessage(Message message) throws IOException;
 	}
@@ -81,14 +84,9 @@ public class MessagePanel extends JPanel {
 		textMessagesBorder.setLayout(new BorderLayout(0, 0));
 		
 		textMessages = new JTextArea();
-		//String test = "Testing textMessage";
-		String test = "";
-		// Populate text area
-		for (Message m : currentChat.getMesssages())
-			test = test + m.getMessage() + "\n";
-		
+		populateChatMessages();
 		textMessages.setEditable(false);
-		textMessages.append(test);
+		//textMessages.append(test);
 		//textMessagesBorder.add(textMessages);
 		textMessages.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		textMessages.setWrapStyleWord(true);
@@ -125,9 +123,11 @@ public class MessagePanel extends JPanel {
 		lblRoomParticipants.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		participantsBorder.add(lblRoomParticipants, BorderLayout.WEST);
 		
-		JTextArea roomMembers = new JTextArea();
-		roomMembers.setText(" John (Online), Mark, Dave\r\n");
-		roomMembers.setToolTipText("List of current room's members.");
+		roomMembers = new JTextArea();
+		//roomMembers.setText(" John (Online), Mark, Dave\r\n");
+		populateParticipants();
+		// roomMembers.setText(test);
+		 roomMembers.setToolTipText("List of current room's members.");
 		roomMembers.setEditable(false);
 		roomMembers.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		
@@ -158,15 +158,36 @@ public class MessagePanel extends JPanel {
 	 *                 messages, participants, and other relevant information
 	 *                 related to the provided chat room.
 	 */
-	public void setupChatroom(ChatRoom chatroom) {
-		
+	public void setupChatroom(ChatRoom chatroom) { //change current view
+		// update participants list and chat messages
+		currentChat = chatroom;
+		populateParticipants();
+		populateChatMessages();
 	}
-
 	// public void setCurrentChat(ChatRoom chatroom) {
 	// 	this.currentChat = chatroom;
 	// }
 
 	public ChatRoom getCurrentChat() {
 		return currentChat;
+	}
+
+	private void populateParticipants() {
+		String toPlace = "";
+		for (String user : currentChat.getParticipants()) {
+			toPlace = toPlace + user + ", ";
+		}
+		roomMembers.setText(toPlace);
+		roomMembers.revalidate();
+		roomMembers.repaint();
+	}
+
+	private void populateChatMessages() {		//String test = "Testing textMessage";
+		String test = "";
+		// Populate text area
+		for (Message m : currentChat.getMesssages())
+			test = test + m.toString() + "\n";
+		
+		textMessages.setText(test);
 	}
 }
