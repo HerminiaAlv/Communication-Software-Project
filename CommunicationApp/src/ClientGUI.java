@@ -7,9 +7,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,16 +25,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-
 import java.util.Random;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -48,11 +43,6 @@ enum ITButtonAction {
 };
 
 public class ClientGUI extends JFrame{
-/* 	private ObjectOutputStream out;
-    private ObjectInputStream in;
-	private JTextArea textMessages;
-	private JFormattedTextField textBox; */
-
 	//private void createGUI(){
     private Client client; // to access methods from the client
 	private static final long serialVersionUID = 1L; // from JFrame
@@ -61,20 +51,17 @@ public class ClientGUI extends JFrame{
 		// [0] - VIEW_LOGS
 		// [1] - ADD_MODIFY_USERS
 	
-	
     private User currentUser;
     private ChatRoom activeChat; // The chat that is currently being viewed
     private int HEIGHT = 480;
     private int WIDTH = 720;
     //private static int notificationCounter; // This might change 
-
 	private JPanel centerPanel;
 	private JPanel westPanel;
 	private JPanel currentCenterPanel; // This is the panel that is currently visible on the center panel
-
 	// Possible Center Panels
 	private viewLogChatPanel logViewPanel;
-	//private ModifyUserPanel modifyUserPanel;
+	private modifyUserPanel modifyUserPanel;
 	private MessagePanel mssgPanel;
 	private UserPanel userPanel;
 	private CreateNewChatPanel createNewChatPanel;
@@ -84,10 +71,6 @@ public class ClientGUI extends JFrame{
 	public ClientGUI(Client client, User currentUser) {
         this.client = client;
         this.currentUser = currentUser;
-		
-		//activeChat = currentUser.getChats().get(0); // Active
-
-
 		//client.setupConnection();
         // this.activeChat = null;
 		
@@ -161,7 +144,7 @@ public class ClientGUI extends JFrame{
 		for (ChatRoom room : currentUser.getChats())
 			chatList.addElement(room);
 		JList<ChatRoom> chatrooms = new JList(chatList);
-		
+
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()){
@@ -197,9 +180,9 @@ public class ClientGUI extends JFrame{
 		// These are IT buttons
 		ITButtons = new JButton[2];
 		JButton viewLogsButton = new JButton("View Logs");
-		JButton modifyUsersButtons = new JButton("Modify/Add Users");
+		JButton modifyUsersButton = new JButton("Modify/Add Users");
 		ITButtons[ITButtonAction.VIEW_LOGS.ordinal()] = viewLogsButton;
-		ITButtons[ITButtonAction.ADD_MODIFY_USERS.ordinal()] = modifyUsersButtons;
+		ITButtons[ITButtonAction.ADD_MODIFY_USERS.ordinal()] = modifyUsersButton;
 		
 		// Button Display Logic 
 		if (!currentUser.isIT()) { // Standard user
@@ -228,23 +211,28 @@ public class ClientGUI extends JFrame{
 		centerPanel.setOpaque(false);
 		contentPane.add(centerPanel);
 		centerPanel.setLayout(new GridLayout(1, 0, 0, 0));
+
 		//Message Field
-		mssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); // initialize the currentChat of message panel with users first chat. Might change
+		//mssgPanel = new MessagePanel();
+		mssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); 
 		mssgPanel.setListener(new MessagePanel.MessageListener() {
 			@Override
-			public void onSendMessage (Message mssg) {
-				ChatMessage chatMessage = new ChatMessage(mssg);
-				new Thread(()->{client.sendMessageToServer(chatMessage);}).start();
+			public void onSendMessage (Message message) {
+				//ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE); 
+				ChatMessage chatMessage = new ChatMessage(message);
+				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
 		});
-
 		// Create New Chat Initialization
 		createNewChatPanel = new CreateNewChatPanel(currentUser);
 		//userPanel = new UserPanel();
 
 		// Log Viewing Panel Initialization
 		logViewPanel = new viewLogChatPanel();
+		
+		// Modify User Panel Initialization
+		modifyUserPanel = new modifyUserPanel();
 
 		// Placing objects on the center panel
 		//centerPanel.add(mssgPanel,BorderLayout.CENTER);
@@ -261,9 +249,14 @@ public class ClientGUI extends JFrame{
 				invokeNewPanel(logViewPanel);
 			}																
 		});
-		
-	} // End Constructor 
-
+		modifyUsersButton.addActionListener(new ActionListener() {	
+			public void actionPerformed(ActionEvent e) {
+				invokeNewPanel(modifyUserPanel);
+			}																
+		});
+	
+	} 
+	// End Constructor 
     public void updateMessagePanel(String message) {
         SwingUtilities.invokeLater( new Runnable() {
 			public void run() {

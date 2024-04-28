@@ -3,10 +3,11 @@ import java.util.List;
 public class AddUsersToChatMessage extends ServerMessage {
     private String chatId; 
     private List<String> newParticipantIds;
+    private String username;
 
-    public AddUsersToChatMessage(String chatId, List<String> newParticipantIds) {
-        super(MessageTypes.ADD_USERS_TO_CHAT, null);
-        this.chatId = chatId;
+    public AddUsersToChatMessage(String username, String chatId, List<String> newParticipantIds) {
+        this.username = username;
+    	this.chatId = chatId;
         this.newParticipantIds = newParticipantIds;
     }
 
@@ -17,4 +18,12 @@ public class AddUsersToChatMessage extends ServerMessage {
     public List<String> getNewParticipantIds() {
         return newParticipantIds;
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }

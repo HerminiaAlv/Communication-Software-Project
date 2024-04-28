@@ -184,6 +184,7 @@ public class Client {
                 //chatMessage.setTimestamp(LocalDateTime.now());
                 //chatMessage.setSender(currentUser);
                 Message fromServer = chatMessage.getMessage();
+                fromServer.setTimestamp(LocalDateTime.now());
                 mainGUI.updateMessagePanel(fromServer.toString()); //This should update the GUi message panel 
                 System.out.println("updateMessagePanel in Client");
             }});
