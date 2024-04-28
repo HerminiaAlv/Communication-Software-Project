@@ -235,6 +235,7 @@ public class Client {
                     ChatRoom chat = new ChatRoom();
                     chat.addMessage(msg2);
                     chat.addMessage(msg1);
+                    chat.setChatID("Chat_1");
                     User testUser = new User();
                     testUser.addChat(chat);
                     testUser.setIT(true);
