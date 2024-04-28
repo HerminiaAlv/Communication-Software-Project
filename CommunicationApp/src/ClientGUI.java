@@ -205,15 +205,21 @@ public class ClientGUI extends JFrame{
 		contentPane.add(centerPanel);
 		centerPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		//Message Field
-		mssgPanel = new MessagePanel();
+		//mssgPanel = new MessagePanel(); //Error here
+		mssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); 
 		mssgPanel.setListener(new MessagePanel.MessageListener() {
 			@Override
-			public void onSendMessage (String mssg) {
-				ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE);
+			public void onSendMessage (Message message) {
+				//ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE);  //error also here
+				ChatMessage chatMessage = new ChatMessage(message);
 				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
 		});
+		// I mean I checked messagePanel and its set there.. The message,senderID and such such 
+		// So with those changes no error. BUT it also doest work
+		//java.lang.NullPointerException: Cannot invoke "ChatRoom.getMesssages()" because "this.currentChat" is null
+		// Just ClientGUI rn 
 
 		// Create New Chat Initialization
 		createNewChatPanel = new CreateNewChatPanel(currentUser);
