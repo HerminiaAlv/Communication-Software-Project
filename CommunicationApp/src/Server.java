@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -12,9 +14,14 @@ public class Server {
     private static final int PORT = 12345;
 
     private  Map<String, ObjectOutputStream> clients = new HashMap<>();
+    private  Map<String, String> credentials = new HashMap<>();
 
     public void start() {
-        try {
+    	
+    	populateCredentials();
+    	
+        
+    	try {
             ServerSocket serverSocket = new ServerSocket(PORT);
             System.out.println("Server started on port " + PORT);
 
@@ -65,25 +72,57 @@ public class Server {
             }
         }
     }
+    
+    
     public void handleLogin(LoginMessage msg, ObjectOutputStream outputStream) {	
-    	if (msg.getStatus() == MessageStatus.PENDING) {
-    		msg.setStatus(MessageStatus.SUCCESS);
-    		msg.setSuccess(true);
-            addClient(msg.getUsername(), outputStream);
+    	
+        
+        if (msg.getStatus() == MessageStatus.PENDING) {
+        	if (validateCredentials(msg.getUsername(), msg.getPassword()))
+        	{
+        		msg.setStatus(MessageStatus.SUCCESS);
+        		msg.setSuccess(true);
+                addClient(msg.getUsername(), outputStream);
+                
+        		
+        	} else 
+        	{
+        		msg.setStatus(MessageStatus.FAILED);
+        	}
+    		
     	}//
+
+        
 
         // Send the response back to the client
         // sendMessageToClient(msg);
     	
-//    	  if (validateCredentials(message.getUsername(), message.getPassword())) {
-//              message.setSuccess(true);
-//              message.setCurrentUser(new User()); 
-//              addClient(message.getUsername(), clients.get(message.getUsername()));
-//          } else {
-//              message.setSuccess(false);
-//          }
-//          sendMessageToClient(message.getUsername(), message);
+        /*
+    	  if (validateCredentials(message.getUsername(), message.getPassword())) {
+              message.setSuccess(true);
+              message.setCurrentUser(new User());  // where I need build user
+              addClient(message.getUsername(), clients.get(message.getUsername()));
+          } else {
+              message.setSuccess(false);
+          }
+          sendMessageToClient(message.getUsername(), message);
+
+          */
     }
+
+
+    public boolean validateCredentials(String username, String password)
+    {
+        if (credentials.containsKey(username))
+        {
+            if (credentials.get(username).compareTo(password) == 0)
+            return true;
+        }
+
+       return false;
+    }
+    
+    
 
     public void handleLogout(LogoutMessage message) {
     	if (message.getStatus() == MessageStatus.PENDING) {
@@ -137,7 +176,25 @@ public class Server {
     public void handleAddUsersToChat(AddUsersToChatMessage message) {
     
     }
+
+    public void populateCredentials()
+    {
+        try (BufferedReader br = new BufferedReader(new FileReader("credentialsData.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] cred = line.split(",");
+                
+                credentials.put(cred[2], cred[3]);
+                //System.out.print("")
+               
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading credentials file: " + e.getMessage());
+        }
+    }
     
+
+
         
 
     public static void main(String[] args) {
