@@ -1,4 +1,6 @@
 import java.awt.EventQueue;
+import java.awt.Font;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -9,13 +11,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.awt.Font;
-
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -26,6 +21,7 @@ import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.ListSelectionModel;
@@ -113,6 +109,7 @@ public class ClientGUI extends JFrame{
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 0;
 		//chatroomPanel.add(chatroomPanel, gbc_lblNewLabel);
+		//bc_lblNewLabel.setFont(new Font("Monospaced", Font.PLAIN, 8));
 				
 		JList pinnedList = new JList<String>(pinned);
 		pinnedList.repaint();
@@ -143,20 +140,27 @@ public class ClientGUI extends JFrame{
 		DefaultListModel chatList = new DefaultListModel();
 		for (ChatRoom room : currentUser.getChats())
 			chatList.addElement(room);
-		JList<ChatRoom> chatrooms = new JList(chatList);
 
+		JList<ChatRoom> chatrooms = new JList(chatList);
+		
+		chatrooms.setFont(new Font("Aptos", Font.BOLD, 12));
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()){
-					ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
-					// Need to mssgpanel.setupChatroom(selectedItem)
-					// then invoke new panel
-
+					// This is where we will display the chatroom messages
+					// Goal: When a chatroom is selected, display the chatroom logged messages (Assume that correct logged messaging will be implemented)
+					   ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+					   //mssgPanel.setupChatroom(selectedItem)
 					// TODO Go back and test this when we are actually initializing chatroom objects
 					// need to test the case where mssgPanel is already currentCenterPanel.
 
 					mssgPanel.setupChatroom(selectedItem);
 					invokeNewPanel(mssgPanel);
+					//invokeNewPanel(mssgPanel); this links to the chat messages area
+					// MessagePanel newMssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); // what does this do?
+					
+					//JOptionPane that will show the chatroom selected's messages (logged messages);
+					//JOptionPane.showMessageDialog(null, "Chatroom selected: " + chatrooms.getSelectedValue());
 					}
 				}
 			});
@@ -254,7 +258,7 @@ public class ClientGUI extends JFrame{
 				invokeNewPanel(modifyUserPanel);
 			}																
 		});
-	
+				
 	} 
 	// End Constructor 
     public void updateMessagePanel(String message) {
@@ -304,12 +308,20 @@ public class ClientGUI extends JFrame{
 
 	// Private Testing variables
 	// private variables just for testing
-	private String[] chats =  { "Chat Room 1",
-			"Chat Room 2",
-			"Chat Room 3",
-			"Chat Room 4",
-			"Chat Room 5",
-		};
+/* 	ArrayList<String> chats = new ArrayList<String>(){
+		for (ChatRoom room : chatRooms) {
+			chats.add(room.getChatID());
+		}
+	} */
+	private String[] chats =  { "Chat 1",
+				"Chat 2",
+				"Chat 3",
+				"Chat 4",
+				"Chat 5",
+				"Chat 6",
+				"Chat 7",
+				"Chat 8",
+				"Chat 9"};
 		
 	private String[] pinned =  { "Pinned Chat 1",
 				"Pinned Chat 2",
@@ -333,3 +345,5 @@ public class ClientGUI extends JFrame{
 		});
 	}
 }
+
+	
