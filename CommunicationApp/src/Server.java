@@ -176,20 +176,6 @@ public class Server {
         
         message.setCreatedChat(newChat);
         message.setStatus(MessageStatus.SUCCESS);
-    	// Get participant IDs from the message
-        List<String> participantIds = message.getParticipantIds();
-        
-        // Validate participant list
-        if (participantIds == null || participantIds.isEmpty()) {
-            message.setStatus(MessageStatus.FAILED);
-            //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
-            return;
-        }
-
-        ChatRoom newChat = new ChatRoom(participantIds);
-        
-        message.setCreatedChat(newChat);
-        message.setStatus(MessageStatus.SUCCESS);
         
     }
     
