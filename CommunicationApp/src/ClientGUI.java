@@ -99,7 +99,7 @@ public class ClientGUI extends JFrame{
 		gbl_chatroomPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_chatroomPanel.rowWeights = new double[]{0.0, 0.0, 1.0};
 		chatroomPanel.setLayout(gbl_chatroomPanel);
-		chatroomPanel.setFont(new Font("Monospaced", Font.PLAIN, 8));
+
 		 
 		// inside chatroomPanel
 		TitledBorder roomBorder = BorderFactory.createTitledBorder(new TitledBorder(new LineBorder(new Color(78,167,46)),"Chat Rooms"));
@@ -156,7 +156,6 @@ public class ClientGUI extends JFrame{
 					   invokeNewPanel(mssgPanel);
 					// Need to mssgpanel.setupChatroom(selectedItem)
 					// then invoke new panel
-
 					// TODO Go back and test this when we are actually initializing chatroom objects
 					// need to test the case where mssgPanel is already currentCenterPanel.
 					//invokeNewPanel(mssgPanel); this links to the chat messages area

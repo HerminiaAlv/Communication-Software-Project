@@ -131,14 +131,6 @@ public class Server {
             sendMessageToClient(message.getUsername(), message);
             System.out.println("User logged out and connection closed: " + message.getUsername());
         }
-    	if (message.getStatus() == MessageStatus.PENDING) {
-            removeClient(message.getUsername());
-            message.setStatus(MessageStatus.SUCCESS);
-            sendMessageToClient(message.getUsername(), message);
-            System.out.println("User logged out and connection closed: " + message.getUsername());
-        }
-        
-        
     }
 
     public void handleChatMessage(ChatMessage message) {
@@ -146,12 +138,6 @@ public class Server {
     }
     
     public void handleUpdateUser(UpdateUserMessage message) {
-    	if (message.getStatus() == MessageStatus.PENDING) {
-            removeClient(message.getUserId());
-            message.setStatus(MessageStatus.SUCCESS);
-            sendMessageToClient(message.getUserId(), message);
-            System.out.println("User logged out and connection closed: " + message.getUserId());
-        }
     	if (message.getStatus() == MessageStatus.PENDING) {
             removeClient(message.getUserId());
             message.setStatus(MessageStatus.SUCCESS);
@@ -167,7 +153,6 @@ public class Server {
         // Validate participant list
         if (participantIds == null || participantIds.isEmpty()) {
             message.setStatus(MessageStatus.FAILED);
-            //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
             //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
             return;
         }
