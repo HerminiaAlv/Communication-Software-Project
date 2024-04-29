@@ -143,3 +143,7 @@ bin/NotifyMessageTest.class
 bin/PinChatMessageTest.class
 bin/ServerMessageTest.class
 bin/UpdateUserMessageTest.class
+CommunicationApp/src/AddUsersToChatMessage.class
+CommunicationApp/src/CreateChatMessage.class
+CommunicationApp/src/NotifyMessage.class
+CommunicationApp/src/PinChatMessage.class
