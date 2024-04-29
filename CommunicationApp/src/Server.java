@@ -7,10 +7,12 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+
 import java.util.Map;
 
 public class Server {
     private static final int PORT = 12345;
+
     private  Map<String, ObjectOutputStream> clients = new HashMap<>();
     private  Map<String, String> credentials = new HashMap<>();
 
@@ -35,11 +37,12 @@ public class Server {
         }
     }
 
+
     public synchronized void addClient(String username, ObjectOutputStream out) {
         clients.put(username, out);
     }
     
-    public synchronized void removeClient(String username) {
+     public synchronized void removeClient(String username) {
         clients.remove(username);
     }
     public synchronized void sendMessageToClient(String username, ServerMessage message) {
@@ -128,13 +131,12 @@ public class Server {
             sendMessageToClient(message.getUsername(), message);
             System.out.println("User logged out and connection closed: " + message.getUsername());
         }
-        
     }
 
     public void handleChatMessage(ChatMessage message) {
         broadcastMessage(message);
     }
-
+    
     public void handleUpdateUser(UpdateUserMessage message) {
     	if (message.getStatus() == MessageStatus.PENDING) {
             removeClient(message.getUserId());

@@ -142,6 +142,7 @@ public class ClientGUI extends JFrame{
 		DefaultListModel chatList = new DefaultListModel();
 		for (ChatRoom room : currentUser.getChats())
 			chatList.addElement(room);
+
 		JList<ChatRoom> chatrooms = new JList(chatList);
 		chatrooms.setFont(new Font("Aptos", Font.BOLD, 11));
 
@@ -150,16 +151,13 @@ public class ClientGUI extends JFrame{
 				if (!e.getValueIsAdjusting()){
 					// This is where we will display the chatroom messages
 					// Goal: When a chatroom is selected, display the chatroom logged messages (Assume that correct logged messaging will be implemented)
-					// ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+					   //ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
 					   //mssgPanel.setupChatroom(selectedItem);
-					   //invokeNewPanel(mssgPanel);
+					   invokeNewPanel(mssgPanel);
 					// Need to mssgpanel.setupChatroom(selectedItem)
 					// then invoke new panel
-
 					// TODO Go back and test this when we are actually initializing chatroom objects
 					// need to test the case where mssgPanel is already currentCenterPanel.
-
-					//mssgPanel.setupChatroom(selectedItem);
 					//invokeNewPanel(mssgPanel); this links to the chat messages area
 					// MessagePanel newMssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); // what does this do?
 					
@@ -273,7 +271,6 @@ public class ClientGUI extends JFrame{
 			}
 			//displayLoggedMessages(activeChat);
 		});
-		
 	} 
 	// End Constructor 
     public void updateMessagePanel(String message) {
@@ -380,3 +377,5 @@ public class ClientGUI extends JFrame{
 		});
 	}
 }
+
+	
