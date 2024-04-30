@@ -168,9 +168,9 @@ public class Server {
         	{
         		msg.setStatus(MessageStatus.SUCCESS);
         		msg.setSuccess(true);
+                msg.setAllUsers(allUsers);
+                msg.setCurrentUser(buildUser(msg.getUsername())); // build this user
                 addClient(msg.getUsername(), outputStream);
-                
-        		
         	} else 
         	{
         		msg.setStatus(MessageStatus.FAILED);
@@ -326,10 +326,13 @@ public class Server {
             else // buildChatRoom returned null
                 System.out.println(chatFilePath + "was not found and did not build correctly.");
         }
-
+        boolean is_it = false;
+        if (userDetails[3].compareTo("1") == 0) {
+            is_it = true;
+        }
         // Creating a new User object with detailed constructor
         User user = new User(username, userDetails[1], userDetails[0], 
-                            username, userDetails[2], false, userChats); 
+                            username, userDetails[2], is_it, userChats); 
         return user;
     }
 

@@ -236,7 +236,7 @@ public class ClientGUI extends JFrame{
 		//userPanel = new UserPanel();
 
 		// Log Viewing Panel Initialization
-		logViewPanel = new viewLogChatPanel();
+		logViewPanel = new viewLogChatPanel(client, currentUser);
 		
 		// Modify User Panel Initialization
 		modifyUserPanel = new modifyUserPanel();

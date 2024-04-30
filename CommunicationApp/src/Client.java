@@ -26,7 +26,7 @@ public class Client {
     // MainGUI attributes
     private User currentUser;
     private ClientGUI mainGUI;
-    private Map<String, String> userlist; // Username, Display name?
+    private Map<String, User> userlist; // Username, Display name?
     private boolean loggedIn;
 
     //Message
@@ -149,7 +149,9 @@ public class Client {
 
         if (loggedIn) {
             currentUser = msg.getUser();
+            userlist = msg.getAllUsers();
             killLoginGUI();
+            //invoke mainGUI happens in the main loop
         } else {  /*  Stay in login loop */
             loginGUI.updateWaitingStatus(loggedIn);
         }            
@@ -246,12 +248,12 @@ public class Client {
                     // mainGUI = new ClientGUI(getThisClient(), testUser);
                     // currentUser = testUser;
                     // end test 
-                    List<User> users = generateUsers(7, 10);
-                    users.get(0).setIT(true);
-                    mainGUI = new ClientGUI(getThisClient(), users.get(0));
+                    // List<User> users = generateUsers(7, 10);
+                    // users.get(0).setIT(true);
+                    // mainGUI = new ClientGUI(getThisClient(), users.get(0));
                     
                     // uncomment this when server passes a user
-					//mainGUI = new ClientGUI(getThisClient(), currentUser); 
+					mainGUI = new ClientGUI(getThisClient(), currentUser); 
 					mainGUI.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -323,7 +325,11 @@ public class Client {
         allMessages.add(chatRoom);
     }
     return allMessages;
-}
+    }
+
+    public Map<String, User> getCurrentUserlist() {
+        return userlist;
+    }
 
     // Method to generate random message content
     private static String generateRandomMessage() {
