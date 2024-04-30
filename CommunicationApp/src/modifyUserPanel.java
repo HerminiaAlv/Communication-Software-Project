@@ -172,7 +172,7 @@ public class modifyUserPanel extends JPanel {
 				String password = txtPassword.getText();
 				boolean isIT = checkboxIs_IT.isEnabled();
 //				JOptionPane.showMessageDialog(applyBorder, txtFirstName);
-				UpdateUserMessage updateUserMessage = new UpdateUserMessage(username, firstname, lastname, password, isIT);				
+				UpdateUserMessage updateUserMessage = new UpdateUserMessage(username, password, firstname, lastname, isIT);		
 				// Need to dispatch a new thread and run client.sendMessageToServer()
 				new Thread(()->{client.sendMessageToServer(updateUserMessage);}).start();
 				txtFirstName.setText("");
