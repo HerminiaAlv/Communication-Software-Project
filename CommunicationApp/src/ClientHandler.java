@@ -45,6 +45,7 @@ public class ClientHandler implements Runnable {
                             break;
                         case UPDATE_USER:
                         	server.handleUpdateUser((UpdateUserMessage) message);
+                            sendMessageToClient(message);
                             break;
                         case CREATE_CHAT:
                         	new Thread (()-> {server.handleCreateChat((CreateChatMessage) message);}).start();

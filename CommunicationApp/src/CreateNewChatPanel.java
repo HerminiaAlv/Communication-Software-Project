@@ -52,6 +52,8 @@ public class CreateNewChatPanel extends JPanel {
 
 	private User[] participants;
 	private List<String> usernames;
+	DefaultListModel userData;
+	private JList userList;
 	// passing User 
 	
 	
@@ -64,7 +66,6 @@ public class CreateNewChatPanel extends JPanel {
 		this.currentUser = currentUser;
 		
 		updateUsers(client.getCurrentUserlist());
-		currentUser = users.get(0);
 		
 		participants = new User[10];
 		
@@ -95,10 +96,10 @@ public class CreateNewChatPanel extends JPanel {
 		add(userListBorder);
 		userListBorder.setLayout(new BorderLayout(0, 0));
 		
-		DefaultListModel userData = new DefaultListModel();
-        for (User user1 : users) {
-        	userData.addElement(user1);
-        }
+		// userData = new DefaultListModel();
+        // for (User user1 : users) {
+        // 	userData.addElement(user1);
+        // }
        
 		
 //		AbstractListModel<String> userListModel = new AbstractListModel<String>() {
@@ -113,7 +114,7 @@ public class CreateNewChatPanel extends JPanel {
 //            }
 //        };
   
-		JList userList = new JList<User>(userData);
+		userList = new JList<User>(userData);
 		userListBorder.add(userList, BorderLayout.CENTER);
 		
 		userList.addListSelectionListener(new ListSelectionListener() {
@@ -185,11 +186,19 @@ public class CreateNewChatPanel extends JPanel {
 	}
 
 	public void updateUsers(Map<String, User> newUserList) {
-		List<User> toUpdate = new ArrayList<>();
+		if (userData == null)
+			userData = new DefaultListModel<>();
+
+		userData.clear();
 		for (User u : newUserList.values()) {
-			toUpdate.add(u);
+			userData.addElement(u);
 		}
 
-		this.users = toUpdate;
+		userList = new JList<>(userData);
+		// maybe we new to set a new value 
+		userList.revalidate();
+		userList.repaint();
+		
+
 	}
 }

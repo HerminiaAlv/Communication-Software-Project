@@ -244,7 +244,7 @@ public class ClientGUI extends JFrame{
 		logViewPanel = new viewLogChatPanel(client, currentUser);
 		
 		// Modify User Panel Initialization
-		modifyUserPanel = new modifyUserPanel();
+		modifyUserPanel = new modifyUserPanel(client);
 
 		// Placing objects on the center panel
 		//centerPanel.add(mssgPanel,BorderLayout.CENTER);
@@ -355,6 +355,10 @@ public class ClientGUI extends JFrame{
 		westChatList.addElement(toAdd);
 		westChatrooms.revalidate();
 		westChatrooms.repaint();
+	}
+
+	public CreateNewChatPanel getCreateNewChatPanel() {
+		return this.createNewChatPanel;
 	}
 
 

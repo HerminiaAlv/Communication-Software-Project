@@ -238,10 +238,49 @@ public class Server {
 
     public void handleUpdateUser(UpdateUserMessage message) {
     	if (message.getStatus() == MessageStatus.PENDING) {
-            removeClient(message.getUserId());
-            message.setStatus(MessageStatus.SUCCESS);
-            sendMessageToClient(message.getUserId(), message);
-            System.out.println("User logged out and connection closed: " + message.getUserId());
+            if (!credentials.containsKey(message.getUserId())){ // see if we already have this value in credentials
+                // Add To Credentials Map
+                // last name, first name, password, is_it
+                String booleanVal = "0";
+                if (message.getIs_IT())
+                    booleanVal = "1";
+                String[] vals = {message.getLastname(), message.getFirstname(), message.getPassword(), booleanVal};
+                credentials.put(message.getUserId(), vals);
+                // write to credentialsData.txt
+                writeCredentials(message.getLastname(), message.getFirstname(), message.getUserId(), message.getPassword(), booleanVal.compareTo("1") == 0);
+                // Create a new blank userfile
+                createNewUserFile(message.getUserId());
+
+                // Update users with the new request
+                allUsers.put(message.getUserId(), new User(message.getFirstname(), message.getLastname(), message.getUserId()));
+
+                // Broadcast new User Map
+                new Thread(()->{updateUsers();}).start();
+
+                message.setStatus(MessageStatus.SUCCESS);
+                sendMessageToClient(message.getUserId(), message);
+                System.out.println("User logged out and connection closed: " + message.getUserId());
+            }
+            else {
+                message.setStatus(MessageStatus.FAILED);
+            }
+        }
+        else {
+            message.setStatus(MessageStatus.FAILED);
+            //send back
+        }
+    }
+    public void updateUsers() {
+        UpdateUserListMessage msg = new UpdateUserListMessage(allUsers);
+        for (ObjectOutputStream oos : clients.values()) {
+            try {
+                List<ServerMessage> toClient = new ArrayList<>();
+                toClient.add(msg);
+                oos.writeObject(toClient);
+                oos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -462,21 +501,37 @@ public class Server {
     public void appendChatToUserFile(String username, String chatID) {
         // check if the file exist
         // it should always exist since when we add a brand newuser the filename is created
-        String filename = "users\\" + username + ".txt";
+        String directoryPath = "users";
+        String filename = directoryPath + File.separator + username + ".txt";
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
-            //bw.newLine();
-            bw.write(chatID);
-            bw.newLine();
-            System.out.println(chatID + " was added to " + username);
+        // Ensure the directory exists
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();  // Make the directory (including any necessary but nonexistent parent directories)
+        }
+
+        // try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
+        //     //bw.newLine();
+        //     bw.write(chatID);
+        //     bw.newLine();
+        //     System.out.println(chatID + " was added to " + username);
+        // } catch (IOException e) {
+        //     System.err.println("Error writing to credentials file: " + e.getMessage());
+        // }
+
+    }
+    public void createNewUserFile(String username) {
+        String filename = "users\\" + username + ".txt";
+        try (PrintWriter bw = new PrintWriter(new FileWriter(filename))){
+            bw.print("");
         } catch (IOException e) {
             System.err.println("Error writing to credentials file: " + e.getMessage());
         }
-
     }   
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
+        
         //server.writeCredentials("Cola", "Coca", "Cocacoola", "soda", true); //this works
     }
 

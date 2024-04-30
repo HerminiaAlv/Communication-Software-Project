@@ -106,6 +106,10 @@ public class Client {
                         case ADD_USERS_TO_CHAT:
                             new Thread(() -> handleAddUsersToChat((AddUsersToChatMessage) m)).start();
                             break;
+                        case UPDATE_USER_LIST:
+                            if (m.getStatus() == MessageStatus.PENDING)
+                                this.userlist = ((UpdateUserListMessage) m).getUpdatedUserList();
+                            mainGUI.getCreateNewChatPanel().updateUsers(userlist);
                         case NOTIFY_USER:
                             // low priority
                             break;
