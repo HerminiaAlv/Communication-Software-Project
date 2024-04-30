@@ -8,7 +8,8 @@ public enum MessageTypes {
 	CREATE_CHAT, 		// User creating a new chat-room
 	ADD_USERS_TO_CHAT,	// Adding a user to the chat - low priority 
 	NOTIFY_USER,		// Send notification(new msgs) to the recipient - low priority
-	PIN_CHAT,			// When a user pins a chat, Server must keep a record - low priority 
+	PIN_CHAT,			// When a user pins a chat, Server must keep a record - low priority
+	UPDATE_USER_LIST, 
 	UNDEFINED			// Default type
 }
 
