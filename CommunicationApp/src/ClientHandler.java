@@ -40,7 +40,7 @@ public class ClientHandler implements Runnable {
                         	server.handleLogout((LogoutMessage) message);
                             break;
                         case CHAT_MESSAGE:
-                        	server.handleChatMessage((ChatMessage) message);
+                        	new Thread(()-> {server.handleChatMessage((ChatMessage) message);}).start();
                             //sendMessageToClient(message);
                             break;
                         case UPDATE_USER:
