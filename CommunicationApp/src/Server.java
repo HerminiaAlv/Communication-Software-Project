@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Server {
-    private static final int PORT = 12345;
+    private static final int PORT = 4444;
     private  Map<String, ObjectOutputStream> clients = new HashMap<>();
     private Map<String, String[]> credentials = new HashMap<>();
     
@@ -270,7 +270,7 @@ public class Server {
 
     public void populateCredentials()
     {
-        try (BufferedReader br = new BufferedReader(new FileReader("CommunicationApp\\credentialsData.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("credentialsData.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] cred = line.split(",");
@@ -294,7 +294,7 @@ public class Server {
         } else {
             isIT = "0"; //false
         }
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("CommunicationApp\\credentialsData.txt", true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("credentialsData.txt", true))) {
             //bw.newLine();
             bw.write(lastName + "," + firstName + "," + username + "," + password + "," + isIT);
             bw.newLine();
@@ -443,7 +443,22 @@ public class Server {
 			e.printStackTrace();
 		}
         return null;	// Error, couldn't build
-    }        
+    }
+    public void appendChatToUserFile(String username, String chatID) {
+        // check if the file exist
+        // it should always exist since when we add a brand newuser the filename is created
+        String filename = "users\\" + username + ".txt";
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
+            //bw.newLine();
+            bw.write(chatID);
+            bw.newLine();
+            System.out.println(chatID + " was added to " + username);
+        } catch (IOException e) {
+            System.err.println("Error writing to credentials file: " + e.getMessage());
+        }
+
+    }   
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
