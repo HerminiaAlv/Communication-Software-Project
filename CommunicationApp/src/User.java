@@ -23,6 +23,12 @@ public class User implements Serializable{
 		this.password = "Password";
 		this.username = "Username";
 	}
+
+	public User(String firstname, String lastname, String username) {
+		this.firstName = firstname;
+		this.lastName = lastname;
+		this.username = username;
+	}
 	
 	public User(String id, String firstName, String lastName, 
 				String username, String password, boolean is_IT, List<ChatRoom> chats){
@@ -113,6 +119,10 @@ public class User implements Serializable{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getActiveChat'");
     }
+
+	public String toString () {
+		return firstName + " " + lastName;
+	}
 
 	
 	// addToChat, update user, addPinned
