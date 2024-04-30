@@ -46,7 +46,6 @@ public class Server {
         // writeUserChatList(user);
 
     //    User builtUser =  buildUser("User1");
-
     //    for (ChatRoom chatroom : builtUser.getChats()) {
     //     String participants = "";
     //     System.out.println("ChatID: " + chatroom.getChatID() + "");
