@@ -149,17 +149,26 @@ public class Server {
     }
 
     // chat messages?
-    public synchronized void broadcastMessage(ServerMessage message) {
+    // Assume that this method will receive a list of usernames.
+    public synchronized void broadcastMessage(ChatMessage chatMessage) {
+        // LOGGING -- Chris will do this
 
-        for (ObjectOutputStream out : clients.values()) {
-            try  {
-                List<ServerMessage> messages = new ArrayList<>(); 
-                messages.add(message);
-                out.writeObject(messages);
-                System.out.println("broadcasted message to client.") ;
-            } catch (IOException e) {
-                System.out.println("Error broadcasting message to client: " + e.getMessage());
-                e.printStackTrace();
+        chatMessage.setStatus(MessageStatus.SUCCESS);
+
+        // for each user in the chat room, send the message to the user
+        List<String> participants = chatMessage.getParticipants();
+
+        for (String participant : participants) {
+            ObjectOutputStream out = clients.get(participant);
+            if (out != null) {
+                try {
+                    List<ServerMessage> messages = new ArrayList<>();
+                    messages.add(chatMessage);
+                    out.writeObject(messages);
+                    out.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
