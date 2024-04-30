@@ -139,7 +139,7 @@ public class ClientHandler implements Runnable {
     public void handleChatMessage(ChatMessage chatMessage) {
 
         // Send the message to all clients
-        server.broadcastMessage((ServerMessage) chatMessage);
+        server.broadcastMessage((ChatMessage) chatMessage);
         sendMessageToClient(chatMessage);
     }
 
