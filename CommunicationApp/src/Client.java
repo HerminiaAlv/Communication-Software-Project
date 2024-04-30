@@ -14,8 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class Client {
-    private String HOSTIP = "localhost"; // hostName/IP to connection
-    private int PORT = 12345; // Port number to connect to on hostName
+    private String HOSTIP = "134.154.53.70"; // hostName/IP to connection
+    private int PORT = 4444; // Port number to connect to on hostName
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Socket socket;  // flag to determine if login has been authenticated
@@ -35,7 +35,6 @@ public class Client {
         Client client = new Client();
         client.start();
     }
-
     public void start() {
         try {
             socket = new Socket(HOSTIP, PORT);
