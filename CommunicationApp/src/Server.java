@@ -45,18 +45,18 @@ public class Server {
         // }
         // writeUserChatList(user);
 
-       User builtUser =  buildUser("User1");
-       for (ChatRoom chatroom : builtUser.getChats()) {
-        String participants = "";
-        System.out.println("ChatID: " + chatroom.getChatID() + "");
-        for (String user : chatroom.getParticipants())
-            participants = participants + user + ", ";
-        System.out.println("Participants: " + participants + "\n");
-        for (Message m : chatroom.getMessages()) {
-            System.out.println(m.toString());
-        }
-        System.out.println("");
-    }
+    //    User builtUser =  buildUser("User1");
+    //    for (ChatRoom chatroom : builtUser.getChats()) {
+    //     String participants = "";
+    //     System.out.println("ChatID: " + chatroom.getChatID() + "");
+    //     for (String user : chatroom.getParticipants())
+    //         participants = participants + user + ", ";
+    //     System.out.println("Participants: " + participants + "\n");
+    //     for (Message m : chatroom.getMessages()) {
+    //         System.out.println(m.toString());
+    //     }
+    //     System.out.println("");
+    // }
         
         // Open the server to accept connections
 
