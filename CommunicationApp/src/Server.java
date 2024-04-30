@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Server {
-    private static final int PORT = 4444;
+    private static final int PORT = 12345;
     private  Map<String, ObjectOutputStream> clients = new HashMap<>();
     private Map<String, String[]> credentials = new HashMap<>();
     
@@ -32,32 +32,6 @@ public class Server {
     public void start() {
 
         populateCredentials();
-        //
-    	//buildChatRoom();
-        //testBuildUsers();
-        //testWriteUserChatList();
-        
-        // List<User> users = generateUsers(4,4);
-        // User user = users.get(0);
-        
-        // for (ChatRoom chat : user.getChats()) {
-        //     writeChatRoomFile(chat);
-        // }
-        // writeUserChatList(user);
-
-    //    User builtUser =  buildUser("User1");
-    //    for (ChatRoom chatroom : builtUser.getChats()) {
-    //     String participants = "";
-    //     System.out.println("ChatID: " + chatroom.getChatID() + "");
-    //     for (String user : chatroom.getParticipants())
-    //         participants = participants + user + ", ";
-    //     System.out.println("Participants: " + participants + "\n");
-    //     for (Message m : chatroom.getMessages()) {
-    //         System.out.println(m.toString());
-    //     }
-    //     System.out.println("");
-    // }
-        
         // Open the server to accept connections
 
     	try {
@@ -463,6 +437,34 @@ public class Server {
         Server server = new Server();
         server.start();
         //server.writeCredentials("Cola", "Coca", "Cocacoola", "soda", true); //this works
+    }
+
+    private void extraFileTests() {
+                //
+    	//buildChatRoom();
+        //testBuildUsers();
+        //testWriteUserChatList();
+        
+        // List<User> users = generateUsers(4,4);
+        // User user = users.get(0);
+        
+        // for (ChatRoom chat : user.getChats()) {
+        //     writeChatRoomFile(chat);
+        // }
+        // writeUserChatList(user);
+
+    //    User builtUser =  buildUser("User1");
+    //    for (ChatRoom chatroom : builtUser.getChats()) {
+    //     String participants = "";
+    //     System.out.println("ChatID: " + chatroom.getChatID() + "");
+    //     for (String user : chatroom.getParticipants())
+    //         participants = participants + user + ", ";
+    //     System.out.println("Participants: " + participants + "\n");
+    //     for (Message m : chatroom.getMessages()) {
+    //         System.out.println(m.toString());
+    //     }
+    //     System.out.println("");
+    // }
     }
 
 }
