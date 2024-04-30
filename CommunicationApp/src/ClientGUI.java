@@ -227,6 +227,7 @@ public class ClientGUI extends JFrame{
 			public void onSendMessage (Message message) {
 				//ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE); 
 				ChatMessage chatMessage = new ChatMessage(message);
+				chatMessage.setParticipants(mssgPanel.getCurrentChat().getParticipants());
 				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
