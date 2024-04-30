@@ -73,6 +73,19 @@ public class Message implements Serializable{
 		return message + "," + sender + "," + chatID + "," + timestamp;
 	}
 
+	// Method to return a CSV-safe string
+	public String toCSVString() {
+			return "\"" + escapeQuotes(message) + "\","
+				 + "\"" + escapeQuotes(sender) + "\","
+				 + "\"" + chatID + "\","
+				 + timestamp;
+	}
+	
+		// Helper method to escape quotes
+	private String escapeQuotes(String input) {
+		return input.replace("\"", "\"\"");
+	}
+
 	public String toString() {
         //User sender = new User();
         //sender.setUserName("Dummy Sender");

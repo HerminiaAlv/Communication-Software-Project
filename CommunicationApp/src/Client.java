@@ -56,7 +56,7 @@ public class Client {
 
             while (!loggedIn) { // wait until we get a valid login
             	// waiting for login message to return
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 System.out.println("waiting to be verified");
             }
             System.out.println("CONNECTED");
@@ -247,8 +247,9 @@ public class Client {
                     // currentUser = testUser;
                     // end test 
                     List<User> users = generateUsers(7, 10);
+                    users.get(0).setIT(true);
                     mainGUI = new ClientGUI(getThisClient(), users.get(0));
-                    currentUser =  users.get(0);
+                    
                     // uncomment this when server passes a user
 					//mainGUI = new ClientGUI(getThisClient(), currentUser); 
 					mainGUI.setVisible(true);
