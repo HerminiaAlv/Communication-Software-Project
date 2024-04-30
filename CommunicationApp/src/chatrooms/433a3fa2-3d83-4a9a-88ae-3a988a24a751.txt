@@ -1,0 +1,21 @@
+433a3fa2-3d83-4a9a-88ae-3a988a24a751
+User1,User2,
+"This is a random message.","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Did you watch the game last night?","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Hello, my name is BiG BOi!","User1","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Let's meet tomorrow.","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"What's up?","User1","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Can you send me the report?","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Let's meet tomorrow.","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Can you send me the report?","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Hello, my name is BiG BOi!","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"This is another random Message","User1","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"lol Just kidding this is sosososoosososososos much fun :^)","User1","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"I'm good, thanks!","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Hello, my name is BiG BOi!","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"How are you?","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"I'll be late today.","User1","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"What's up?","User1","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Hello, my name is BiG BOi!","User1","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Did you watch the game last night?","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
+"Did you watch the game last night?","User2","433a3fa2-3d83-4a9a-88ae-3a988a24a751",2024-04-29T18:53:53.603275300
