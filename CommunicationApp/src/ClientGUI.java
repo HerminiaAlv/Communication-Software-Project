@@ -378,6 +378,11 @@ public class ClientGUI extends JFrame{
 			}
 		});
 	}
+
+	public DefaultListModel getViewLogsChatList() {
+		return logViewPanel.getViewLogsChatList();
+	}
+
 }
 
 	
