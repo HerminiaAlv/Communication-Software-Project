@@ -189,6 +189,12 @@ public class Client {
         // Log the received chat message for debugging
         System.out.println("Chat message received: " + chatMessage.getMessage());
         // Broadcast the message to other clients (excluding the sender)
+        for (ChatRoom room : currentUser.getChats()){
+            if (room.getChatID().compareTo(chatMessage.getMessage().getChatID())== 0) {
+                // find the chat with the same chatID
+                room.addMessage(chatMessage.getMessage());
+            }
+        }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 //chatMessage.setTimestamp(LocalDateTime.now());
