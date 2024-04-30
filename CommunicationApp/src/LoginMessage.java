@@ -19,7 +19,7 @@ public class LoginMessage extends ServerMessage{
     private boolean success;
 
     private User currentUser; // Server passes a user over when login is successful
-    private Map<String, String> allUsers; // Server should pass a list or map of ALL users 
+    private Map<String, User> allUsers; // Server should pass a list or map of ALL users 
     // a map of userIDs and names is probabably sufficient becauses we don't need all the data
 
     //private MessageTypes type;
@@ -43,7 +43,7 @@ public class LoginMessage extends ServerMessage{
         return currentUser;
     }
 
-    public Map<String, String> getAllUsers() {
+    public Map<String, User> getAllUsers() {
         return allUsers;
     }
 
@@ -59,7 +59,7 @@ public class LoginMessage extends ServerMessage{
         this.currentUser = user;
     }
     
-    public void setAllUsers(Map<String, String> allUsers){
+    public void setAllUsers(Map<String, User> allUsers){
         this.allUsers = allUsers; 
     }  
 }
