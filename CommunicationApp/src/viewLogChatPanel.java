@@ -81,7 +81,7 @@ public class viewLogChatPanel extends JPanel {
 		userList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				User tosend =  (User) userList.getSelectedValue();
-				LogMessage message = new LogMessage(currentUser.getUsername());
+				LogMessage message = new LogMessage(tosend.getUsername());
 				client.sendMessageToServer(message);
 				new Thread(() -> client.sendMessageToServer(message));
 				

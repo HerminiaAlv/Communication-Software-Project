@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Server {
-    private static final int PORT = 12345;
+    private static final int PORT = 4000;
     private Map<String, ObjectOutputStream> clients = new HashMap<>();
     private Map<String, String[]> credentials = new HashMap<>();
     private Map<String, User> allUsers = new HashMap<>();
