@@ -1,4 +1,5 @@
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
@@ -19,6 +20,7 @@ import java.awt.Font;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
 //import org.eclipse.wb.swing.FocusTraversalOnArray;
@@ -70,33 +72,11 @@ public class viewLogChatPanel extends JPanel {
         for (User user : users) {
         	userData.addElement(user);
         }
-       
-		
-//		AbstractListModel<String> userListModel = new AbstractListModel<String>() {
-//            @Override
-//            public int getSize() {
-//                return userData.size();
-//            }
-//
-//            @Override
-//            public String getElementAt(int index) {
-//                return userData.get(index);
-//            }
-//        };
   
 		JList userList = new JList<User>(userData);
-		
-		// Testing right pane
-		//splitPane.setRightComponent(userList);	
-		
-//		userList.setSelectedIndex(0);
-		//rightSplit = new JPanel();
 		chatData = new DefaultListModel();
-//		for (ChatRoom room : currentUser.getChats())
-//				chatData.addElement(room);
 		
 		chatrooms = new JList(chatData);
-		//rightSplit.add(chatrooms);
 		
 		userList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -104,20 +84,26 @@ public class viewLogChatPanel extends JPanel {
 				LogMessage message = new LogMessage(currentUser.getUsername());
 				client.sendMessageToServer(message);
 				new Thread(() -> client.sendMessageToServer(message));
+				
+				//chatData.clear();
+				
 				splitPane.setRightComponent(chatrooms);
-				// if (!e.getValueIsAdjusting()) {
-				// 	//currentUser = (User) userList.getSelectedValue();
-					
-				// 	splitPane.setRightComponent(chatrooms);
-				// }
 			}
 		});
 		
 
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				chat = (ChatRoom)chatrooms.getSelectedValue();
-				// this is where you call the new window
+/* 				chat = (ChatRoom)chatrooms.getSelectedValue();
+				// this is where you call the new window */
+				if (!e.getValueIsAdjusting()) {
+					chat = (ChatRoom)chatrooms.getSelectedValue();
+					// this is where you call the new window
+					displayLoggedMessages(chat);
+				}
+/* 				if (chat != null) {
+					displayLoggedMessages(chat);
+				} */
 			}
 		});
 		
@@ -165,11 +151,7 @@ public class viewLogChatPanel extends JPanel {
 				btnConfirm.setFont(new Font("Dialog", Font.BOLD, 12));
 				btnConfirm.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						mainGUI.displayLoggedMessages(chat);		
-						
-						
-						
-						
+						displayLoggedMessages(chat);		
 						}
 				});
 				
@@ -191,10 +173,27 @@ public class viewLogChatPanel extends JPanel {
 //		lblOnlineUsers.setFont(new Font("Monospaced", Font.PLAIN, 12));
 //		lblOnlineUsers.setHorizontalAlignment(SwingConstants.CENTER);
 //		usersBorder.add(lblOnlineUsers, BorderLayout.CENTER);
-
-
 	}
 	
+	public void displayLoggedMessages(ChatRoom room) {
+		JFrame chatRoomFrame = new JFrame(room.getChatID());
+		chatRoomFrame.setSize(500,400);
+		chatRoomFrame.setLocationRelativeTo(null);
+		chatRoomFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		JTextArea chatLog = new JTextArea();
+		chatLog.setEditable(false); //disable editing
+		chatLog.setLineWrap(true); //enable line wrapping
+
+		for (Message m : room.getMessages()) {
+			chatLog.append(m.toString() + "\n");
+		}
+
+		JScrollPane chatLogScrollPane = new JScrollPane(chatLog);
+		chatRoomFrame.add(chatLogScrollPane);
+		chatRoomFrame.setVisible(true);
+	}
+
 	public DefaultListModel getViewLogsChatList() {
 		return chatData;
 	}
