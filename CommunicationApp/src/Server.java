@@ -140,6 +140,9 @@ public class Server {
     // Assume that this method will receive a list of usernames.
     public synchronized void broadcastMessage(ChatMessage chatMessage) {
         // LOGGING -- Chris will do this
+        // When a message comes in we need to append it to the chatID
+        Message toAppend = chatMessage.getMessage();
+        appendMessageToChat(chatMessage.getMessage().getChatID(), toAppend);
 
         chatMessage.setStatus(MessageStatus.SUCCESS);
         //System.out.println("Inside broadcastMsg");
@@ -166,7 +169,18 @@ public class Server {
     }
     
     
-    public void handleLogin(LoginMessage msg, ObjectOutputStream outputStream) {	  	
+   private void appendMessageToChat(String chatID, Message toAppend) {
+        String filename = "chatrooms\\" + chatID + ".txt";
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
+            //bw.newLine();
+            bw.write(toAppend.toCSVString());
+            bw.newLine();
+            System.out.println(toAppend.toCSVString() + " was added to " + chatID);
+        } catch (IOException e) {
+            System.err.println("Error writing to chatfile file: " + e.getMessage());
+        }
+    }
+ public void handleLogin(LoginMessage msg, ObjectOutputStream outputStream) {	  	
         
         if (msg.getStatus() == MessageStatus.PENDING) {
         	if (validateCredentials(msg.getUsername(), msg.getPassword()))
