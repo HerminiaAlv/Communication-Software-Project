@@ -37,6 +37,7 @@ public class viewLogChatPanel extends JPanel {
 	private ChatRoom chat;
 	private ClientGUI mainGUI;
 	private DefaultListModel chatData;
+	private JList chatrooms;
 	private JPanel rightSplit;
 	
 	// Access all keys to the map and fill list with the values
@@ -86,7 +87,7 @@ public class viewLogChatPanel extends JPanel {
 		JList userList = new JList<User>(userData);
 		
 		// Testing right pane
-		splitPane.setRightComponent(userList);	
+		//splitPane.setRightComponent(userList);	
 		
 //		userList.setSelectedIndex(0);
 		//rightSplit = new JPanel();
@@ -94,12 +95,12 @@ public class viewLogChatPanel extends JPanel {
 //		for (ChatRoom room : currentUser.getChats())
 //				chatData.addElement(room);
 		
-		JList<ChatRoom> chatrooms = new JList(chatData);
+		chatrooms = new JList(chatData);
 		//rightSplit.add(chatrooms);
 		
 		userList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				chat = chatrooms.getSelectedValue();
+				User tosend =  (User) userList.getSelectedValue();
 				LogMessage message = new LogMessage(currentUser.getUsername());
 				client.sendMessageToServer(message);
 				new Thread(() -> client.sendMessageToServer(message));
@@ -115,7 +116,8 @@ public class viewLogChatPanel extends JPanel {
 
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				chat = chatrooms.getSelectedValue();
+				chat = (ChatRoom)chatrooms.getSelectedValue();
+				// this is where you call the new window
 			}
 		});
 		

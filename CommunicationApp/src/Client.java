@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.time.LocalDateTime;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -162,7 +163,7 @@ public class Client {
     }
 
     public void handleLogoutMessage(LogoutMessage msg) {
-        // TODO implement this  
+        System.exit(0);  
     }
 
     public void handleUpdateUser(UpdateUserMessage msg) {
@@ -170,9 +171,6 @@ public class Client {
 
     }
 
-    public void handleGetLogsMessage(LogMessage msg) {
-        // TODO implement this  
-    }
 
     public void handleAddUsersToChat(AddUsersToChatMessage msg) {
         // TODO Need to test this one at some point - itll be similar
@@ -186,7 +184,13 @@ public class Client {
     }
 
     public void handleGetLogs(LogMessage msg) {
-        // TODO implement this  
+        if (msg.getStatus() == MessageStatus.SUCCESS) {
+            // Need to update the right panel with the new values
+            DefaultListModel rightPanelDLM = mainGUI.getViewLogsChatList();
+            for (ChatRoom room : msg.getUserChats())
+                rightPanelDLM.addElement(room);
+            
+        }  
     }
 
     public void handleChatMessage(ChatMessage chatMessage) {
