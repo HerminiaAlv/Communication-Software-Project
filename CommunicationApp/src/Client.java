@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.time.LocalDateTime;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -105,6 +106,10 @@ public class Client {
                         case ADD_USERS_TO_CHAT:
                             new Thread(() -> handleAddUsersToChat((AddUsersToChatMessage) m)).start();
                             break;
+                        case UPDATE_USER_LIST:
+                            if (m.getStatus() == MessageStatus.PENDING)
+                                this.userlist = ((UpdateUserListMessage) m).getUpdatedUserList();
+                            mainGUI.getCreateNewChatPanel().updateUsers(userlist);
                         case NOTIFY_USER:
                             // low priority
                             break;
@@ -157,7 +162,7 @@ public class Client {
     }
 
     public void handleLogoutMessage(LogoutMessage msg) {
-        // TODO implement this  
+        System.exit(0);  
     }
 
     public void handleUpdateUser(UpdateUserMessage msg) {
@@ -165,9 +170,6 @@ public class Client {
 
     }
 
-    public void handleGetLogsMessage(LogMessage msg) {
-        // TODO implement this  
-    }
 
     public void handleAddUsersToChat(AddUsersToChatMessage msg) {
         // TODO Need to test this one at some point - itll be similar
@@ -181,13 +183,25 @@ public class Client {
     }
 
     public void handleGetLogs(LogMessage msg) {
-        // TODO implement this  
+        if (msg.getStatus() == MessageStatus.SUCCESS) {
+            // Need to update the right panel with the new values
+            DefaultListModel rightPanelDLM = mainGUI.getViewLogsChatList();
+            for (ChatRoom room : msg.getUserChats())
+                rightPanelDLM.addElement(room);
+            
+        }  
     }
 
     public void handleChatMessage(ChatMessage chatMessage) {
         // Log the received chat message for debugging
         System.out.println("Chat message received: " + chatMessage.getMessage());
         // Broadcast the message to other clients (excluding the sender)
+        for (ChatRoom room : currentUser.getChats()){
+            if (room.getChatID().compareTo(chatMessage.getMessage().getChatID())== 0) {
+                // find the chat with the same chatID
+                room.addMessage(chatMessage.getMessage());
+            }
+        }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 //chatMessage.setTimestamp(LocalDateTime.now());
