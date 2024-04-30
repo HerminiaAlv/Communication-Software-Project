@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "Client",
+            "projectName": "CS401-Communication-Project_4350e410"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -16,7 +23,7 @@
             "request": "launch",
             "mainClass": "Client",
             "projectName": "CS401-Communication-Project_5b0040e",
-            "cwd" : "${fileDirname}"
+            "cwd": "${fileDirname}"
         },
         {
             "type": "java",
