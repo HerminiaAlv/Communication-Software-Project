@@ -2,3 +2,5 @@
 amiller2,csan,dyu4,
 "This should have 1 message in it now","csan","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T02:37:20.103240400
 "Yoooooooooo","csan","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T09:56:36.356918400
+"Hello today is tuesday","csan","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T11:59:30.025818400
+"I've up for 30 hours lmao","csan","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T11:59:44.176654700
