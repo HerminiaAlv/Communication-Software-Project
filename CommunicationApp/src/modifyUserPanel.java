@@ -15,6 +15,32 @@ import java.awt.Font;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Panel;
+import java.awt.ScrollPane;
+import java.awt.FlowLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -24,72 +50,43 @@ import java.awt.ScrollPane;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
-//import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.AbstractListModel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 
-public class CredentialsEditPanel extends JPanel {
+public class modifyUserPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	private Client client;
+
 	private JTextField txtFirstName;
 	private JTextField txtLastName;
 	private JTextField txtUserName;
 	private JTextField txtPassword;
+	private JCheckBox checkBoxIsIT;
 	
-	public CredentialsEditPanel() {
+	public modifyUserPanel(Client client) {
 		setForeground(new Color(135, 206, 250));
 		setBackground(new Color(21, 96, 130));
 		setLayout(null);
+		this.client = client;
 		
-		// Panel for send button... putting button inside a border makes modifications easy!
-		JPanel cancelBorder = new JPanel();
-		cancelBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
-		cancelBorder.setBounds(353, 392, 81, 38);
-		add(cancelBorder);
-		cancelBorder.setLayout(new BorderLayout(0, 0));
+//		JPanel cancelBorder = new JPanel();
+//		cancelBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
+//		cancelBorder.setBounds(353, 392, 81, 38);
+//		add(cancelBorder);
+//		cancelBorder.setLayout(new BorderLayout(0, 0));
+//		
+//		JButton btnCancel = new JButton("Cancel");
+//		btnCancel.setToolTipText("Press cancel button to exit");
+//		btnCancel.setFont(new Font("Dialog", Font.BOLD, 12));
+//		cancelBorder.add(btnCancel, BorderLayout.CENTER);
 		
-		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setToolTipText("Press cancel button to exit");
-		btnCancel.setFont(new Font("Dialog", Font.BOLD, 12));
-		cancelBorder.add(btnCancel, BorderLayout.CENTER);
 		
-		JPanel applyBorder = new JPanel();
-		applyBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
-		applyBorder.setBounds(255, 392, 81, 38);
-		add(applyBorder);
-		applyBorder.setLayout(new BorderLayout(0, 0));
-		
-		JButton btnApply = new JButton("Apply");
-		applyBorder.add(btnApply, BorderLayout.CENTER);
-		btnApply.setToolTipText("Press Apply to confirm selection");
-		btnApply.setFont(new Font("Dialog", Font.BOLD, 12));
-		btnApply.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Need to dispatch a new thread and run client.sendMessageToServer()
-				// 
-				int count = 0;
-				String empty = "";
-				// if ((textBox.getText()).equals(empty)) {
-				// 	textBox.setText("");
-				// 	textBox.requestFocus();
-				// } else {
-				// 	//handle event of writing passed message to the messages area
-				// 	//suggested format: ['timestamp'] + username + ": " + message (textBox.getText()) + Data Type
-				// 	try {
-				// 		//write to message area using suggested format then
-				// 		//flush the buffer;
-				// 	} catch (Exception e1) {
-				// 		textMessages.append("Message was not sent. \n"); //Print error message
-				// 	};
-				// 	textBox.setText(""); //set text back to "" 
-				// 	textBox.requestFocus(); //send it back to text box..
-				// }
-			}
-		});
 		
 		// Panel for text messages box
 		JPanel editMenuBorder = new JPanel();
@@ -119,32 +116,28 @@ public class CredentialsEditPanel extends JPanel {
 		editMenuBorder.add(lbl_ITPerms);
 		
 		txtFirstName = new JTextField();
-		txtFirstName.setText("Jose");
 		txtFirstName.setBounds(209, 107, 86, 20);
 		editMenuBorder.add(txtFirstName);
 		txtFirstName.setColumns(10);
 		
 		txtLastName = new JTextField();
-		txtLastName.setText("Galeana");
 		txtLastName.setColumns(10);
 		txtLastName.setBounds(209, 132, 86, 20);
 		editMenuBorder.add(txtLastName);
 		
 		txtUserName = new JTextField();
-		txtUserName.setText("JoseG");
 		txtUserName.setColumns(10);
 		txtUserName.setBounds(209, 157, 86, 20);
 		editMenuBorder.add(txtUserName);
 		
 		txtPassword = new JTextField();
-		txtPassword.setText("drowssap");
 		txtPassword.setColumns(10);
-		txtPassword.setBounds(209, 182, 86, 20);
+		txtPassword.setBounds(209, 185, 86, 20);
 		editMenuBorder.add(txtPassword);
 		
-		JLabel lbl_ITStatus = new JLabel("True");
-		lbl_ITStatus.setBounds(209, 210, 46, 14);
-		editMenuBorder.add(lbl_ITStatus);
+		JCheckBox checkboxIs_IT = new JCheckBox("Is IT User");
+		checkboxIs_IT.setBounds(209, 210, 164, 28);
+        editMenuBorder.add(checkboxIs_IT);
 		//add(scrollPane);
 		// Panel for participants
 		JPanel promptBorder = new JPanel();
@@ -160,6 +153,38 @@ public class CredentialsEditPanel extends JPanel {
 		promptText.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		
 		promptBorder.add(promptText, BorderLayout.CENTER);
+		
+		JPanel applyBorder = new JPanel();
+		applyBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
+		applyBorder.setBounds(255, 392, 81, 38);
+		add(applyBorder);
+		applyBorder.setLayout(new BorderLayout(0, 0));
+		
+		JButton btnApply = new JButton("Apply");
+		applyBorder.add(btnApply, BorderLayout.CENTER);
+		btnApply.setToolTipText("Press Apply to confirm selection");
+		btnApply.setFont(new Font("Dialog", Font.BOLD, 12));
+		btnApply.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String firstname = txtFirstName.getText();
+				String lastname = txtLastName.getText();
+				String username = txtUserName.getText();
+				String password = txtPassword.getText();
+				boolean isIT = checkboxIs_IT.isEnabled();
+//				JOptionPane.showMessageDialog(applyBorder, txtFirstName);
+				UpdateUserMessage updateUserMessage = new UpdateUserMessage(username, firstname, lastname, password, isIT);				
+				// Need to dispatch a new thread and run client.sendMessageToServer()
+				new Thread(()->{client.sendMessageToServer(updateUserMessage);}).start();
+				txtFirstName.setText("");
+				txtLastName.setText("");
+				txtUserName.setText("");
+				txtPassword.setText("");
+				checkboxIs_IT.setSelected(false);
+
+//				}
+			}
+		});
+		
 		
 		// Panel for Online users... Uses JLabel + JList (Might change) 
 //		JList list = new JList();

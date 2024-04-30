@@ -2,8 +2,8 @@ public class PinChatMessage extends ServerMessage {
     private String chatId; 
     private String username;
 
-    public PinChatMessage(String username, String chatId) {
-    	this.username = username;
+
+    public PinChatMessage(String chatId) {
         this.setType(MessageTypes.PIN_CHAT);
         this.setStatus(MessageStatus.PENDING);
         this.chatId = chatId;       

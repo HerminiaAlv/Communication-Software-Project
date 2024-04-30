@@ -15,19 +15,19 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class Client {
-    private String HOSTIP = "134.154.53.70"; // hostName/IP to connection
-    private int PORT = 4444; // Port number to connect to on hostName
+    private String HOSTIP = "localhost"; // hostName/IP to connection
+    private int PORT = 12345; // Port number to connect to on hostName
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Socket socket;  // flag to determine if login has been authenticated
-
+    private DefaultListModel chatList;
     // LoginGUI attributes
     private LoginUI loginGUI;
    
     // MainGUI attributes
     private User currentUser;
     private ClientGUI mainGUI;
-    private Map<String, User> userlist; // Username, Display name?
+    private Map<String, String> userlist; // Username, Display name?
     private boolean loggedIn;
 
     //Message
@@ -36,6 +36,7 @@ public class Client {
         Client client = new Client();
         client.start();
     }
+
     public void start() {
         try {
             socket = new Socket(HOSTIP, PORT);
@@ -56,7 +57,7 @@ public class Client {
 
             while (!loggedIn) { // wait until we get a valid login
             	// waiting for login message to return
-                Thread.sleep(500);
+                Thread.sleep(1000);
                 System.out.println("waiting to be verified");
             }
             System.out.println("CONNECTED");
@@ -106,10 +107,6 @@ public class Client {
                         case ADD_USERS_TO_CHAT:
                             new Thread(() -> handleAddUsersToChat((AddUsersToChatMessage) m)).start();
                             break;
-                        case UPDATE_USER_LIST:
-                            if (m.getStatus() == MessageStatus.PENDING)
-                                this.userlist = ((UpdateUserListMessage) m).getUpdatedUserList();
-                            mainGUI.getCreateNewChatPanel().updateUsers(userlist);
                         case NOTIFY_USER:
                             // low priority
                             break;
@@ -153,55 +150,41 @@ public class Client {
 
         if (loggedIn) {
             currentUser = msg.getUser();
-            userlist = msg.getAllUsers();
             killLoginGUI();
-            //invoke mainGUI happens in the main loop
         } else {  /*  Stay in login loop */
             loginGUI.updateWaitingStatus(loggedIn);
         }            
     }
 
     public void handleLogoutMessage(LogoutMessage msg) {
-        System.exit(0);  
+        // TODO implement this  
     }
 
     public void handleUpdateUser(UpdateUserMessage msg) {
         // TODO implement this
-
-    }
-
-
-    public void handleAddUsersToChat(AddUsersToChatMessage msg) {
-        // TODO Need to test this one at some point - itll be similar
-        String displayString = "";
-        for (String userid : msg.getNewParticipantIds())
-            displayString += userid + ", ";
-        JOptionPane.showMessageDialog(null, "Chat created with: " + displayString);
-
-        // Add the new chat to westChatrooms
-        mainGUI.addChatToWestPanel(msg.getAddedChat()); // this should do it
     }
 
     public void handleGetLogs(LogMessage msg) {
-        if (msg.getStatus() == MessageStatus.SUCCESS) {
-            // Need to update the right panel with the new values
-            DefaultListModel rightPanelDLM = mainGUI.getViewLogsChatList();
-            for (ChatRoom room : msg.getUserChats())
-                rightPanelDLM.addElement(room);
-            
-        }  
+    	if(msg.getStatus() == MessageStatus.SUCCESS) {
+    		chatList = mainGUI.getViewLogsChatList();
+    		for (ChatRoom room : msg.getUserChats()) {
+    			chatList.addElement(room);
+    		}
+    		mainGUI.logViewPanel.revalidate();
+    	}
+          
     }
+
+    public void handleAddUsersToChat(AddUsersToChatMessage msg) {
+        // TODO implement this  
+    }
+
+
 
     public void handleChatMessage(ChatMessage chatMessage) {
         // Log the received chat message for debugging
         System.out.println("Chat message received: " + chatMessage.getMessage());
         // Broadcast the message to other clients (excluding the sender)
-        for (ChatRoom room : currentUser.getChats()){
-            if (room.getChatID().compareTo(chatMessage.getMessage().getChatID())== 0) {
-                // find the chat with the same chatID
-                room.addMessage(chatMessage.getMessage());
-            }
-        }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 //chatMessage.setTimestamp(LocalDateTime.now());
@@ -213,14 +196,12 @@ public class Client {
             }});
     }
     
-    public void handleCreateChatMessage(CreateChatMessage msg) {
-        String displayString = "";
-        for (String userid : msg.getParticipantIds())
-            displayString += userid + ", ";
-        JOptionPane.showMessageDialog(null, "Chat created with: " + displayString);
-
-        // Add the new chat to westChatrooms
-        mainGUI.addChatToWestPanel(msg.getCreatedChat()); // this should do it
+    public void handleCreateChatMessage(CreateChatMessage createChatMessage) {
+    	System.out.println("Chatroom info received: " + createChatMessage.getParticipantIds() + " " 
+    	 											  + createChatMessage.getChatName());
+    	
+    	
+    	
     }
     
     // Other Methods ****************************************************************
@@ -273,12 +254,10 @@ public class Client {
                     // mainGUI = new ClientGUI(getThisClient(), testUser);
                     // currentUser = testUser;
                     // end test 
-                    // List<User> users = generateUsers(7, 10);
-                    // users.get(0).setIT(true);
-                    // mainGUI = new ClientGUI(getThisClient(), users.get(0));
-                    
-                    // uncomment this when server passes a user
-					mainGUI = new ClientGUI(getThisClient(), currentUser); 
+					List<User> users = generateUsers(7, 10);
+                    currentUser =  users.get(0);
+                    currentUser.setIT(true);
+                    mainGUI = new ClientGUI(getThisClient(),currentUser);
 					mainGUI.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -350,11 +329,7 @@ public class Client {
         allMessages.add(chatRoom);
     }
     return allMessages;
-    }
-
-    public Map<String, User> getCurrentUserlist() {
-        return userlist;
-    }
+}
 
     // Method to generate random message content
     private static String generateRandomMessage() {

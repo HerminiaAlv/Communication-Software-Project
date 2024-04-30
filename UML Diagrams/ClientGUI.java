@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -52,6 +53,7 @@ public class ClientGUI extends JFrame{
 	
     private User currentUser;
     private ChatRoom activeChat; // The chat that is currently being viewed
+    
     private int HEIGHT = 480;
     private int WIDTH = 720;
     //private static int notificationCounter; // This might change 
@@ -60,22 +62,22 @@ public class ClientGUI extends JFrame{
 	private JPanel currentCenterPanel; // This is the panel that is currently visible on the center panel
 
 	// Possible Center Panels
-	private viewLogChatPanel logViewPanel;
+	protected viewLogChatPanel logViewPanel;
 	private modifyUserPanel modifyUserPanel;
 	private MessagePanel mssgPanel;
 	private UserPanel userPanel;
 	private CreateNewChatPanel createNewChatPanel;
-
-	// West Panel Attributes
-	private DefaultListModel westChatList;
-	JList<ChatRoom> westChatrooms;
 
 	// Building the main elements of the GUI - these will always be visible
 	@SuppressWarnings("unchecked")
 	public ClientGUI(Client client, User currentUser) {
         this.client = client;
         this.currentUser = currentUser;
-	
+        
+        List<User> users = client.generateUsers(7, 10);
+        currentUser =  users.get(0);
+        currentUser.setIT(true);
+        
         //start up 
         setResizable(false); //disable maximize button
 		setTitle("Employee Message App");
@@ -130,7 +132,7 @@ public class ClientGUI extends JFrame{
 		//gbc_list.
 		chatroomPanel.add(pinnedList, gbc_list);
 		
-		JScrollPane nonpinnedChatsScrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		JScrollPane nonpinnedChatsScrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		nonpinnedChatsScrollPane.setViewportBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		nonpinnedChatsScrollPane.setPreferredSize(new Dimension(80, 80));
 
@@ -142,38 +144,40 @@ public class ClientGUI extends JFrame{
 		chatroomPanel.add(nonpinnedChatsScrollPane, gbc_nonpinnedChatsScrollPane);
 
 		// CHAT LIST DISPLAY
-		//@SuppressWarnings("rawtypes")
-		westChatList = new DefaultListModel();
+		@SuppressWarnings("rawtypes")
+		DefaultListModel chatList = new DefaultListModel();
 		for (ChatRoom room : currentUser.getChats())
-			westChatList.addElement(room);
+			chatList.addElement(room);
+		JList<ChatRoom> chatrooms = new JList(chatList);
+		chatrooms.setFont(new Font("Aptos", Font.BOLD, 11));
 
-		westChatrooms = new JList(westChatList);
-		westChatrooms.setFont(new Font("Aptos", Font.BOLD, 11));
-
-		westChatrooms.addListSelectionListener(new ListSelectionListener() {
+		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()){
 					// This is where we will display the chatroom messages
 					// Goal: When a chatroom is selected, display the chatroom logged messages (Assume that correct logged messaging will be implemented)
-					   ChatRoom selectedItem = (ChatRoom) westChatrooms.getSelectedValue();
-					   mssgPanel.setupChatroom(selectedItem);
-					   invokeNewPanel(mssgPanel);
+					// ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+					   //mssgPanel.setupChatroom(selectedItem);
+//					   invokeNewPanel(mssgPanel);
 					// Need to mssgpanel.setupChatroom(selectedItem)
 					// then invoke new panel
+
 					// TODO Go back and test this when we are actually initializing chatroom objects
 					// need to test the case where mssgPanel is already currentCenterPanel.
+
+					//mssgPanel.setupChatroom(selectedItem);
 					//invokeNewPanel(mssgPanel); this links to the chat messages area
 					// MessagePanel newMssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); // what does this do?
 					
 					//JOptionPane that will show the chatroom selected's messages (logged messages);
 					//JOptionPane.showMessageDialog(null, "Chatroom selected: " + chatrooms.getSelectedValue());
-					//displayLoggedMessages(chatrooms.getSelectedValue());
-					}
+					displayLoggedMessages(chatrooms.getSelectedValue());
 				}
-			});
-		westChatrooms.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		westChatrooms.createToolTip();
-		nonpinnedChatsScrollPane.setViewportView(westChatrooms);
+			}
+		});
+		chatrooms.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		chatrooms.createToolTip();
+		nonpinnedChatsScrollPane.setViewportView(chatrooms);
 		
 			
 		// inside westPanel
@@ -231,20 +235,19 @@ public class ClientGUI extends JFrame{
 			public void onSendMessage (Message message) {
 				//ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE); 
 				ChatMessage chatMessage = new ChatMessage(message);
-				chatMessage.setParticipants(mssgPanel.getCurrentChat().getParticipants());
 				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
 		});
 		// Create New Chat Initialization
-		createNewChatPanel = new CreateNewChatPanel(client, currentUser);
+		createNewChatPanel = new CreateNewChatPanel(currentUser);
 		//userPanel = new UserPanel();
 
 		// Log Viewing Panel Initialization
-		logViewPanel = new viewLogChatPanel(client, currentUser);
+		logViewPanel = new viewLogChatPanel();
 		
 		// Modify User Panel Initialization
-		modifyUserPanel = new modifyUserPanel(client);
+		modifyUserPanel = new modifyUserPanel();
 
 		// Placing objects on the center panel
 		//centerPanel.add(mssgPanel,BorderLayout.CENTER);
@@ -274,8 +277,8 @@ public class ClientGUI extends JFrame{
 					System.exit(0);
 				}
 			}
-			//displayLoggedMessages(activeChat);
 		});
+		
 	} 
 	// End Constructor 
     public void updateMessagePanel(String message) {
@@ -297,28 +300,6 @@ public class ClientGUI extends JFrame{
 			}
 		});
 	}
-
-
-	// Display the logged messages of a chatroom
-	// ** Need to call this inside a listener for a chatroom selection **
-	public void displayLoggedMessages (ChatRoom room) {
-		JFrame chatRoomFrame = new JFrame(room.getChatID());
-		chatRoomFrame.setSize(500,400);
-		chatRoomFrame.setLocationRelativeTo(null);
-		chatRoomFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		JTextArea chatLog = new JTextArea();
-		chatLog.setEditable(false); //disable editing
-		chatLog.setLineWrap(true); //enable line wrapping
-		
-		for (Message m : room.getMessages()) {
-			chatLog.append(m.toString() + "\n");
-		}
-
-		JScrollPane chatLogScrollPane = new JScrollPane(chatLog);
-		chatRoomFrame.add(chatLogScrollPane);
-		chatRoomFrame.setVisible(true);
-	}	
 
 	/**
 	 * Removes the currentCenterPanel and places a new one.
@@ -342,23 +323,6 @@ public class ClientGUI extends JFrame{
 		centerPanel.add(currentCenterPanel);
 		centerPanel.revalidate();  
 		centerPanel.repaint();     
-	}
-	
-	public DefaultListModel getViewLogsChatList() {
-		return logViewPanel.getViewLogsChatList();
-	}
-
-	// Call this from client when you get a new chatroom
-	// you might have to do a for each loop addChatToWestPanel if you have a list of chatrooms.
-	public void addChatToWestPanel(ChatRoom toAdd) {
-		// This should update the west chatlist panel whenever theres a new incoming chatroom 
-		westChatList.addElement(toAdd);
-		westChatrooms.revalidate();
-		westChatrooms.repaint();
-	}
-
-	public CreateNewChatPanel getCreateNewChatPanel() {
-		return this.createNewChatPanel;
 	}
 
 
@@ -400,8 +364,27 @@ public class ClientGUI extends JFrame{
 			}
 		});
 	}
-
-
-}
-
 	
+	// Display the logged messages of a chatroom
+		// ** Need to call this inside a listener for a chatroom selection **
+		public void displayLoggedMessages (ChatRoom room) {
+			JFrame chatRoomFrame = new JFrame(room.getChatID());
+			chatRoomFrame.setSize(400,200);
+
+			JTextArea chatLog = new JTextArea();
+			chatLog.setEditable(false); //disable editing
+			chatLog.setLineWrap(true); //enable line wrapping
+
+			for (Message m : room.getMessages()) {
+				chatLog.append(m.toString() + "\n");
+			}
+
+			JScrollPane chatLogScrollPane = new JScrollPane(chatLog);
+			chatRoomFrame.add(chatLogScrollPane);
+			chatRoomFrame.setVisible(true);
+		}	
+		
+		public DefaultListModel getViewLogsChatList() {
+			return logViewPanel.getViewLogsChatList();
+		}
+}

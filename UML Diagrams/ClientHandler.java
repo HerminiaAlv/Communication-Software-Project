@@ -40,23 +40,17 @@ public class ClientHandler implements Runnable {
                         	server.handleLogout((LogoutMessage) message);
                             break;
                         case CHAT_MESSAGE:
-                        	new Thread(()-> {server.handleChatMessage((ChatMessage) message);}).start();
+                        	server.handleChatMessage((ChatMessage) message);
                             //sendMessageToClient(message);
                             break;
                         case UPDATE_USER:
                         	server.handleUpdateUser((UpdateUserMessage) message);
-                            sendMessageToClient(message);
                             break;
                         case CREATE_CHAT:
-                        	new Thread (()-> {server.handleCreateChat((CreateChatMessage) message);}).start();
-                            sendMessageToClient(message);
+                        	server.handleCreateChat((CreateChatMessage) message);
                             break;
                         case ADD_USERS_TO_CHAT:
                         	server.handleAddUsersToChat((AddUsersToChatMessage) message);
-                            break;
-                        case GET_LOGS:
-                            server.handleGetLogs((LogMessage) message);
-                            sendMessageToClient(message);
                             break;
                         case NOTIFY_USER:
                         	server.handleNotifyUser((NotifyMessage) message);
@@ -145,7 +139,7 @@ public class ClientHandler implements Runnable {
     public void handleChatMessage(ChatMessage chatMessage) {
 
         // Send the message to all clients
-        server.broadcastMessage((ChatMessage) chatMessage);
+        server.broadcastMessage((ServerMessage) chatMessage);
         sendMessageToClient(chatMessage);
     }
 

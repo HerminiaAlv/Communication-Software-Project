@@ -2,8 +2,7 @@ public class NotifyMessage extends ServerMessage {
     private String notificationText; 
     private String username;
 
-    public NotifyMessage(String username,String notificationText) {
-    	this.username = username;
+    public NotifyMessage(String notificationText) {
         this.setType(MessageTypes.NOTIFY_USER);
         this.setStatus(MessageStatus.PENDING);
         this.notificationText = notificationText;        

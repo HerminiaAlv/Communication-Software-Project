@@ -4,11 +4,15 @@ public class AddUsersToChatMessage extends ServerMessage {
     private String chatId; 
     private List<String> newParticipantIds;
     private String username;
+    private ChatRoom addedChat;
 
     public AddUsersToChatMessage(String username, String chatId, List<String> newParticipantIds) {
         this.username = username;
     	this.chatId = chatId;
         this.newParticipantIds = newParticipantIds;
+    }
+    public ChatRoom getAddedChat() {
+        return addedChat;
     }
 
     public String getChatId() {
@@ -26,4 +30,8 @@ public class AddUsersToChatMessage extends ServerMessage {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+    public void setAddedChat(ChatRoom toAdd) {
+        this.addedChat = toAdd;
+    }
 }

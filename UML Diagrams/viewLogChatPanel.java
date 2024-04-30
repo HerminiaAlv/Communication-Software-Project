@@ -1,11 +1,14 @@
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 
-
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -19,9 +22,18 @@ import java.awt.Font;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Panel;
+import java.awt.ScrollPane;
+import java.awt.FlowLayout;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-//import org.eclipse.wb.swing.FocusTraversalOnArray;
+import java.awt.GridLayout;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
@@ -37,22 +49,19 @@ public class viewLogChatPanel extends JPanel {
 	private ChatRoom chat;
 	private ClientGUI mainGUI;
 	private DefaultListModel chatData;
-	private JList chatrooms;
 	private JPanel rightSplit;
 	
 	// Access all keys to the map and fill list with the values
 	
-	public viewLogChatPanel(Client client, User currentUser) {
-		this.client = client;
-		this.currentUser = currentUser;
+	public viewLogChatPanel() {
+		client = new Client();
 		
 		setForeground(new Color(135, 206, 250));
 		setBackground(new Color(21, 96, 130));
 		setLayout(null);
 		
-		users = new ArrayList<>();
-		for (User user : client.getCurrentUserlist().values())
-			users.add(user);
+		users = client.generateUsers(5, 10);
+		currentUser = users.get(0);
 		
 		// Panel for text messages box
 //		JPanel chatListBorder = new JPanel();
@@ -87,7 +96,11 @@ public class viewLogChatPanel extends JPanel {
 		JList userList = new JList<User>(userData);
 		
 		// Testing right pane
-		//splitPane.setRightComponent(userList);	
+		splitPane.setRightComponent(userList);
+		
+		
+		
+		
 		
 //		userList.setSelectedIndex(0);
 		//rightSplit = new JPanel();
@@ -95,31 +108,30 @@ public class viewLogChatPanel extends JPanel {
 //		for (ChatRoom room : currentUser.getChats())
 //				chatData.addElement(room);
 		
-		chatrooms = new JList(chatData);
+		JList<ChatRoom> chatrooms = new JList(chatData);
 		//rightSplit.add(chatrooms);
 		
 		userList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				User tosend =  (User) userList.getSelectedValue();
 				LogMessage message = new LogMessage(currentUser.getUsername());
 				client.sendMessageToServer(message);
 				new Thread(() -> client.sendMessageToServer(message));
-				splitPane.setRightComponent(chatrooms);
-				// if (!e.getValueIsAdjusting()) {
-				// 	//currentUser = (User) userList.getSelectedValue();
+				
+				if (!e.getValueIsAdjusting()) {
+					currentUser = (User) userList.getSelectedValue();
 					
-				// 	splitPane.setRightComponent(chatrooms);
-				// }
+					splitPane.setRightComponent(chatrooms);
+				}
 			}
 		});
 		
 
-		chatrooms.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				chat = (ChatRoom)chatrooms.getSelectedValue();
-				// this is where you call the new window
-			}
-		});
+//		
+//		chatrooms.addListSelectionListener(new ListSelectionListener() {
+//			public void valueChanged(ListSelectionEvent e) {
+//				chat = chatrooms.getSelectedValue();
+//			}
+//		});
 		
 		splitPane.setLeftComponent(userList);
 		splitPane.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
