@@ -26,7 +26,7 @@ public class Client {
     // MainGUI attributes
     private User currentUser;
     private ClientGUI mainGUI;
-    private Map<String, String> userlist; // Username, Display name?
+    private Map<String, User> userlist; // Username, Display name?
     private boolean loggedIn;
 
     //Message
@@ -148,7 +148,9 @@ public class Client {
 
         if (loggedIn) {
             currentUser = msg.getUser();
+            userlist = msg.getAllUsers();
             killLoginGUI();
+            //invoke mainGUI happens in the main loop
         } else {  /*  Stay in login loop */
             loginGUI.updateWaitingStatus(loggedIn);
         }            
@@ -160,6 +162,7 @@ public class Client {
 
     public void handleUpdateUser(UpdateUserMessage msg) {
         // TODO implement this
+
     }
 
     public void handleGetLogsMessage(LogMessage msg) {
@@ -167,7 +170,14 @@ public class Client {
     }
 
     public void handleAddUsersToChat(AddUsersToChatMessage msg) {
-        // TODO implement this  
+        // TODO Need to test this one at some point - itll be similar
+        String displayString = "";
+        for (String userid : msg.getNewParticipantIds())
+            displayString += userid + ", ";
+        JOptionPane.showMessageDialog(null, "Chat created with: " + displayString);
+
+        // Add the new chat to westChatrooms
+        mainGUI.addChatToWestPanel(msg.getAddedChat()); // this should do it
     }
 
     public void handleGetLogs(LogMessage msg) {
@@ -189,10 +199,14 @@ public class Client {
             }});
     }
     
-    public void handleCreateChatMessage(CreateChatMessage createChatMessage) {
-    	// System.out.println("Chatroom info received: " + createChatMessage.getParticipantIds() + " " 
-    	// 											  + createChatMessage.getChatName());
-    	// wip
+    public void handleCreateChatMessage(CreateChatMessage msg) {
+        String displayString = "";
+        for (String userid : msg.getParticipantIds())
+            displayString += userid + ", ";
+        JOptionPane.showMessageDialog(null, "Chat created with: " + displayString);
+
+        // Add the new chat to westChatrooms
+        mainGUI.addChatToWestPanel(msg.getCreatedChat()); // this should do it
     }
     
     // Other Methods ****************************************************************
@@ -245,12 +259,12 @@ public class Client {
                     // mainGUI = new ClientGUI(getThisClient(), testUser);
                     // currentUser = testUser;
                     // end test 
-                    List<User> users = generateUsers(7, 10);
-                    users.get(0).setIT(true);
-                    mainGUI = new ClientGUI(getThisClient(), users.get(0));
+                    // List<User> users = generateUsers(7, 10);
+                    // users.get(0).setIT(true);
+                    // mainGUI = new ClientGUI(getThisClient(), users.get(0));
                     
                     // uncomment this when server passes a user
-					//mainGUI = new ClientGUI(getThisClient(), currentUser); 
+					mainGUI = new ClientGUI(getThisClient(), currentUser); 
 					mainGUI.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -322,7 +336,11 @@ public class Client {
         allMessages.add(chatRoom);
     }
     return allMessages;
-}
+    }
+
+    public Map<String, User> getCurrentUserlist() {
+        return userlist;
+    }
 
     // Method to generate random message content
     private static String generateRandomMessage() {

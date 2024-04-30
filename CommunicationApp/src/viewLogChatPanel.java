@@ -1,14 +1,11 @@
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 
-import java.awt.TextField;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,18 +19,9 @@ import java.awt.Font;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Panel;
-import java.awt.ScrollPane;
-import java.awt.FlowLayout;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-import java.awt.GridLayout;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
+//import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
@@ -46,16 +34,24 @@ public class viewLogChatPanel extends JPanel {
 //	private Map<String,String> users;		// Username, display name
 	private List<User> users;
 	private User currentUser;
+	private ChatRoom chat;
+	private ClientGUI mainGUI;
+	private DefaultListModel chatData;
+	private JPanel rightSplit;
 	
 	// Access all keys to the map and fill list with the values
 	
-	public viewLogChatPanel() {
+	public viewLogChatPanel(Client client, User currentUser) {
+		this.client = client;
+		this.currentUser = currentUser;
+		
 		setForeground(new Color(135, 206, 250));
 		setBackground(new Color(21, 96, 130));
 		setLayout(null);
 		
-		users = client.generateUsers(5, 10);
-		currentUser = users.get(0);
+		users = new ArrayList<>();
+		for (User user : client.getCurrentUserlist().values())
+			users.add(user);
 		
 		// Panel for text messages box
 //		JPanel chatListBorder = new JPanel();
@@ -71,7 +67,7 @@ public class viewLogChatPanel extends JPanel {
 		
 		DefaultListModel userData = new DefaultListModel();
         for (User user : users) {
-        	userData.addElement(user.getUsername());
+        	userData.addElement(user);
         }
        
 		
@@ -86,64 +82,45 @@ public class viewLogChatPanel extends JPanel {
 //                return userData.get(index);
 //            }
 //        };
-       
-		JList userList = new JList<String>(userData);
+  
+		JList userList = new JList<User>(userData);
+		
+		// Testing right pane
+		splitPane.setRightComponent(userList);	
+		
+//		userList.setSelectedIndex(0);
+		//rightSplit = new JPanel();
+		chatData = new DefaultListModel();
+//		for (ChatRoom room : currentUser.getChats())
+//				chatData.addElement(room);
+		
+		JList<ChatRoom> chatrooms = new JList(chatData);
+		//rightSplit.add(chatrooms);
 		
 		userList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()) {
-					DefaultListModel chatData = new DefaultListModel();
-					for (ChatRoom room : currentUser.getChats())
-						chatData.addElement(room);
+				chat = chatrooms.getSelectedValue();
+				LogMessage message = new LogMessage(currentUser.getUsername());
+				client.sendMessageToServer(message);
+				new Thread(() -> client.sendMessageToServer(message));
+				splitPane.setRightComponent(chatrooms);
+				// if (!e.getValueIsAdjusting()) {
+				// 	//currentUser = (User) userList.getSelectedValue();
 					
-					JList<ChatRoom>  chatrooms = new JList(chatData);
-//					AbstractListModel<String> chatListModel = new AbstractListModel<String>() {
-//			            @Override
-//			            public int getSize() {
-//			                return chatData.size();
-//			            }
-//
-//			            @Override
-//			            public String getElementAt(int index) {
-//			                return (String) chatData.get(index);
-//			            }
-//			        };
-			       
-//					JList chatList = new JList<ChatRoom>(chatrooms);
-					
-					
-					splitPane.setRightComponent(chatrooms);
-				}
+				// 	splitPane.setRightComponent(chatrooms);
+				// }
 			}
 		});
-
 		
+
+		chatrooms.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				chat = chatrooms.getSelectedValue();
+			}
+		});
 		
 		splitPane.setLeftComponent(userList);
-		
-//		List<String> chatData = new ArrayList<>();
-//        chatData.add("Chat 1");
-//        chatData.add("Chat 2");
-//        chatData.add("Chat 3");
-//        chatData.add("Chat 4");
-//        chatData.add("Chat 5");
-//		
-//		AbstractListModel<String> chatListModel = new AbstractListModel<String>() {
-//            @Override
-//            public int getSize() {
-//                return chatData.size();
-//            }
-//
-//            @Override
-//            public String getElementAt(int index) {
-//                return chatData.get(index);
-//            }
-//        };
-//       
-//		JList chatList = new JList<String>(chatListModel);
-//		
-//		
-//		splitPane.setRightComponent(chatList);
+		splitPane.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
 		add(splitPane);
 		
 		//add(scrollPane);
@@ -163,16 +140,16 @@ public class viewLogChatPanel extends JPanel {
 		promptBorder.add(promptText, BorderLayout.CENTER);
 		
 		// Panel for send button... putting button inside a border makes modifications easy!
-				JPanel cancelBorder = new JPanel();
-				cancelBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
-				cancelBorder.setBounds(353, 392, 81, 38);
-				add(cancelBorder);
-				cancelBorder.setLayout(new BorderLayout(0, 0));
-				
-				JButton btnCancel = new JButton("Cancel");
-				btnCancel.setToolTipText("Hit button to send message...");
-				btnCancel.setFont(new Font("Dialog", Font.BOLD, 12));
-				cancelBorder.add(btnCancel, BorderLayout.CENTER);
+//				JPanel cancelBorder = new JPanel();
+//				cancelBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
+//				cancelBorder.setBounds(353, 392, 81, 38);
+//				add(cancelBorder);
+//				cancelBorder.setLayout(new BorderLayout(0, 0));
+//				
+//				JButton btnCancel = new JButton("Cancel");
+//				btnCancel.setToolTipText("Hit button to send message...");
+//				btnCancel.setFont(new Font("Dialog", Font.BOLD, 12));
+//				cancelBorder.add(btnCancel, BorderLayout.CENTER);
 				
 				JPanel confirmBorder = new JPanel();
 				confirmBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
@@ -186,8 +163,7 @@ public class viewLogChatPanel extends JPanel {
 				btnConfirm.setFont(new Font("Dialog", Font.BOLD, 12));
 				btnConfirm.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						
-						
+						mainGUI.displayLoggedMessages(chat);		
 						
 						
 						
@@ -215,5 +191,9 @@ public class viewLogChatPanel extends JPanel {
 //		usersBorder.add(lblOnlineUsers, BorderLayout.CENTER);
 
 
+	}
+	
+	public DefaultListModel getViewLogsChatList() {
+		return chatData;
 	}
 }

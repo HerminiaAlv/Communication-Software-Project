@@ -24,40 +24,27 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Server {
-    private static final int PORT = 4444;
-    private  Map<String, ObjectOutputStream> clients = new HashMap<>();
+    private static final int PORT = 12345;
+    private Map<String, ObjectOutputStream> clients = new HashMap<>();
     private Map<String, String[]> credentials = new HashMap<>();
+    private Map<String, User> allUsers = new HashMap<>();
     
-
+    // Return the all UserMap for Login Message
+    public Map<String, User> populateAllUsers() {
+        Map<String, User> allUsersMap = new HashMap<>();
+        // username, first + last
+        for (String username : credentials.keySet()){
+            String[] userValues = credentials.get(username);
+            //build first+last // last name, first name, password, is_it
+            User toAdd = new User(userValues[1], userValues[0], username);
+            allUsersMap.put(username, toAdd);
+        }
+        return allUsersMap;
+    }
     public void start() {
 
         populateCredentials();
-        //
-    	//buildChatRoom();
-        //testBuildUsers();
-        //testWriteUserChatList();
-        
-        // List<User> users = generateUsers(4,4);
-        // User user = users.get(0);
-        
-        // for (ChatRoom chat : user.getChats()) {
-        //     writeChatRoomFile(chat);
-        // }
-        // writeUserChatList(user);
-
-    //    User builtUser =  buildUser("User1");
-    //    for (ChatRoom chatroom : builtUser.getChats()) {
-    //     String participants = "";
-    //     System.out.println("ChatID: " + chatroom.getChatID() + "");
-    //     for (String user : chatroom.getParticipants())
-    //         participants = participants + user + ", ";
-    //     System.out.println("Participants: " + participants + "\n");
-    //     for (Message m : chatroom.getMessages()) {
-    //         System.out.println(m.toString());
-    //     }
-    //     System.out.println("");
-    // }
-        
+        allUsers = populateAllUsers();
         // Open the server to accept connections
 
     	try {
@@ -78,7 +65,7 @@ public class Server {
 
     public boolean writeChatRoomFile(ChatRoom toWrite) {
         //"\\401-TestBuildFromFile\\src\\chatrooms"
-        String filename = toWrite.getChatID();
+        String filename = "chatrooms\\" + toWrite.getChatID();
         boolean createdNewFile = false;
         File file = new File(filename+".txt");
         // Open up the file with the same username
@@ -108,6 +95,7 @@ public class Server {
         }
         return createdNewFile;
     }
+
     public boolean writeUserChatList(User user) {
         String filename = user.getUsername();
         boolean createdNewFile = false;
@@ -138,6 +126,7 @@ public class Server {
     }
     public synchronized void sendMessageToClient(String username, ServerMessage message) {
         ObjectOutputStream out = clients.get(username);
+        
         if (out != null) {
             try {
                 out.writeObject(message);
@@ -152,8 +141,12 @@ public class Server {
     // Assume that this method will receive a list of usernames.
     public synchronized void broadcastMessage(ChatMessage chatMessage) {
         // LOGGING -- Chris will do this
+        // When a message comes in we need to append it to the chatID
+        Message toAppend = chatMessage.getMessage();
+        appendMessageToChat(chatMessage.getMessage().getChatID(), toAppend);
 
         chatMessage.setStatus(MessageStatus.SUCCESS);
+        //System.out.println("Inside broadcastMsg");
 
         // for each user in the chat room, send the message to the user
         List<String> participants = chatMessage.getParticipants();
@@ -170,26 +163,40 @@ public class Server {
                     e.printStackTrace();
                 }
             }
+            else {
+                System.out.println("User: " + participant + " was not online. Saving for later");
+            }
         }
     }
     
     
-    public void handleLogin(LoginMessage msg, ObjectOutputStream outputStream) {	  	
+   private void appendMessageToChat(String chatID, Message toAppend) {
+        String filename = "chatrooms\\" + chatID + ".txt";
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
+            //bw.newLine();
+            bw.write(toAppend.toCSVString());
+            bw.newLine();
+            System.out.println(toAppend.toCSVString() + " was added to " + chatID);
+        } catch (IOException e) {
+            System.err.println("Error writing to chatfile file: " + e.getMessage());
+        }
+    }
+ public void handleLogin(LoginMessage msg, ObjectOutputStream outputStream) {	  	
         
         if (msg.getStatus() == MessageStatus.PENDING) {
         	if (validateCredentials(msg.getUsername(), msg.getPassword()))
         	{
         		msg.setStatus(MessageStatus.SUCCESS);
         		msg.setSuccess(true);
+                msg.setAllUsers(allUsers);
+                msg.setCurrentUser(buildUser(msg.getUsername())); // build this user
                 addClient(msg.getUsername(), outputStream);
-                
-        		
         	} else 
         	{
         		msg.setStatus(MessageStatus.FAILED);
         	}
     		
-    	}//
+    	}
        
         // Send the response back to the client
         // sendMessageToClient(msg);
@@ -243,29 +250,34 @@ public class Server {
         List<String> participantIds = message.getParticipantIds();
         
         // Validate participant list
-        if (participantIds == null || participantIds.isEmpty()) {
+        if (participantIds == null || participantIds.isEmpty()) { // not valid
             message.setStatus(MessageStatus.FAILED);
             //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
             return;
         }
 
         ChatRoom newChat = new ChatRoom(participantIds);
-        
+        for (String username : participantIds)
+            appendChatToUserFile(username, newChat.getChatID()); // Add the chat to each participant
+        // create the file on the server as well
+        writeChatRoomFile(newChat);
+
         message.setCreatedChat(newChat);
         message.setStatus(MessageStatus.SUCCESS);
-        
+
+        // let fall through and send it back in clienthandler
     }
     
     public void handlePinChat(PinChatMessage message) {
-
+        // Low Prio
     }
 
     public void handleNotifyUser(NotifyMessage message) {
-        
+        // Low Prio
     }
     
     public void handleAddUsersToChat(AddUsersToChatMessage message) {
-    
+        // TODO add this
     }
 
     public void populateCredentials()
@@ -278,7 +290,7 @@ public class Server {
                 // Assuming the file format is: username,firstname,lastname,password
                 if (cred.length >= 4) {
                     String username = cred[2]; // username is the third item
-                    String[] userDetails = {cred[0], cred[1], cred[3]}; // last name, first name, password
+                    String[] userDetails = {cred[0], cred[1], cred[3], cred[4]}; // last name, first name, password, is_it
                     credentials.put(username, userDetails);
                 }
             }
@@ -312,7 +324,7 @@ public class Server {
 
         //  chat rooms associated with this user
         List<String> chatIDsToBuild = new ArrayList<>();
-        File file = new File(username+".txt"); // username is the file path for userchat room IDs
+        File file = new File("users\\" + username+".txt"); // username is the file path for userchat room IDs
         
         // Open up the file with the same username
     	if (!file.exists()) {
@@ -339,10 +351,13 @@ public class Server {
             else // buildChatRoom returned null
                 System.out.println(chatFilePath + "was not found and did not build correctly.");
         }
-
+        boolean is_it = false;
+        if (userDetails[3].compareTo("1") == 0) {
+            is_it = true;
+        }
         // Creating a new User object with detailed constructor
         User user = new User(username, userDetails[1], userDetails[0], 
-                            username, userDetails[2], false, userChats); 
+                            username, userDetails[2], is_it, userChats); 
         return user;
     }
 
@@ -463,6 +478,34 @@ public class Server {
         Server server = new Server();
         server.start();
         //server.writeCredentials("Cola", "Coca", "Cocacoola", "soda", true); //this works
+    }
+
+    private void extraFileTests() {
+                //
+    	//buildChatRoom();
+        //testBuildUsers();
+        //testWriteUserChatList();
+        
+        // List<User> users = generateUsers(4,4);
+        // User user = users.get(0);
+        
+        // for (ChatRoom chat : user.getChats()) {
+        //     writeChatRoomFile(chat);
+        // }
+        // writeUserChatList(user);
+
+    //    User builtUser =  buildUser("User1");
+    //    for (ChatRoom chatroom : builtUser.getChats()) {
+    //     String participants = "";
+    //     System.out.println("ChatID: " + chatroom.getChatID() + "");
+    //     for (String user : chatroom.getParticipants())
+    //         participants = participants + user + ", ";
+    //     System.out.println("Participants: " + participants + "\n");
+    //     for (Message m : chatroom.getMessages()) {
+    //         System.out.println(m.toString());
+    //     }
+    //     System.out.println("");
+    // }
     }
 
 }

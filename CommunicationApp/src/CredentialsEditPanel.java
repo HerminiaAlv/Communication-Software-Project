@@ -24,7 +24,7 @@ import java.awt.ScrollPane;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
+//import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
@@ -73,21 +73,21 @@ public class CredentialsEditPanel extends JPanel {
 				// 
 				int count = 0;
 				String empty = "";
-				if ((textBox.getText()).equals(empty)) {
-					textBox.setText("");
-					textBox.requestFocus();
-				} else {
-					// handle event of writing passed message to the messages area
-					// suggested format: ['timestamp'] + username + ": " + message (textBox.getText()) + Data Type
-//					try {
-//						//write to message area using suggested format then
-//						//flush the buffer;
-//					} catch (Exception e1) {
-//						textMessages.append("Message was not sent. \n"); //Print error message
-//					};
-					textBox.setText(""); //set text back to "" 
-					textBox.requestFocus(); //send it back to text box..
-				}
+				// if ((textBox.getText()).equals(empty)) {
+				// 	textBox.setText("");
+				// 	textBox.requestFocus();
+				// } else {
+				// 	//handle event of writing passed message to the messages area
+				// 	//suggested format: ['timestamp'] + username + ": " + message (textBox.getText()) + Data Type
+				// 	try {
+				// 		//write to message area using suggested format then
+				// 		//flush the buffer;
+				// 	} catch (Exception e1) {
+				// 		textMessages.append("Message was not sent. \n"); //Print error message
+				// 	};
+				// 	textBox.setText(""); //set text back to "" 
+				// 	textBox.requestFocus(); //send it back to text box..
+				// }
 			}
 		});
 		

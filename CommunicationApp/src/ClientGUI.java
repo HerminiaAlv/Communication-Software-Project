@@ -66,6 +66,10 @@ public class ClientGUI extends JFrame{
 	private UserPanel userPanel;
 	private CreateNewChatPanel createNewChatPanel;
 
+	// West Panel Attributes
+	private DefaultListModel westChatList;
+	JList<ChatRoom> westChatrooms;
+
 	// Building the main elements of the GUI - these will always be visible
 	@SuppressWarnings("unchecked")
 	public ClientGUI(Client client, User currentUser) {
@@ -138,20 +142,20 @@ public class ClientGUI extends JFrame{
 		chatroomPanel.add(nonpinnedChatsScrollPane, gbc_nonpinnedChatsScrollPane);
 
 		// CHAT LIST DISPLAY
-		@SuppressWarnings("rawtypes")
-		DefaultListModel chatList = new DefaultListModel();
+		//@SuppressWarnings("rawtypes")
+		westChatList = new DefaultListModel();
 		for (ChatRoom room : currentUser.getChats())
-			chatList.addElement(room);
+			westChatList.addElement(room);
 
-		JList<ChatRoom> chatrooms = new JList(chatList);
-		chatrooms.setFont(new Font("Aptos", Font.BOLD, 11));
+		westChatrooms = new JList(westChatList);
+		westChatrooms.setFont(new Font("Aptos", Font.BOLD, 11));
 
-		chatrooms.addListSelectionListener(new ListSelectionListener() {
+		westChatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()){
 					// This is where we will display the chatroom messages
 					// Goal: When a chatroom is selected, display the chatroom logged messages (Assume that correct logged messaging will be implemented)
-					   ChatRoom selectedItem = (ChatRoom) chatrooms.getSelectedValue();
+					   ChatRoom selectedItem = (ChatRoom) westChatrooms.getSelectedValue();
 					   mssgPanel.setupChatroom(selectedItem);
 					   invokeNewPanel(mssgPanel);
 					// Need to mssgpanel.setupChatroom(selectedItem)
@@ -167,9 +171,9 @@ public class ClientGUI extends JFrame{
 					}
 				}
 			});
-		chatrooms.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		chatrooms.createToolTip();
-		nonpinnedChatsScrollPane.setViewportView(chatrooms);
+		westChatrooms.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		westChatrooms.createToolTip();
+		nonpinnedChatsScrollPane.setViewportView(westChatrooms);
 		
 			
 		// inside westPanel
@@ -227,16 +231,17 @@ public class ClientGUI extends JFrame{
 			public void onSendMessage (Message message) {
 				//ChatMessage chatMessage = new ChatMessage(mssg, MessageStatus.SENT, MessageTypes.CHAT_MESSAGE); 
 				ChatMessage chatMessage = new ChatMessage(message);
+				chatMessage.setParticipants(mssgPanel.getCurrentChat().getParticipants());
 				client.sendMessageToServer(chatMessage);
 				System.out.println("Debug: onSendMessage");
 			}
 		});
 		// Create New Chat Initialization
-		createNewChatPanel = new CreateNewChatPanel(currentUser);
+		createNewChatPanel = new CreateNewChatPanel(client, currentUser);
 		//userPanel = new UserPanel();
 
 		// Log Viewing Panel Initialization
-		logViewPanel = new viewLogChatPanel();
+		logViewPanel = new viewLogChatPanel(client, currentUser);
 		
 		// Modify User Panel Initialization
 		modifyUserPanel = new modifyUserPanel();
@@ -338,6 +343,19 @@ public class ClientGUI extends JFrame{
 		centerPanel.revalidate();  
 		centerPanel.repaint();     
 	}
+	
+	public DefaultListModel getViewLogsChatList() {
+		return logViewPanel.getViewLogsChatList();
+	}
+
+	// Call this from client when you get a new chatroom
+	// you might have to do a for each loop addChatToWestPanel if you have a list of chatrooms.
+	public void addChatToWestPanel(ChatRoom toAdd) {
+		// This should update the west chatlist panel whenever theres a new incoming chatroom 
+		westChatList.addElement(toAdd);
+		westChatrooms.revalidate();
+		westChatrooms.repaint();
+	}
 
 
 	// Private Testing variables
@@ -379,9 +397,6 @@ public class ClientGUI extends JFrame{
 		});
 	}
 
-	public DefaultListModel getViewLogsChatList() {
-		return logViewPanel.getViewLogsChatList();
-	}
 
 }
 
