@@ -125,6 +125,7 @@ public class Server {
     }
     public synchronized void sendMessageToClient(String username, ServerMessage message) {
         ObjectOutputStream out = clients.get(username);
+        
         if (out != null) {
             try {
                 out.writeObject(message);
@@ -141,6 +142,7 @@ public class Server {
         // LOGGING -- Chris will do this
 
         chatMessage.setStatus(MessageStatus.SUCCESS);
+        //System.out.println("Inside broadcastMsg");
 
         // for each user in the chat room, send the message to the user
         List<String> participants = chatMessage.getParticipants();
@@ -156,6 +158,9 @@ public class Server {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+            else {
+                System.out.println("User: " + participant + " was not online. Saving for later");
             }
         }
     }
