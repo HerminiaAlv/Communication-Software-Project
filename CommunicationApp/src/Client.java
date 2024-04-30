@@ -171,7 +171,7 @@ public class Client {
     }
 
     public void handleAddUsersToChat(AddUsersToChatMessage msg) {
-        // TODO implement this  
+        // TODO Need to test this one at some point - itll be similar
         String displayString = "";
         for (String userid : msg.getNewParticipantIds())
             displayString += userid + ", ";
@@ -200,10 +200,14 @@ public class Client {
             }});
     }
     
-    public void handleCreateChatMessage(CreateChatMessage createChatMessage) {
-    	// System.out.println("Chatroom info received: " + createChatMessage.getParticipantIds() + " " 
-    	// 											  + createChatMessage.getChatName());
-    	// wip
+    public void handleCreateChatMessage(CreateChatMessage msg) {
+        String displayString = "";
+        for (String userid : msg.getParticipantIds())
+            displayString += userid + ", ";
+        JOptionPane.showMessageDialog(null, "Chat created with: " + displayString);
+
+        // Add the new chat to westChatrooms
+        mainGUI.addChatToWestPanel(msg.getCreatedChat()); // this should do it
     }
     
     // Other Methods ****************************************************************

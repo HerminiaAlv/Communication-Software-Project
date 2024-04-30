@@ -158,6 +158,7 @@ public class CreateNewChatPanel extends JPanel {
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// usernames contains my value
+				usernames.add(client.getCurrentUser().getUsername()); // need to add currentUsers to participants lists
 				CreateChatMessage msg = new CreateChatMessage(usernames);
 				new Thread(()->{client.sendMessageToServer(msg);}).start();
 			}

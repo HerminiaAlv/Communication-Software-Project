@@ -147,7 +147,7 @@ public class ClientGUI extends JFrame{
 		for (ChatRoom room : currentUser.getChats())
 			westChatList.addElement(room);
 
-		JList<ChatRoom> westChatrooms = new JList(westChatList);
+		westChatrooms = new JList(westChatList);
 		westChatrooms.setFont(new Font("Aptos", Font.BOLD, 11));
 
 		westChatrooms.addListSelectionListener(new ListSelectionListener() {

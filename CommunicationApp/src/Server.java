@@ -65,7 +65,7 @@ public class Server {
 
     public boolean writeChatRoomFile(ChatRoom toWrite) {
         //"\\401-TestBuildFromFile\\src\\chatrooms"
-        String filename = toWrite.getChatID();
+        String filename = "chatrooms\\" + toWrite.getChatID();
         boolean createdNewFile = false;
         File file = new File(filename+".txt");
         // Open up the file with the same username
@@ -95,6 +95,7 @@ public class Server {
         }
         return createdNewFile;
     }
+
     public boolean writeUserChatList(User user) {
         String filename = user.getUsername();
         boolean createdNewFile = false;
@@ -249,17 +250,22 @@ public class Server {
         List<String> participantIds = message.getParticipantIds();
         
         // Validate participant list
-        if (participantIds == null || participantIds.isEmpty()) {
+        if (participantIds == null || participantIds.isEmpty()) { // not valid
             message.setStatus(MessageStatus.FAILED);
             //sendMessageToClient(message.getUsername(), message); 		// need to fix sendMessageToClient
             return;
         }
 
         ChatRoom newChat = new ChatRoom(participantIds);
-        
+        for (String username : participantIds)
+            appendChatToUserFile(username, newChat.getChatID()); // Add the chat to each participant
+        // create the file on the server as well
+        writeChatRoomFile(newChat);
+
         message.setCreatedChat(newChat);
         message.setStatus(MessageStatus.SUCCESS);
-        
+
+        // let fall through and send it back in clienthandler
     }
     
     public void handlePinChat(PinChatMessage message) {
@@ -318,7 +324,7 @@ public class Server {
 
         //  chat rooms associated with this user
         List<String> chatIDsToBuild = new ArrayList<>();
-        File file = new File(username+".txt"); // username is the file path for userchat room IDs
+        File file = new File("users\\" + username+".txt"); // username is the file path for userchat room IDs
         
         // Open up the file with the same username
     	if (!file.exists()) {
