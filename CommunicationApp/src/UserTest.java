@@ -6,7 +6,7 @@ import java.util.Collections;
 class UserTest {
 
     private User user;
-
+ 
     @BeforeEach
     void setUp() {
         user = new User("1", "Jose", "Galeana", "username", "password", false, Collections.emptyList());
