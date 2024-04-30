@@ -71,7 +71,7 @@ public class ClientGUI extends JFrame{
 	JList<ChatRoom> westChatrooms;
 
 	// Building the main elements of the GUI - these will always be visible
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ClientGUI(Client client, User currentUser) {
         this.client = client;
         this.currentUser = currentUser;
@@ -146,6 +146,7 @@ public class ClientGUI extends JFrame{
 		westChatList = new DefaultListModel();
 		for (ChatRoom room : currentUser.getChats())
 			westChatList.addElement(room);
+		
 
 		westChatrooms = new JList(westChatList);
 		westChatrooms.setFont(new Font("Aptos", Font.BOLD, 11));
@@ -287,6 +288,9 @@ public class ClientGUI extends JFrame{
 	}
 
 	public void invokeNewPanel(JPanel panel) {
+/* 		if (panel == viewLogChatPanel)
+			panel = new viewLogChatPanel(client, currentUser)
+			return; */
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -301,7 +305,7 @@ public class ClientGUI extends JFrame{
 
 	// Display the logged messages of a chatroom
 	// ** Need to call this inside a listener for a chatroom selection **
-	public void displayLoggedMessages (ChatRoom room) {
+/* 	public void displayLoggedMessages (ChatRoom room) {
 		JFrame chatRoomFrame = new JFrame(room.getChatID());
 		chatRoomFrame.setSize(500,400);
 		chatRoomFrame.setLocationRelativeTo(null);
@@ -318,7 +322,7 @@ public class ClientGUI extends JFrame{
 		JScrollPane chatLogScrollPane = new JScrollPane(chatLog);
 		chatRoomFrame.add(chatLogScrollPane);
 		chatRoomFrame.setVisible(true);
-	}	
+	}	 */
 
 	/**
 	 * Removes the currentCenterPanel and places a new one.
