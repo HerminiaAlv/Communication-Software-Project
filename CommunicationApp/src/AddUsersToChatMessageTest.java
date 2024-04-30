@@ -10,12 +10,14 @@ class AddUsersToChatMessageTest {
     private String chatId;
     private List<String> newParticipantIds;
     private String username;
+    private ChatRoom chatRoom;
 
     @BeforeEach
     void setUp() {
         chatId = "chat";
         username = "user";
         newParticipantIds = Arrays.asList("user1", "user2");
+        chatRoom = new ChatRoom(); 
         addUsersToChatMessage = new AddUsersToChatMessage(username, chatId, newParticipantIds);
     }
 
@@ -27,7 +29,13 @@ class AddUsersToChatMessageTest {
     }
 
     @Test
-    void testMessageParticipantsNotEmpty() {
+    void testSetAndGetAddedChat() {
+        addUsersToChatMessage.setAddedChat(chatRoom);
+        assertSame(chatRoom, addUsersToChatMessage.getAddedChat(), "Added chat room should be the same as the one set");
+    }
+
+    @Test
+    void testMessageParticipants() {
         assertFalse(addUsersToChatMessage.getNewParticipantIds().isEmpty(), "New participant IDs should not be empty");
     }
 
@@ -36,4 +44,9 @@ class AddUsersToChatMessageTest {
         assertEquals(2, addUsersToChatMessage.getNewParticipantIds().size(), "There should be two new participants");
     }
 
+    @Test
+    void testNullParticipants() {
+        AddUsersToChatMessage nullParticipantsMessage = new AddUsersToChatMessage(username, chatId, null);
+        assertNull(nullParticipantsMessage.getNewParticipantIds(), "Participant IDs should be null if set to null in constructor");
+    }
 }

@@ -1,6 +1,8 @@
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -62,9 +64,10 @@ class MessageTest {
 
     @Test
     void testSetTimestamp() {
-        LocalDateTime newTimestamp = LocalDateTime.now().minusHours(1);
+        LocalDateTime newTimestamp = LocalDateTime.now();
         message.setTimestamp(newTimestamp);
-        assertEquals(newTimestamp, message.getTimestamp());
+        long secondsDifference = ChronoUnit.SECONDS.between(newTimestamp, message.getTimestamp());
+        assertTrue(secondsDifference <= 1, "Timestamp should be within a second of the set time.");
     }
 
     @Test

@@ -96,6 +96,10 @@ public class User implements Serializable{
 	}
 	
 	//other methods
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
 	public void setIT(boolean is_IT){
 		this.is_IT = is_IT;
 	}
