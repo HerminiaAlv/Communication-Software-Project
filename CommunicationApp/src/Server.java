@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -106,7 +108,6 @@ public class Server {
         }
         return createdNewFile;
     }
-
     public boolean writeUserChatList(User user) {
         String filename = user.getUsername();
         boolean createdNewFile = false;
@@ -128,7 +129,6 @@ public class Server {
         }
         return createdNewFile; // New file wasnt created
     }
-
     public synchronized void addClient(String username, ObjectOutputStream out) {
         clients.put(username, out);
     }
@@ -259,9 +259,9 @@ public class Server {
     
     }
 
-    
-    public void populateCredentials() {
-        try (BufferedReader br = new BufferedReader(new FileReader("credentialsData.txt"))) {
+    public void populateCredentials()
+    {
+        try (BufferedReader br = new BufferedReader(new FileReader("CommunicationApp\\credentialsData.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] cred = line.split(",");
@@ -277,7 +277,23 @@ public class Server {
             System.err.println("Error reading credentials file: " + e.getMessage());
         }
     }
-    
+    // assuming that new user data is added
+    public void writeCredentials(String lastName, String firstName, String username, String password, boolean is_IT) {
+        String isIT;
+        if (is_IT) {
+            isIT = "1"; //true
+        } else {
+            isIT = "0"; //false
+        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("CommunicationApp\\credentialsData.txt", true))) {
+            //bw.newLine();
+            bw.write(lastName + "," + firstName + "," + username + "," + password + "," + isIT);
+            bw.newLine();
+            System.out.println("User added to credentials file: " + username);
+        } catch (IOException e) {
+            System.err.println("Error writing to credentials file: " + e.getMessage());
+        }
+    }
     public User buildUser(String username) {
         // Retrieve user details from credentials map
         String[] userDetails = credentials.get(username);
@@ -419,11 +435,10 @@ public class Server {
 		}
         return null;	// Error, couldn't build
     }        
-
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
-    
+        server.writeCredentials("Cola", "Coca", "Cocacoola", "soda", true);
     }
 
 }
