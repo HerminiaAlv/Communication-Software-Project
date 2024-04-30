@@ -28,6 +28,7 @@ public class User implements Serializable{
 		this.firstName = firstname;
 		this.lastName = lastname;
 		this.username = username;
+		this.chats = new ArrayList<>();
 	}
 	
 	public User(String id, String firstName, String lastName, 

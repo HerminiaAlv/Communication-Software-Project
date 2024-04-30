@@ -25,13 +25,26 @@ import java.util.regex.Pattern;
 
 public class Server {
     private static final int PORT = 12345;
-    private  Map<String, ObjectOutputStream> clients = new HashMap<>();
+    private Map<String, ObjectOutputStream> clients = new HashMap<>();
     private Map<String, String[]> credentials = new HashMap<>();
+    private Map<String, User> allUsers = new HashMap<>();
     
-
+    // Return the all UserMap for Login Message
+    public Map<String, User> populateAllUsers() {
+        Map<String, User> allUsersMap = new HashMap<>();
+        // username, first + last
+        for (String username : credentials.keySet()){
+            String[] userValues = credentials.get(username);
+            //build first+last // last name, first name, password, is_it
+            User toAdd = new User(userValues[1], userValues[0], username);
+            allUsersMap.put(username, toAdd);
+        }
+        return allUsersMap;
+    }
     public void start() {
 
         populateCredentials();
+        allUsers = populateAllUsers();
         // Open the server to accept connections
 
     	try {
@@ -163,7 +176,7 @@ public class Server {
         		msg.setStatus(MessageStatus.FAILED);
         	}
     		
-    	}//
+    	}
        
         // Send the response back to the client
         // sendMessageToClient(msg);
@@ -231,15 +244,15 @@ public class Server {
     }
     
     public void handlePinChat(PinChatMessage message) {
-
+        // Low Prio
     }
 
     public void handleNotifyUser(NotifyMessage message) {
-        
+        // Low Prio
     }
     
     public void handleAddUsersToChat(AddUsersToChatMessage message) {
-    
+        // TODO add this
     }
 
     public void populateCredentials()
@@ -252,7 +265,7 @@ public class Server {
                 // Assuming the file format is: username,firstname,lastname,password
                 if (cred.length >= 4) {
                     String username = cred[2]; // username is the third item
-                    String[] userDetails = {cred[0], cred[1], cred[3]}; // last name, first name, password
+                    String[] userDetails = {cred[0], cred[1], cred[3], cred[4]}; // last name, first name, password, is_it
                     credentials.put(username, userDetails);
                 }
             }
