@@ -2,8 +2,13 @@
 // It contains a single Message
 // It's status is automatically set to PENDING
 // It's type is automatically set to CHAT_MESSAGE
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChatMessage extends ServerMessage {
     private Message message;
+    private List <String> Participants = new ArrayList<String>();
 
     public ChatMessage(Message message) {
         this.message = message;
@@ -26,6 +31,14 @@ public class ChatMessage extends ServerMessage {
 
     public void setMessage(Message message) {
         this.message = message;
+    }
+
+    public List<String> getParticipants() {
+        return Participants;
+    }
+
+    public void setParticipants(List<String> participants) {
+        Participants = participants;
     }
 
 }
