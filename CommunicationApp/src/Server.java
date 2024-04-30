@@ -524,14 +524,14 @@ public class Server {
             directory.mkdirs();  // Make the directory (including any necessary but nonexistent parent directories)
         }
 
-        // try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
-        //     //bw.newLine();
-        //     bw.write(chatID);
-        //     bw.newLine();
-        //     System.out.println(chatID + " was added to " + username);
-        // } catch (IOException e) {
-        //     System.err.println("Error writing to credentials file: " + e.getMessage());
-        // }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
+            //bw.newLine();
+            bw.write(chatID);
+            bw.newLine();
+            System.out.println(chatID + " was added to " + username);
+        } catch (IOException e) {
+            System.err.println("Error writing to credentials file: " + e.getMessage());
+        }
 
     }
     public void createNewUserFile(String username) {
