@@ -213,6 +213,6 @@ public class Server {
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
-        server.writeCredentials("Cola", "Coca", "Cocacoola", "soda", true);
+        //server.writeCredentials("Cola", "Coca", "Cocacoola", "soda", true); //this works
     }
 }

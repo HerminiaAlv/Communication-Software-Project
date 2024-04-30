@@ -298,7 +298,9 @@ public class ClientGUI extends JFrame{
 	// ** Need to call this inside a listener for a chatroom selection **
 	public void displayLoggedMessages (ChatRoom room) {
 		JFrame chatRoomFrame = new JFrame(room.getChatID());
-		chatRoomFrame.setSize(400,200);
+		chatRoomFrame.setSize(500,400);
+		chatRoomFrame.setLocationRelativeTo(null);
+		chatRoomFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JTextArea chatLog = new JTextArea();
 		chatLog.setEditable(false); //disable editing

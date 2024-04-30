@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +109,17 @@ public class ChatRoom implements Serializable {
         // }
         return s;
     }
-
+    
+    public void storeMessagesInFile(String filename) {
+        filename = "ChatRoom_" + chatID + ".txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (Message message : messages) {
+                writer.write(message.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     // private methods
 }
