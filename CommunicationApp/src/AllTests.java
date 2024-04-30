@@ -9,7 +9,10 @@ import org.junit.platform.suite.api.Suite;
     UpdateUserMessageTest.class,
     AddUsersToChatMessageTest.class,
     NotifyMessageTest.class,
-    PinChatMessageTest.class,})
+    PinChatMessageTest.class,
+    ChatRoomTest.class,
+    MessageTest.class,
+    UserTest.class})
 public class AllTests {
 
 }

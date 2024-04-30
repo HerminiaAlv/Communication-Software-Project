@@ -8,17 +8,17 @@ class ServerMessageTest {
 
     @BeforeEach
     void setUp() {
-        serverMessage = new ServerMessage(MessageTypes.LOGIN, MessageStatus.SUCCESS);
+        serverMessage = new ServerMessage();
     }
 
     @Test
-    void getTypeShouldReturnLogin() {
-        assertEquals(MessageTypes.LOGIN, serverMessage.getType());
+    void getTypeShouldReturnUndefined() {
+        assertEquals(MessageTypes.UNDEFINED, serverMessage.getType());
     }
 
     @Test
-    void getStatusShouldReturnSuccess() {
-        assertEquals(MessageStatus.SUCCESS, serverMessage.getStatus());
+    void getStatusShouldReturnUndefined() {
+        assertEquals(MessageStatus.UNDEFINED, serverMessage.getStatus());
     }
 
 }
