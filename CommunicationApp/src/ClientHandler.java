@@ -54,6 +54,10 @@ public class ClientHandler implements Runnable {
                         case ADD_USERS_TO_CHAT:
                         	server.handleAddUsersToChat((AddUsersToChatMessage) message);
                             break;
+                        case GET_LOGS:
+                            server.handleGetLogs((LogMessage) message);
+                            sendMessageToClient(message);
+                            break;
                         case NOTIFY_USER:
                         	server.handleNotifyUser((NotifyMessage) message);
                             break;

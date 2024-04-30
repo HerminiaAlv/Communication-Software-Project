@@ -236,6 +236,20 @@ public class Server {
         broadcastMessage(message);
     }
 
+    public void handleGetLogs(LogMessage message) {
+        // with the userID need to go to the file and build all the chats and return them in  a list
+        if (message.getStatus() == MessageStatus.PENDING) {
+            String username = message.getUserId();
+            User user = buildUser(username);
+            
+            message.setUserChats(user.getChats());
+            message.setStatus(MessageStatus.SUCCESS);
+        }
+        else message.setStatus(MessageStatus.FAILED);
+
+        // fall through send back
+    }
+
     public void handleUpdateUser(UpdateUserMessage message) {
     	if (message.getStatus() == MessageStatus.PENDING) {
             if (!credentials.containsKey(message.getUserId())){ // see if we already have this value in credentials
