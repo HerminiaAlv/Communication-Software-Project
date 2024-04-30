@@ -163,6 +163,7 @@ public class Client {
 
     public void handleUpdateUser(UpdateUserMessage msg) {
         // TODO implement this
+
     }
 
     public void handleGetLogsMessage(LogMessage msg) {
@@ -171,6 +172,13 @@ public class Client {
 
     public void handleAddUsersToChat(AddUsersToChatMessage msg) {
         // TODO implement this  
+        String displayString = "";
+        for (String userid : msg.getNewParticipantIds())
+            displayString += userid + ", ";
+        JOptionPane.showMessageDialog(null, "Chat created with: " + displayString);
+
+        // Add the new chat to westChatrooms
+        mainGUI.addChatToWestPanel(msg.getAddedChat()); // this should do it
     }
 
     public void handleGetLogs(LogMessage msg) {

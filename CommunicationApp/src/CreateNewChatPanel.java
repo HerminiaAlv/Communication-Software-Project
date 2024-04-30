@@ -6,17 +6,23 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 
 import java.awt.GridBagLayout;
@@ -30,33 +36,49 @@ import java.awt.GridLayout;
 //import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.AbstractListModel;
 
 public class CreateNewChatPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private ChatRoom chatroom;
+	private Client client;
 	
+	private ChatRoom chatroom;
+	private List<User> users;
+	private User currentUser;
+	private ChatRoom chat;
+
+	private User[] participants;
+	private List<String> usernames;
 	// passing User 
 	
 	
-	public CreateNewChatPanel(User user) {
+	public CreateNewChatPanel(Client client, User currentUser) {
 		setForeground(new Color(135, 206, 250));
 		setBackground(new Color(21, 96, 130));
 		setLayout(null);
 		
-		// Panel for send button... putting button inside a border makes modifications easy!
-		JPanel cancelBorder = new JPanel();
-		cancelBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
-		cancelBorder.setBounds(353, 392, 81, 38);
-		add(cancelBorder);
-		cancelBorder.setLayout(new BorderLayout(0, 0));
+		this.client = client;
+		this.currentUser = currentUser;
 		
-		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setToolTipText("Hit button to send message...");
-		btnCancel.setFont(new Font("Dialog", Font.BOLD, 12));
-		cancelBorder.add(btnCancel, BorderLayout.CENTER);
+		updateUsers(client.getCurrentUserlist());
+		currentUser = users.get(0);
+		
+		participants = new User[10];
+		
+		// Panel for send button... putting button inside a border makes modifications easy!
+//		JPanel cancelBorder = new JPanel();
+//		cancelBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
+//		cancelBorder.setBounds(353, 392, 81, 38);
+//		add(cancelBorder);
+//		cancelBorder.setLayout(new BorderLayout(0, 0));
+//		
+//		JButton btnCancel = new JButton("Cancel");
+//		btnCancel.setToolTipText("Hit button to send message...");
+//		btnCancel.setFont(new Font("Dialog", Font.BOLD, 12));
+//		cancelBorder.add(btnCancel, BorderLayout.CENTER);
 		
 		JPanel confirmBorder = new JPanel();
 		confirmBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
@@ -73,20 +95,48 @@ public class CreateNewChatPanel extends JPanel {
 		add(userListBorder);
 		userListBorder.setLayout(new BorderLayout(0, 0));
 		
-		JList list = new JList();
-		list.setValueIsAdjusting(true);
-		list.setModel(new AbstractListModel() {
-			String[] values = new String[] {"User 1", "User 2", "User 3"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
+		DefaultListModel userData = new DefaultListModel();
+        for (User user1 : users) {
+        	userData.addElement(user1);
+        }
+       
+		
+//		AbstractListModel<String> userListModel = new AbstractListModel<String>() {
+//            @Override
+//            public int getSize() {
+//                return userData.size();
+//            }
+//
+//            @Override
+//            public String getElementAt(int index) {
+//                return userData.get(index);
+//            }
+//        };
+  
+		JList userList = new JList<User>(userData);
+		userListBorder.add(userList, BorderLayout.CENTER);
+		
+		userList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					int[] selectedIndices = userList.getSelectedIndices();
+					
+					User[] selectedValues = new User[selectedIndices.length];
+					usernames = new ArrayList<String>();
+					
+					for (int index = 0; index < selectedIndices.length; index++) {
+						selectedValues[index] = (User) userData.getElementAt(selectedIndices[index]);
+					}
+					
+					for (int i = 0; i < selectedValues.length; i++) {
+						usernames.add(selectedValues[i].getUsername());					
+					}
+					
+					//JOptionPane.showMessageDialog(userListBorder, usernames);	 // for debug
+					
+				}	
 			}
 		});
-		userListBorder.add(list, BorderLayout.CENTER);
-		//add(scrollPane);
-		// Panel for participants
 		JPanel promptBorder = new JPanel();
 		promptBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
 		promptBorder.setBounds(3, 1, 431, 25);
@@ -107,16 +157,9 @@ public class CreateNewChatPanel extends JPanel {
 		btnConfirm.setFont(new Font("Dialog", Font.BOLD, 12));
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// selected users into a List<User>
-				// chatroom = new ChatRoom(List<User>)
-				
-				// for ( user : List<User>)
-				// 		user.addChat(chatroom);
-						
-				
-				
-				
-				
+				// usernames contains my value
+				CreateChatMessage msg = new CreateChatMessage(usernames);
+				new Thread(()->{client.sendMessageToServer(msg);}).start();
 			}
 		});
 		
@@ -138,5 +181,14 @@ public class CreateNewChatPanel extends JPanel {
 //		usersBorder.add(lblOnlineUsers, BorderLayout.CENTER);
 
 
+	}
+
+	public void updateUsers(Map<String, User> newUserList) {
+		List<User> toUpdate = new ArrayList<>();
+		for (User u : newUserList.values()) {
+			toUpdate.add(u);
+		}
+
+		this.users = toUpdate;
 	}
 }
