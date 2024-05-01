@@ -47,9 +47,9 @@ public class Message implements Serializable{
 		return id;
 	}
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
+	public LocalDateTime getTimestamp() {
+	        return timestamp;
+	}
 
 	//setters
 	public void setMessage(String message) {
@@ -65,8 +65,8 @@ public class Message implements Serializable{
 	}
 
 	public void setTimestamp(LocalDateTime timestamp) {
-        this.formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
-    } 
+        	this.formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
+    	} 
 
 	//other methods
 	public String toStringForFile() {
@@ -75,22 +75,19 @@ public class Message implements Serializable{
 
 	// Method to return a CSV-safe string
 	public String toCSVString() {
-			return "\"" + escapeQuotes(message) + "\","
-				 + "\"" + escapeQuotes(sender) + "\","
-				 + "\"" + chatID + "\","
-				 + timestamp;
+		return "\"" + escapeQuotes(message) + "\","
+			+ "\"" + escapeQuotes(sender) + "\","
+			+ "\"" + chatID + "\","
+			+ timestamp;
 	}
 	
-		// Helper method to escape quotes
+	// Helper method to escape quotes
 	private String escapeQuotes(String input) {
 		return input.replace("\"", "\"\"");
 	}
 
 	public String toString() {
-        //User sender = new User();
-        //sender.setUserName("Dummy Sender");
 		setTimestamp(timestamp);
-        //return "[" + formattedTimestamp + "] " + sender.getUsername() + ": " + message;
 		return "[" + formattedTimestamp + "] " + sender + ":\n " + message;
     }
 }
