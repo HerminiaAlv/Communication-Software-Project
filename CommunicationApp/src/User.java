@@ -7,8 +7,7 @@ public class User implements Serializable{
 	// private int id; // username is the ID
 	private String firstName;
 	private String lastName;
-	private String password; // do we need this?
-	// attributes: status of user's status type? and the user's role
+	private String password;
 	private List<ChatRoom> chats;
 
 	private UserStatus status; // default offline status
@@ -45,10 +44,6 @@ public class User implements Serializable{
 
 	
 	//getters
-	// public int getID() {
-	// 	return id;
-	// }
-
 	public String getFirstName(){
 		return firstName;
 	}
@@ -109,14 +104,10 @@ public class User implements Serializable{
 	}
 
 	public boolean addChat(ChatRoom chatToAdd) {
-		// if (!chats.contains(chatToAdd.getChatID())) // Chat doesn't exist in User's list of chats
-		// add it and return true 
-		// else 
 		if(!chats.contains(chatToAdd.getChatID())) {
 			chats.add(chatToAdd);
 			return true;
 		}
-		
 		return false;
 	}
 
@@ -128,10 +119,4 @@ public class User implements Serializable{
 	public String toString () {
 		return firstName + " " + lastName;
 	}
-
-	
-	// addToChat, update user, addPinned
-
-	
-	
 }
