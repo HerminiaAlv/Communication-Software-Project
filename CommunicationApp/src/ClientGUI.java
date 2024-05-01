@@ -44,9 +44,9 @@ enum ITButtonAction {
 public class ClientGUI extends JFrame{
 	//private void createGUI(){
     private Client client; // to access methods from the client
-	private static final long serialVersionUID = 1L; // from JFrame
-	private JPanel contentPane; // Where all componets attach to
-	private JButton[] ITButtons; // size [2]
+    private static final long serialVersionUID = 1L; // from JFrame
+    private JPanel contentPane; // Where all componets attach to
+    private JButton[] ITButtons; // size [2]
 		// [0] - VIEW_LOGS
 		// [1] - ADD_MODIFY_USERS
 	
@@ -55,27 +55,26 @@ public class ClientGUI extends JFrame{
     private int HEIGHT = 480;
     private int WIDTH = 720;
     //private static int notificationCounter; // This might change 
-	private JPanel centerPanel;
-	private JPanel westPanel;
-	private JPanel currentCenterPanel; // This is the panel that is currently visible on the center panel
+    private JPanel centerPanel;
+    private JPanel westPanel;
+    private JPanel currentCenterPanel; // This is the panel that is currently visible on the center panel
 
-	// Possible Center Panels
-	private viewLogChatPanel logViewPanel;
-	private modifyUserPanel modifyUserPanel;
-	private MessagePanel mssgPanel;
-	private UserPanel userPanel;
-	private CreateNewChatPanel createNewChatPanel;
+    // Possible Center Panels
+    private viewLogChatPanel logViewPanel;
+    private modifyUserPanel modifyUserPanel;
+    private MessagePanel mssgPanel;
+    private UserPanel userPanel;
+    private CreateNewChatPanel createNewChatPanel;
 
-	// West Panel Attributes
-	private DefaultListModel westChatList;
-	JList<ChatRoom> westChatrooms;
+    // West Panel Attributes
+    private DefaultListModel westChatList;
+    JList<ChatRoom> westChatrooms;
 
-	// Building the main elements of the GUI - these will always be visible
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ClientGUI(Client client, User currentUser) {
-        this.client = client;
-        this.currentUser = currentUser;
-	
+    // Building the main elements of the GUI - these will always be visible
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ClientGUI(Client client, User currentUser) {
+    this.client = client;
+    this.currentUser = currentUser;
         //start up 
         setResizable(false); //disable maximize button
 		setTitle("Employee Message App");
@@ -159,16 +158,6 @@ public class ClientGUI extends JFrame{
 					   ChatRoom selectedItem = (ChatRoom) westChatrooms.getSelectedValue();
 					   mssgPanel.setupChatroom(selectedItem);
 					   invokeNewPanel(mssgPanel);
-					// Need to mssgpanel.setupChatroom(selectedItem)
-					// then invoke new panel
-					// TODO Go back and test this when we are actually initializing chatroom objects
-					// need to test the case where mssgPanel is already currentCenterPanel.
-					//invokeNewPanel(mssgPanel); this links to the chat messages area
-					// MessagePanel newMssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); // what does this do?
-					
-					//JOptionPane that will show the chatroom selected's messages (logged messages);
-					//JOptionPane.showMessageDialog(null, "Chatroom selected: " + chatrooms.getSelectedValue());
-					//displayLoggedMessages(chatrooms.getSelectedValue());
 					}
 				}
 			});
@@ -179,7 +168,6 @@ public class ClientGUI extends JFrame{
 			
 		// inside westPanel
 		JPanel mainButtonPanel = new JPanel();
-		//mainButtonPanel.setBorder(new LineBorder(new Color(78, 167, 46), 1, true));
 		westPanel.add(mainButtonPanel);
 		mainButtonPanel.setLayout(new GridLayout(0, 1, 5, 15));
 		mainButtonPanel.setOpaque(false);
@@ -225,7 +213,6 @@ public class ClientGUI extends JFrame{
 		centerPanel.setLayout(new GridLayout(1, 0, 0, 0));
 
 		//Message Field
-		//mssgPanel = new MessagePanel();
 		mssgPanel = new MessagePanel(client, currentUser.getChats().get(0)); 
 		mssgPanel.setListener(new MessagePanel.MessageListener() {
 			@Override
@@ -234,7 +221,7 @@ public class ClientGUI extends JFrame{
 				ChatMessage chatMessage = new ChatMessage(message);
 				chatMessage.setParticipants(mssgPanel.getCurrentChat().getParticipants());
 				client.sendMessageToServer(chatMessage);
-				System.out.println("Debug: onSendMessage");
+				//System.out.println("Debug: onSendMessage");
 			}
 		});
 		// Create New Chat Initialization
@@ -301,35 +288,12 @@ public class ClientGUI extends JFrame{
 			}
 		});
 	}
-
-
-	// Display the logged messages of a chatroom
-	// ** Need to call this inside a listener for a chatroom selection **
-/* 	public void displayLoggedMessages (ChatRoom room) {
-		JFrame chatRoomFrame = new JFrame(room.getChatID());
-		chatRoomFrame.setSize(500,400);
-		chatRoomFrame.setLocationRelativeTo(null);
-		chatRoomFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		JTextArea chatLog = new JTextArea();
-		chatLog.setEditable(false); //disable editing
-		chatLog.setLineWrap(true); //enable line wrapping
-		
-		for (Message m : room.getMessages()) {
-			chatLog.append(m.toString() + "\n");
-		}
-
-		JScrollPane chatLogScrollPane = new JScrollPane(chatLog);
-		chatRoomFrame.add(chatLogScrollPane);
-		chatRoomFrame.setVisible(true);
-	}	 */
-
-	/**
+	/*
 	 * Removes the currentCenterPanel and places a new one.
-	 * 
-	 * @param toPlace	This is the panel you want to put on the centerPanel.
-	 *               	When you press a button to get a new view call this method
-	 *                  with the associated panel.
+	 * @param toPlace	
+  	 * 	This is the panel you want to put on the centerPanel.
+	 *      When you press a button to get a new view call this method
+	 *      with the associated panel.
 	 */
 	private void placePanelOnCenter(JPanel toPlace) {
 		// Check if the panel toPlace is the same panel
@@ -367,12 +331,6 @@ public class ClientGUI extends JFrame{
 
 
 	// Private Testing variables
-	// private variables just for testing
-/* 	ArrayList<String> chats = new ArrayList<String>(){
-		for (ChatRoom room : chatRooms) {
-			chats.add(room.getChatID());
-		}
-	} */
 	private String[] chats =  { "Chat 1",
 				"Chat 2",
 				"Chat 3",
