@@ -30,9 +30,7 @@ public class LoginUI extends JFrame {
 		
 		//components
 		JPanel loginPanel = new JPanel(new GridLayout(3,2,5,5));
-		//loginPanel.setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
 		loginPanel.setOpaque(false);
-		//borderPanel.add(loginPanel,new FlowLayout(FlowLayout.CENTER,10,10));
 		borderPanel.add(loginPanel);
 		
 		//add login components
@@ -42,13 +40,11 @@ public class LoginUI extends JFrame {
 		usernameBox.setBorder(new TitledBorder(new LineBorder(new Color(78,167,46)),"Username: "));
 		usernameBox.setForeground(Color.WHITE);
 		usernameBox.setOpaque(false);
-		//usernameBox.setSelectedTextColor(Color.WHITE);
 		usernameBox.setCaretColor(Color.WHITE);
 		usernameBox.setSelectionColor(Color.WHITE);
 		loginPanel.add(usernameBox);
 		
 		//password field
-		//loginPanel.add(new JLabel("Password: "));
 		passwordBox = new JPasswordField(15);  //first 2 letters of name, last 2 of surname, + 4 digit ID
 		passwordBox.setBorder(new TitledBorder(new LineBorder(new Color(78,167,46)),"Password: "));
 		passwordBox.setOpaque(false);
@@ -61,7 +57,6 @@ public class LoginUI extends JFrame {
 	    //loginButton.setBorder(new LineBorder(new Color(78,167,46))); 
 	   // loginButton.setBackground(new Color(78,167,46)); // button background
 	    loginButton.setForeground(new Color(21, 96, 130)); // text color
-	    //loginButton.setAlignmentX(Component.CENTER_ALIGNMENT); 
         borderPanel.add(loginButton);
         
         loginButton.addActionListener(new ActionListener() {
@@ -71,10 +66,8 @@ public class LoginUI extends JFrame {
         });
         
         add(borderPanel);
-        //loginPanel.add(loginButton);
         setLocationRelativeTo(null);
         setVisible(true);
-	
 	}
 	
 	public void login() {
@@ -83,7 +76,7 @@ public class LoginUI extends JFrame {
 
 		String username = usernameBox.getText();
 		String password = new String(passwordBox.getPassword());
-		
+
 		// Create login message to send to server
 		LoginMessage request = new LoginMessage(password, username);
 
@@ -91,17 +84,8 @@ public class LoginUI extends JFrame {
 		new Thread(()->{
 			client.sendMessageToServer(request);
 		}).start();
-
 		// This UI is now in a waiting state 
-		
-		//Pseudocode
-		// if (user exists) then 
-			//showMessageDialog "Login Success"
-		// else
-			//showMessageDialog "Login Failed", ERROR_MESSAGE
-		
-		
-		
+			
 		//Login Success then Home screen for message app is revealed
 		//Show standard view for standard users
 		//Show IT view for IT users, it is the same as standard view but with extra buttons 
@@ -116,7 +100,6 @@ public class LoginUI extends JFrame {
 			awaitingServer = false;
 		if (!connected) { // Attempt Unsuccessfull
 			// need to reset GUI
-
 			EventQueue.invokeLater(new Runnable() { 
 			public void run() {
 				try {
@@ -134,9 +117,8 @@ public class LoginUI extends JFrame {
 	}
 
 	public void clearPasswordBox() {
-		 
+		// Intended to clear the password entered in the password box
 	}
-
 	// Private Methods
 	private void setWaiting() {
 		// Display waiting indicator 
@@ -153,9 +135,7 @@ public class LoginUI extends JFrame {
 				}
 			}
 		    });
-		
 		awaitingServer = true;
-		
 	}
 
 	//testing 
