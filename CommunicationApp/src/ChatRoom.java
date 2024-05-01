@@ -61,13 +61,6 @@ public class ChatRoom implements Serializable {
     }
 
     // Other public methods
-    // public boolean addMessage(Message msg) {
-    //     if (!messageExists(msg.getID())) { 
-    //         messages.add(msg);
-    //         return true;
-    //     }
-    //     return false; // not added
-    // }
     public void addMessage(Message msg) {
         messages.add(msg);
     }
@@ -103,10 +96,6 @@ public class ChatRoom implements Serializable {
         for (String user : participants) {
             s = s + user + ", ";
         }
-        // bleh this is bad
-        // if (s.length() > 18){
-        //     s = s.substring(0, 17) + "...";
-        // }
         return s;
     }
     
