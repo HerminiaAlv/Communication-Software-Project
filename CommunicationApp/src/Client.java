@@ -47,9 +47,6 @@ public class Client {
 
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
-           // new Thread(new IncomingReader()).start();
-            //Thread chatMessageListenerThread = new Thread(new IncomingReader());
-            //chatMessageListenerThread.start();
             new Thread(() -> listenForMessages()).start();
             loggedIn = false;
             invokeLoginUI();
@@ -79,10 +76,10 @@ public class Client {
                 List<ServerMessage> fromServer = (List<ServerMessage>) input.readObject();
                 for (ServerMessage m : fromServer) { // Route each message that came in from the server
                     //debugging
-                    System.out.println("Debug: Message received from server: " + m);
+                    //System.out.println("Debug: Message received from server: " + m);
                 	switch (m.getType()) {
                         case LOGIN:
-                            System.out.println("Debug: LoginMessage received: " + m);
+                            //System.out.println("Debug: LoginMessage received: " + m);
                             new Thread(() -> handleLoginMessage((LoginMessage) m)).start();// Cast to Login Message
                             break;
 
@@ -259,26 +256,6 @@ public class Client {
         EventQueue.invokeLater(new Runnable() { 
 			public void run() {
 				try {
-                    // TODO remove the test user when we get the server to pass a user on login 
-                    // test purposes start
-                    // Message msg1 = new Message("M_1", "User_2", "1", LocalDateTime.now());
-                    // Message msg2 = new Message("M_2", "User_2", "1", LocalDateTime.now());
-                    // ChatRoom chat = new ChatRoom();
-                    // chat.addMessage(msg2);
-                    // chat.addMessage(msg1);
-                    // chat.setChatID("Chat_1");
-                    // User testUser = new User();
-                    // testUser.addChat(chat);
-                    // testUser.setIT(true);
-                    // testUser.setUserName("User 1");
-                    // mainGUI = new ClientGUI(getThisClient(), testUser);
-                    // currentUser = testUser;
-                    // end test 
-                    // List<User> users = generateUsers(7, 10);
-                    // users.get(0).setIT(true);
-                    // mainGUI = new ClientGUI(getThisClient(), users.get(0));
-                    
-                    // uncomment this when server passes a user
 					mainGUI = new ClientGUI(getThisClient(), currentUser); 
 					mainGUI.setVisible(true);
 				} catch (Exception e) {
