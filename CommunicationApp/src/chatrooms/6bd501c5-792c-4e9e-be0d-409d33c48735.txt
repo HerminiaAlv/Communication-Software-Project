@@ -2,3 +2,6 @@
 halvarenga1,Cocacoola,csan,
 "lets populate this with some messages why not","csan","6bd501c5-792c-4e9e-be0d-409d33c48735",2024-04-30T02:44:13.832756600
 ":D","csan","6bd501c5-792c-4e9e-be0d-409d33c48735",2024-04-30T02:44:19.245736300
+"coke","csan","6bd501c5-792c-4e9e-be0d-409d33c48735",2024-04-30T12:42:17.494304700
+"for","csan","6bd501c5-792c-4e9e-be0d-409d33c48735",2024-04-30T12:42:28.232552500
+"like","csan","6bd501c5-792c-4e9e-be0d-409d33c48735",2024-04-30T12:42:31.902826100

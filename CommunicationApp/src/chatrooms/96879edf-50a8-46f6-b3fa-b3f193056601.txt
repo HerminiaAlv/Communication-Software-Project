@@ -2,3 +2,4 @@
 amiller2,csan,
 "Hey alex miller ","csan","96879edf-50a8-46f6-b3fa-b3f193056601",2024-04-30T02:58:24.562859900
 "we did it fellas","csan","96879edf-50a8-46f6-b3fa-b3f193056601",2024-04-30T02:58:32.581854500
+"Whats up chris","amiller2","96879edf-50a8-46f6-b3fa-b3f193056601",2024-04-30T12:14:12.300650600

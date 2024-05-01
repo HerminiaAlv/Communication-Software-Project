@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +25,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Server {
-    private static final int PORT = 12345;
+    private static final int PORT = 4000;
     private Map<String, ObjectOutputStream> clients = new HashMap<>();
     private Map<String, String[]> credentials = new HashMap<>();
     private Map<String, User> allUsers = new HashMap<>();
@@ -49,11 +50,13 @@ public class Server {
 
     	try {
             ServerSocket serverSocket = new ServerSocket(PORT);
+            System.out.println("Server IP: " + InetAddress.getLocalHost().getHostAddress());
             System.out.println("Server started on port " + PORT);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New client connected");
+                System.out.println("Client connected from: " + clientSocket.getInetAddress().getHostAddress());
 
                 new Thread(new ClientHandler(clientSocket, this)).start();
             }

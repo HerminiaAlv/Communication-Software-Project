@@ -1,3 +1,10 @@
 db85d2d3-cab6-43f7-a882-df610803759a
 pmoore5,csan,
 "hey lol","csan","db85d2d3-cab6-43f7-a882-df610803759a",2024-04-30T10:04:36.106724800
+"Whats up my man","pmoore5","db85d2d3-cab6-43f7-a882-df610803759a",2024-04-30T12:16:54.842956400
+"how are you doing this fine morning?","pmoore5","db85d2d3-cab6-43f7-a882-df610803759a",2024-04-30T12:17:00.030869400
+"Oh you know... pretty solid","csan","db85d2d3-cab6-43f7-a882-df610803759a",2024-04-30T12:17:23.602555600
+"I SLEPT GREAT LAST NIGHT","csan","db85d2d3-cab6-43f7-a882-df610803759a",2024-04-30T12:17:38.059191300
+"Good for you bro","pmoore5","db85d2d3-cab6-43f7-a882-df610803759a",2024-04-30T12:17:57.596291800
+"didnt ask btw....","pmoore5","db85d2d3-cab6-43f7-a882-df610803759a",2024-04-30T12:18:01.674455600
+"hi","csan","db85d2d3-cab6-43f7-a882-df610803759a",2024-04-30T19:21:37.036849800

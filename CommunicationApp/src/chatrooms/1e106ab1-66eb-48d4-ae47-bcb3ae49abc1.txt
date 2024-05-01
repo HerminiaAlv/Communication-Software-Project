@@ -4,3 +4,5 @@ amiller2,csan,dyu4,
 "Yoooooooooo","csan","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T09:56:36.356918400
 "Hello today is tuesday","csan","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T11:59:30.025818400
 "I've up for 30 hours lmao","csan","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T11:59:44.176654700
+"Dang bro that's wild","amiller2","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T12:13:54.712693200
+"You're a machine","amiller2","1e106ab1-66eb-48d4-ae47-bcb3ae49abc1",2024-04-30T12:14:01.313952700
