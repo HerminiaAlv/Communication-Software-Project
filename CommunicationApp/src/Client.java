@@ -15,8 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class Client {
-    private String HOSTIP = "134.154.53.70"; // hostName/IP to connection
-    private int PORT = 4444; // Port number to connect to on hostName
+    private String HOSTIP = "10.0.0.157"; // hostName/IP to connection
+    private int PORT = 4000; // Port number to connect to on hostName
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Socket socket;  // flag to determine if login has been authenticated
@@ -186,6 +186,7 @@ public class Client {
         if (msg.getStatus() == MessageStatus.SUCCESS) {
             // Need to update the right panel with the new values
             DefaultListModel rightPanelDLM = mainGUI.getViewLogsChatList();
+            rightPanelDLM.clear();
             for (ChatRoom room : msg.getUserChats())
                 rightPanelDLM.addElement(room);
             

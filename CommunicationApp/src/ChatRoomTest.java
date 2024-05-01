@@ -18,7 +18,7 @@ class ChatRoomTest {
 		message = new Message("Test", "user1", "chat1");
 		user = new User();
         user.setUserName("user3");
-	}
+	} 
 	@Test
 	void testGetChatID() {
         assertNotNull(chatRoom.getChatID(), "Chat ID should be automatically generated.");
@@ -39,8 +39,8 @@ class ChatRoomTest {
 	@Test
     void testAddMessage() {
         chatRoom.addMessage(message);
-        assertEquals(1, chatRoom.getMesssages().size(), "There should be one message in the chat room.");
-        assertEquals(message, chatRoom.getMesssages().get(0), "The message should be the one added.");
+        assertEquals(1, chatRoom.getMessages().size(), "There should be one message in the chat room.");
+        assertEquals(message, chatRoom.getMessages().get(0), "The message should be the one added.");
     }
 	
 	@Test
