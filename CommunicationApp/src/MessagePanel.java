@@ -164,9 +164,6 @@ public class MessagePanel extends JPanel {
 		populateParticipants();
 		populateChatMessages();
 	}
-	// public void setCurrentChat(ChatRoom chatroom) {
-	// 	this.currentChat = chatroom;
-	// }
 
 	public ChatRoom getCurrentChat() {
 		return currentChat;
@@ -182,7 +179,7 @@ public class MessagePanel extends JPanel {
 		roomMembers.repaint();
 	}
 
-	private void populateChatMessages() {		//String test = "Testing textMessage";
+	private void populateChatMessages() {	
 		String test = "";
 		// Populate text area
 		for (Message m : currentChat.getMessages())
