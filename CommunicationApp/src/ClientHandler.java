@@ -76,26 +76,10 @@ public class ClientHandler implements Runnable {
         finally {
             closeConnection();
            }
-        //     outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-        //     inputStream = new ObjectInputStream(clientSocket.getInputStream());
-
-        //     while (true) {
-
-        //     }
-        // } catch (IOException | ClassNotFoundException ex) {
-        //     ex.printStackTrace();
-        // }
-
-        
     }
 
     private void handleServerMessage(ServerMessage message) {
-//        if (message.getType() == null) {
-//            System.out.println("Received message with null type: " + message);
-//            return;
-//        }
-
-        System.out.println("Received message type: " + message.getType());
+        //System.out.println("Received message type: " + message.getType());
         MessageTypes type = message.getType();
 
         switch (type) {
