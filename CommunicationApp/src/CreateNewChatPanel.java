@@ -87,32 +87,12 @@ public class CreateNewChatPanel extends JPanel {
 		add(confirmBorder);
 		confirmBorder.setLayout(new BorderLayout(0, 0));
 		
-		
-		
 		// Panel for text messages box
 		JPanel userListBorder = new JPanel();
 		userListBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
 		userListBorder.setBounds(3, 30, 431, 360);
 		add(userListBorder);
 		userListBorder.setLayout(new BorderLayout(0, 0));
-		
-		// userData = new DefaultListModel();
-        // for (User user1 : users) {
-        // 	userData.addElement(user1);
-        // }
-       
-		
-//		AbstractListModel<String> userListModel = new AbstractListModel<String>() {
-//            @Override
-//            public int getSize() {
-//                return userData.size();
-//            }
-//
-//            @Override
-//            public String getElementAt(int index) {
-//                return userData.get(index);
-//            }
-//        };
   
 		userList = new JList<User>(userData);
 		userListBorder.add(userList, BorderLayout.CENTER);
