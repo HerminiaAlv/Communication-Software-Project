@@ -56,22 +56,16 @@ public class viewLogChatPanel extends JPanel {
 		for (User user : client.getCurrentUserlist().values())
 			users.add(user);
 		
-		// Panel for text messages box
-//		JPanel chatListBorder = new JPanel();
-//		chatListBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
-//		chatListBorder.setBounds(3, 30, 431, 360);
-//		add(chatListBorder);
-//		chatListBorder.setLayout(new BorderLayout(0, 0));
-		
+		// Panel for text messages box	
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setResizeWeight(0.5);
 		splitPane.setBounds(3, 31, 431, 359);
 		
 		
 		DefaultListModel userData = new DefaultListModel();
-        for (User user : users) {
+       		for (User user : users) {
         	userData.addElement(user);
-        }
+        	}
   
 		JList userList = new JList<User>(userData);
 		chatData = new DefaultListModel();
@@ -94,16 +88,11 @@ public class viewLogChatPanel extends JPanel {
 
 		chatrooms.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-/* 				chat = (ChatRoom)chatrooms.getSelectedValue();
-				// this is where you call the new window */
 				if (!e.getValueIsAdjusting()) {
 					chat = (ChatRoom)chatrooms.getSelectedValue();
 					// this is where you call the new window
 					displayLoggedMessages(chat);
 				}
-/* 				if (chat != null) {
-					displayLoggedMessages(chat);
-				} */
 			}
 		});
 		
@@ -126,18 +115,6 @@ public class viewLogChatPanel extends JPanel {
 		promptText.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		
 		promptBorder.add(promptText, BorderLayout.CENTER);
-		
-		// Panel for send button... putting button inside a border makes modifications easy!
-//				JPanel cancelBorder = new JPanel();
-//				cancelBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
-//				cancelBorder.setBounds(353, 392, 81, 38);
-//				add(cancelBorder);
-//				cancelBorder.setLayout(new BorderLayout(0, 0));
-//				
-//				JButton btnCancel = new JButton("Cancel");
-//				btnCancel.setToolTipText("Hit button to send message...");
-//				btnCancel.setFont(new Font("Dialog", Font.BOLD, 12));
-//				cancelBorder.add(btnCancel, BorderLayout.CENTER);
 				
 				JPanel confirmBorder = new JPanel();
 				confirmBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
@@ -154,25 +131,6 @@ public class viewLogChatPanel extends JPanel {
 						displayLoggedMessages(chat);		
 						}
 				});
-				
-		
-		
-		// Panel for Online users... Uses JLabel + JList (Might change) 
-//		JList list = new JList();
-//		list.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
-//		list.setBounds(442, 38, 107, 348);
-//		add(list);
-//		
-//		JPanel usersBorder = new JPanel();
-//		usersBorder.setBounds(442, 6, 107, 25);
-//		add(usersBorder);
-//		usersBorder.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46), new Color(78, 167, 46)));
-//		usersBorder.setLayout(new BorderLayout(0, 0));
-//		
-//		JLabel lblOnlineUsers = new JLabel("Online Users");
-//		lblOnlineUsers.setFont(new Font("Monospaced", Font.PLAIN, 12));
-//		lblOnlineUsers.setHorizontalAlignment(SwingConstants.CENTER);
-//		usersBorder.add(lblOnlineUsers, BorderLayout.CENTER);
 	}
 	
 	public void displayLoggedMessages(ChatRoom room) {
